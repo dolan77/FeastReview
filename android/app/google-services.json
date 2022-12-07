@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "681446349492",
+    "project_id": "feast-review",
+    "storage_bucket": "feast-review.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:681446349492:android:ad94cebbf2991305ab95e1",
+        "android_client_info": {
+          "package_name": "com.feastreviewapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "681446349492-bacggvp71lhmuulhft50tdte24pdmu2u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.feastreviewapp",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "681446349492-ghmcqt2uq627ma5cr18gbudrk83imp9j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2vL4D7ej6ziVhTVqrAY_c91HjRFx9D_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "681446349492-ghmcqt2uq627ma5cr18gbudrk83imp9j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
