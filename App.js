@@ -6,6 +6,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
+import UserProfileScreen from './screens/UserProfileScreen';
+import ReviewsScreen from './screens/ReviewsScreen';
+import MessagesScreen from './screens/MessagesScreen';
+import FollowersScreen from './screens/FollowersScreen';
+import FollowingScreen from './screens/FollowingScreen';
+
 
 const Stack = createNativeStackNavigator()
 
@@ -15,6 +21,12 @@ export default function App() {
 			<Stack.Navigator>
 				<Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
 				<Stack.Screen name="Home" component={HomeScreen} />
+				<Stack.Screen name="UserProfile" component={UserProfileScreen} />
+				<Stack.Screen name="Reviews" component={ReviewsScreen} />
+				<Stack.Screen name="Messages" component={MessagesScreen} />
+				<Stack.Screen name="Followers" component={FollowersScreen} />
+				<Stack.Screen name="Following" component={FollowingScreen} />
+				
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
