@@ -3,9 +3,11 @@ import { Button, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpa
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 
-export default function LoginScreen() {
+export const RegisterScreen = () => {
+
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [passwordAgain, setPasswordAgain] = useState('')
 
 	const navigation = useNavigation()
 
@@ -18,23 +20,38 @@ export default function LoginScreen() {
 		return unsubscribe; // unsubscribe on unmount
 	}, []);
 
-	login = () => {
-		auth()
-			.signInWithEmailAndPassword(email, password)
+  	createUser = () => {
+		if (password !== passwordAgain) {
+			console.log('Passwords do not match')
+		}
+
+		else if (password === '' || passwordAgain === '' || email === '') {
+			console.log('Not all details are entered!')
+		}
+
+		else {
+			auth()
+			.createUserWithEmailAndPassword(email, password)
 			.then(userCreds => {
 				const user = userCreds.user
-				console.log(user.email, 'has logged in')
+				console.log(user.email, 'has signed up')
 			})
 			.catch(error => {
+				if (error.code === 'auth/email-already-in-use') {
+				console.log('That email address is already in use!');
+				}
+
 				if (error.code === 'auth/invalid-email') {
 				console.log('That email address is invalid!');
 				}
 
 				console.error(error);
 			});
+		}
+		
 	}
-
-	return (
+  
+  	return (
 		<KeyboardAvoidingView
 			style={styles.container}
 			behavior="padding"
@@ -53,21 +70,27 @@ export default function LoginScreen() {
 					style={styles.input}
 					secureTextEntry
 				/>
+				<TextInput 
+					placeholder='Re-enter Password'
+					value={passwordAgain}
+					onChangeText={text => setPasswordAgain(text)}
+					style={styles.input}
+					secureTextEntry
+				/>
 			</View>
 
 			<View style={styles.buttonContainer}>
 				<TouchableOpacity
-					onPress={login}
+					onPress={createUser}
 					style={styles.button}
 				>
-				<Text style={styles.buttonText}>Login</Text>
+				<Text style={styles.buttonText}>Register</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
-					onPress={() => navigation.navigate("Register")}
+					onPress={() => navigation.navigate("Login")}
+					style={[styles.button, styles.buttonOutline]}
 				>
-					<Text>
-						Don't have account? Click here to register
-					</Text>
+				<Text style={styles.buttonOutlineText}>Back</Text>
 				</TouchableOpacity>
 			</View>
 		</KeyboardAvoidingView>
