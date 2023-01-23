@@ -60,16 +60,14 @@ export default function LoginScreen() {
 					onPress={login}
 					style={styles.button}
 				>
-				<Text style={styles.buttonText}>Login</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => navigation.navigate("Register")}
-				>
-					<Text>
-						Don't have account? Click here to register
-					</Text>
+					<Text style={styles.buttonText}>Login</Text>
 				</TouchableOpacity>
 			</View>
+			<TouchableOpacity
+				onPress={() => navigation.navigate("Register")}
+			>
+				<Text>Don't have account? Click here to register</Text>
+			</TouchableOpacity>
 		</KeyboardAvoidingView>
 	);
 }
@@ -89,6 +87,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 10,
 		borderRadius: 10,
 		marginStart: 5,
+		margin: 5,
 	},
 	buttonContainer: {
 		width: '60%',
