@@ -84,7 +84,7 @@ export const RegisterScreen = () => {
 					onPress={createUser}
 					style={styles.button}
 				>
-				<Text style={styles.buttonText}>Register</Text>
+					<Text style={styles.buttonText}>Register</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => navigation.navigate("Login")}
@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 10,
 		borderRadius: 10,
 		marginStart: 5,
+		margin: 5,
 	},
 	buttonContainer: {
 		width: '60%',
