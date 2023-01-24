@@ -21,7 +21,7 @@ export default function App() {
 			<Stack.Navigator>
 				<Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
 				<Stack.Screen name="Home" component={HomeScreen} />
-				<Stack.Screen name="UserProfile" component={UserProfileScreen} />
+				<Stack.Screen name="Your Profile" component={UserProfileScreen} />
 				<Stack.Screen name="Reviews" component={ReviewsScreen} />
 				<Stack.Screen name="Messages" component={MessagesScreen} />
 				<Stack.Screen name="Followers" component={FollowersScreen} />

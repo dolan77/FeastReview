@@ -25,7 +25,7 @@ export default function HomeScreen() {
 				<Text style={styles.buttonText}>Sign Out</Text>
 			</TouchableOpacity>
 
-			<Button title = "UserProfile" onPress={() => navigation.navigate('UserProfile')} />
+			<Button title = "UserProfile" onPress={() => navigation.navigate('Your Profile')} />
 		</View>
 	)
 }
