@@ -11,12 +11,12 @@ const styles = StyleSheet.create({
 
     flexbio:{
         flexDirection: 'row',
-        backgroundColor: '#f0b0a2',
+        
     },
 
     flexbutton:{
         flex: 2,
-        backgroundColor: '#a4f0a2'
+        
        
 
     },
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         borderRadius: 150/2,
         overflow: 'hidden',
         borderWidth: 2,
-        borderColor: 'black'
+        borderColor: 'white'
     },
 
     topContent:{
@@ -45,25 +45,30 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         flex: 2,
         marginTop: 10,
-        marginLeft: 10,
-        marginRight: 21,
+        marginLeft: 15,
+        marginRight: 15,
         justifyContent: 'center',
         alignItems: 'baseline',
-        borderColor: 'black',
-        borderWidth: 1,
+        borderColor: 'white',
+        borderWidth: 2,
         paddingLeft: 10,
         paddingTop: 5,
-        borderRadius: 10
+        borderRadius: 10,
+        fontSize: 15,
+        color: 'white'
        
     },
 
     bioSubscript:{
-        backgroundColor: '#f0a2e1',
+        
     },
 
     bioSubscriptContent:{
-        marginLeft: 10
+        marginLeft: 10,
+        color: 'white',
+        paddingTop: 10
     },
+
     button: {
 		backgroundColor: '#17202ac0',
 		width: '100%',
@@ -82,7 +87,7 @@ const styles = StyleSheet.create({
 
     horizontalLine:{
         height: 2, 
-        backgroundColor: '#fc6363'
+        backgroundColor: '#ffffff'
     },
     input: {
         height: 40,
@@ -105,15 +110,17 @@ const styles = StyleSheet.create({
         }
     },
     editButton: {
-        color: '#001ffd',
+        color: 'white',
         fontWeight: 'bold',
         
     }
 
 })
-
+// background color: #3d4051 change for View, bioSubscript, flexbio, flexbutton
 export default function UserProfileScreen(){
     const user = auth().currentUser;
+    
+
     const [modalVisible, setModalVisible] = React.useState(false);
     // I am able to do user.email within the use state. if we are able to save the bio and pull from the database that would be epic but for now this is all i can do
     const [name, setName] = React.useState(user.email);
@@ -123,10 +130,13 @@ export default function UserProfileScreen(){
     
     const navigation = useNavigation();
 
+    function changeBio(newValue) {setName(newValue)}
+    
     seeReview = () => {navigation.navigate('Reviews')} 
 
+    // modals refresh the screen, stacks do not. if you leave a stack and re-enter it refreshres but adding to the stack will not
     return(
-    <View style = {{flex: 1, backgroundColor: '#a2bef0'}}>
+    <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
         <View style= {{flex: 1}}>
             <View style = {styles.flexbio}>
                 <Image style = {[styles.tinyLogo, styles.topContent]} source ={image}/>
@@ -143,19 +153,25 @@ export default function UserProfileScreen(){
                 setModalVisible(!modalVisible);
                 }}>
                 <View style = {styles.modalView}>
+                    <Text styles = {{fontWeight: 'bold'}}>Your New bio will be...</Text>
                     <TextInput
                     style={styles.input}
                     maxLength={60}
                     numberOfLines = {4}
-                    onChangeText={(newValue)=> setName(newValue)}/>
+                    onSubmitEditing={(value) => changeBio(value.nativeEvent.text)}
+                    />
                     <Button
-                    title="Submit"
+                    title="go back"
                     onPress={() => setModalVisible(!modalVisible)}
                     />
+                    
+                    <Text>{"\n"}60 characters max</Text>
+                    <Text>Press Enter before you click the go back button if you want to submit your changes to bio</Text>
                 </View>
                 </Modal>
                 
                 <Text style = {[styles.bioWrap]}>{name}
+                
                     <Text style = {styles.editButton} onPress={() => setModalVisible(true)}>{"\n\n"}Edit Bio</Text>
                 </Text>
                 
@@ -175,11 +191,13 @@ export default function UserProfileScreen(){
         <View style = {styles.flexbutton}>
 
         <View style={styles.horizontalLine} />
+
         <TouchableOpacity
         style={[styles.button]}
         onPress={seeReview}>
         <Text style={styles.buttonText}>See Your Reviews</Text>
         </TouchableOpacity>
+
         <View style={styles.horizontalLine} />
         <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Followers')}>
             <Text style={styles.buttonText}>Followers</Text>
@@ -198,3 +216,5 @@ export default function UserProfileScreen(){
     </View>
     );
 }
+
+// at some point, you don't see state anymore. you can call user.bio to change their bio. then when the modal goes back it will refresh the bio in user profile
