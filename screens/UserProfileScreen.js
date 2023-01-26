@@ -1,10 +1,9 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, useState, Modal} from 'react-native'
 import auth, { firebase } from '@react-native-firebase/auth';
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/core';
 import image from "../assets/feast_blue.png"
-import macarons from "../assets/macarons.jpg"
+
 import * as React from 'react';
 
 const styles = StyleSheet.create({

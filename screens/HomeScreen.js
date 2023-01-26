@@ -16,6 +16,7 @@ export default function HomeScreen() {
 			.catch(error => alert(error.message))
 	}
 
+	// RestaurantProfile and UserProfile might not be needed on the stack in the future. they are there for testing
 	return (
 		<View style={styles.container}>
 			<TouchableOpacity 
@@ -26,6 +27,7 @@ export default function HomeScreen() {
 			</TouchableOpacity>
 
 			<Button title = "UserProfile" onPress={() => navigation.navigate('Your Profile')} />
+			<Button title = "RestaurantProfile" onPress={() => navigation.navigate('RestaurantProfile')} />
 		</View>
 	)
 }
