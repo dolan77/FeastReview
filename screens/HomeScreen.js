@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/core';
 
 export default function HomeScreen() {
 	const navigation = useNavigation()
+	const user = auth().currentUser
 
 	logoff = () => {
 		auth()
@@ -21,7 +22,7 @@ export default function HomeScreen() {
 				style={styles.button}
 				onPress={logoff}
 			>
-				<Text style={styles.buttonText}>Sign Out</Text>
+				<Text>{user.displayName}</Text>
 			</TouchableOpacity>
 		</View>
 	)
