@@ -4,7 +4,7 @@ import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 
 export const RegisterScreen = () => {
-
+	const [displayName, setDisplayName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [passwordAgain, setPasswordAgain] = useState('')
@@ -25,7 +25,7 @@ export const RegisterScreen = () => {
 			console.log('Passwords do not match')
 		}
 
-		else if (password === '' || passwordAgain === '' || email === '') {
+		else if (password === '' || passwordAgain === '' || email === '' || displayName === '') {
 			console.log('Not all details are entered!')
 		}
 
@@ -34,15 +34,18 @@ export const RegisterScreen = () => {
 			.createUserWithEmailAndPassword(email, password)
 			.then(userCreds => {
 				const user = userCreds.user
+				user.updateProfile({
+					displayName: displayName
+				})
 				console.log(user.email, 'has signed up')
 			})
 			.catch(error => {
 				if (error.code === 'auth/email-already-in-use') {
-				console.log('That email address is already in use!');
+					console.log('That email address is already in use!');
 				}
 
 				if (error.code === 'auth/invalid-email') {
-				console.log('That email address is invalid!');
+					console.log('That email address is invalid!');
 				}
 
 				console.error(error);
@@ -57,6 +60,12 @@ export const RegisterScreen = () => {
 			behavior="padding"
 		>
 			<View style={styles.inputContainer}>
+				<TextInput 
+					placeholder='Display name'
+					value={displayName}
+					onChangeText={text => setDisplayName(text)}
+					style={styles.input}
+				/>
 				<TextInput 
 					placeholder='Email'
 					value={email}
