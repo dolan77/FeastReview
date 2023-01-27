@@ -11,9 +11,12 @@ import ReviewsScreen from './screens/ReviewsScreen';
 import MessagesScreen from './screens/MessagesScreen';
 import FollowersScreen from './screens/FollowersScreen';
 import FollowingScreen from './screens/FollowingScreen';
+import RestaurantProfileScreen from './screens/RestaurantProfileScreen';
+
 import RegisterScreen from './screens/RegisterScreen';
 
 const Stack = createNativeStackNavigator()
+
 
 export default function App() {
 	return (
@@ -27,6 +30,7 @@ export default function App() {
 				<Stack.Screen name="Messages" component={MessagesScreen} />
 				<Stack.Screen name="Followers" component={FollowersScreen} />
 				<Stack.Screen name="Following" component={FollowingScreen} />
+				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

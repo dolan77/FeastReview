@@ -1,10 +1,9 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, useState, Modal} from 'react-native'
 import auth, { firebase } from '@react-native-firebase/auth';
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/core';
 import image from "../assets/feast_blue.png"
-import macarons from "../assets/macarons.jpg"
+
 import * as React from 'react';
 
 const styles = StyleSheet.create({
@@ -130,20 +129,27 @@ export default function UserProfileScreen(){
     
     const navigation = useNavigation();
 
-    function changeBio(newValue) {setName(newValue)}
+    function changeBio(newValue) {
+        // push changes to database
+        
+        setName(newValue)}
     
     seeReview = () => {navigation.navigate('Reviews')} 
 
+    
     // modals refresh the screen, stacks do not. if you leave a stack and re-enter it refreshres but adding to the stack will not
     return(
     <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
+
+        {/* container for the UserProfile */}
         <View style= {{flex: 1}}>
+
             <View style = {styles.flexbio}>
                 <Image style = {[styles.tinyLogo, styles.topContent]} source ={image}/>
 
                 
                 
-                
+                {/* POPUP menu for when the user wants to edit the video */}
                 <Modal
                 animationType="slide"
                 transparent={true}
@@ -164,12 +170,12 @@ export default function UserProfileScreen(){
                     title="go back"
                     onPress={() => setModalVisible(!modalVisible)}
                     />
-                    
                     <Text>{"\n"}60 characters max</Text>
                     <Text>Press Enter before you click the go back button if you want to submit your changes to bio</Text>
                 </View>
                 </Modal>
                 
+                {/* Text that is the BIO for the User Profile */}
                 <Text style = {[styles.bioWrap]}>{name}
                 
                     <Text style = {styles.editButton} onPress={() => setModalVisible(true)}>{"\n\n"}Edit Bio</Text>
@@ -179,6 +185,7 @@ export default function UserProfileScreen(){
 
             </View>
 
+            {/* View that contains the name and the Expertise the User is */}
             <View style = {styles.bioSubscript}>
             <Text style = {styles.bioSubscriptContent}>{user.email}</Text>
             <Text style = {styles.bioSubscriptContent}>Dessert Expert</Text>
@@ -187,9 +194,8 @@ export default function UserProfileScreen(){
 
 
 
-        
+        {/* View that will contain the buttons for the User to click on */}
         <View style = {styles.flexbutton}>
-
         <View style={styles.horizontalLine} />
 
         <TouchableOpacity
@@ -216,5 +222,3 @@ export default function UserProfileScreen(){
     </View>
     );
 }
-
-// at some point, you don't see state anymore. you can call user.bio to change their bio. then when the modal goes back it will refresh the bio in user profile
