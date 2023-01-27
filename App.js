@@ -12,10 +12,11 @@ import MessagesScreen from './screens/MessagesScreen';
 import FollowersScreen from './screens/FollowersScreen';
 import FollowingScreen from './screens/FollowingScreen';
 import RestaurantProfileScreen from './screens/RestaurantProfileScreen';
+import NavBar from './screens/NavBar';
 
 import RegisterScreen from './screens/RegisterScreen';
 
-// const Stack = createNativeStackNavigator()
+const Stack = createNativeStackNavigator()
 
 
 export default function App() {
