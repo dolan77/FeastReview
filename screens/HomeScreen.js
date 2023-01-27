@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
+import {Button} from 'react-native'
 
 export default function HomeScreen() {
 	const navigation = useNavigation()
@@ -24,6 +25,8 @@ export default function HomeScreen() {
 			>
 				<Text>{user.displayName}</Text>
 			</TouchableOpacity>
+
+			<Button title = "UserProfile" onPress={() => navigation.navigate('Your Profile')} />
 		</View>
 	)
 }
