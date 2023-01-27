@@ -13,6 +13,7 @@ import FollowersScreen from './screens/FollowersScreen';
 import FollowingScreen from './screens/FollowingScreen';
 
 
+
 const Stack = createNativeStackNavigator()
 
 export default function App() {
@@ -20,13 +21,15 @@ export default function App() {
 		<NavigationContainer>
 			<Stack.Navigator>
 				<Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
+
+        <Stack.Screen options={{ headerShown: false }} name="Register" component={RegisterScreen} />
 				<Stack.Screen name="Home" component={HomeScreen} />
 				<Stack.Screen name="Your Profile" component={UserProfileScreen} />
 				<Stack.Screen name="Reviews" component={ReviewsScreen} />
 				<Stack.Screen name="Messages" component={MessagesScreen} />
 				<Stack.Screen name="Followers" component={FollowersScreen} />
 				<Stack.Screen name="Following" component={FollowingScreen} />
-				
+
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
