@@ -129,10 +129,14 @@ export default function UserProfileScreen(){
     
     const navigation = useNavigation();
 
-    function changeBio(newValue) {setName(newValue)}
+    function changeBio(newValue) {
+        // push changes to database
+        
+        setName(newValue)}
     
     seeReview = () => {navigation.navigate('Reviews')} 
 
+    
     // modals refresh the screen, stacks do not. if you leave a stack and re-enter it refreshres but adding to the stack will not
     return(
     <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
