@@ -3,7 +3,7 @@ import { Button, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpa
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 
-export const RegisterScreen = () => {
+export default function RegisterScreen() {
 	const [displayName, setDisplayName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
