@@ -6,6 +6,10 @@ import { useNavigation } from '@react-navigation/core';
 export default function HomeScreen() {
 	const navigation = useNavigation()
 
+	React.useLayoutEffect(() => {
+		navigation.setOptions({headerShown: false});
+	  }, [navigation]);
+
 	logoff = () => {
 		auth()
 			.signOut()

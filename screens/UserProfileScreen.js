@@ -118,6 +118,10 @@ const styles = StyleSheet.create({
 // background color: #3d4051 change for View, bioSubscript, flexbio, flexbutton
 export default function UserProfileScreen(){
     const user = auth().currentUser;
+
+    React.useLayoutEffect(() => {
+		navigation.setOptions({headerShown: false});
+	  }, [navigation]);
     
 
     const [modalVisible, setModalVisible] = React.useState(false);
