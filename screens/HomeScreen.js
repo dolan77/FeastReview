@@ -6,6 +6,7 @@ import {Button} from 'react-native'
 
 export default function HomeScreen() {
 	const navigation = useNavigation()
+	const user = auth().currentUser
 
 	logoff = () => {
 		auth()
@@ -23,7 +24,7 @@ export default function HomeScreen() {
 				style={styles.button}
 				onPress={logoff}
 			>
-				<Text style={styles.buttonText}>Sign Out</Text>
+				<Text>{user.displayName}</Text>
 			</TouchableOpacity>
 
 			<Button title = "UserProfile" onPress={() => navigation.navigate('Your Profile')} />
