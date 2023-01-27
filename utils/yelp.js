@@ -3,6 +3,28 @@ const apiKey = require('../../yelp_key.json').key;
 
 module.exports = {searchBusinesses, autocomplete, businessDetail};
 
+
+/**
+ * a utility class to use functions that simplify the usage of the yelp fusion api using a third party package
+ * examples are included below, you can run 'node ./utils/yelp.js' to try
+ * functions are below the examples
+ */
+
+// example of searching for a business returning all results
+searchBusinesses('mcdonalds', 'westminster, CA').then(searchResults => {
+    console.log(searchResults);
+})
+
+// example of getting you all details from mcdonalds
+searchBusinesses('mcdonalds', 'westminster, CA').then(searchResults => {
+    businessDetail(searchResults[0]).then(details => console.log(details));
+})
+
+// example of getting you hours from the nearest chipotle
+searchBusinesses('chipotle', 'westminster, CA').then(searchResults => {
+    businessDetail(searchResults[0]).then(details => console.log(details.hours[0].open));
+})
+
 /**
  * gives all the information of the businesses related to search term
  * @param {*} searchTerm text for search
@@ -47,7 +69,3 @@ async function businessDetail(business){
     return client.business(business.alias).then(response => response.jsonBody);
 }
 
-// example of getting you more details from a business
-searchBusinesses('mcdon', 'westminster, CA').then(searchResults => {
-    businessDetail(searchResults[0]).then(details => console.log(details));
-})
