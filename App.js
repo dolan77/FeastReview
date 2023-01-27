@@ -30,6 +30,7 @@ export default function App() {
 				<Stack.Screen name="Messages" component={MessagesScreen} />
 				<Stack.Screen name="Followers" component={FollowersScreen} />
 				<Stack.Screen name="Following" component={FollowingScreen} />
+				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
