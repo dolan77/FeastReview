@@ -15,7 +15,7 @@ import RestaurantProfileScreen from './screens/RestaurantProfileScreen';
 
 import RegisterScreen from './screens/RegisterScreen';
 
-const Stack = createNativeStackNavigator()
+// const Stack = createNativeStackNavigator()
 
 
 export default function App() {

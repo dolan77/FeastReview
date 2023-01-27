@@ -8,6 +8,10 @@ export default function HomeScreen() {
 	const navigation = useNavigation()
 	const user = auth().currentUser
 
+	React.useLayoutEffect(() => {
+		navigation.setOptions({headerShown: false});
+	  }, [navigation]);
+
 	logoff = () => {
 		auth()
 			.signOut()
