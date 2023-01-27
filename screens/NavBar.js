@@ -1,14 +1,15 @@
 import * as React from 'react';
-// import { View, Text } from 'react-native';
+
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons'
+// import { Ionicons } from '@expo/vector-icons';
 
 // Screens
-import HomeScreen from './screens/HomeScreen'
+import HomeScreen from './HomeScreen'
 // import SearchScreen from './screens/SearchScreen'
-import ProfileScreen from './screens/UserProfileScreen'
+import ProfileScreen from './UserProfileScreen'
 
 
 // Screen names
@@ -25,7 +26,7 @@ export default function NavBar() {
                 initialRouteName={homeName}
                 screenOptions={({route}) => ({
                     tabBarIcon: ({focused, color, size}) => {
-                        let iconname;
+                        let iconName;
                         let rn = route.name;
 
                         if (rn === homeName) {
