@@ -1,12 +1,7 @@
 const yelpApi = require('yelp-fusion');
 const apiKey = require('../../yelp_key.json').key;
 
-// will use user location later
-const locationData = 'westminster, ca';
-
-const termData = 'McDonalds';
-
-module.exports = {searchBusinesses, autocomplete};
+module.exports = {searchBusinesses, autocomplete, businessDetail};
 
 /**
  * gives all the information of the businesses related to search term
@@ -22,7 +17,7 @@ async function searchBusinesses(searchTerm, locationData){
         location: locationData
     };
     
-    return client.search(searchContent).then((response) => response.jsonBody);
+    return client.search(searchContent).then((response) => response.jsonBody.businesses);
 }
 
 /**
@@ -42,3 +37,17 @@ async function autocomplete(searchTerm){
             .catch(e => console.error(e));
 }
 
+/**
+ * takes result from business search and gets you more details
+ * @param {*} business object from business search
+ * @returns more details from a specific business
+ */
+async function businessDetail(business){
+    const client = yelpApi.client(apiKey);
+    return client.business(business.alias).then(response => response.jsonBody);
+}
+
+// example of getting you more details from a business
+searchBusinesses('mcdon', 'westminster, CA').then(searchResults => {
+    businessDetail(searchResults[0]).then(details => console.log(details));
+})
