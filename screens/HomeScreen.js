@@ -19,6 +19,7 @@ export default function HomeScreen() {
 
 	// RestaurantProfile and UserProfile might not be needed on the stack in the future. they are there for testing
 	return (
+		
 		<View style={styles.container}>
 			<TouchableOpacity 
 				style={styles.button}
