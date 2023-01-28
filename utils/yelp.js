@@ -1,29 +1,30 @@
 const yelpApi = require('yelp-fusion');
-const apiKey = require('../../yelp_key.json').key;
+const apiKey = require('../../api_keys.json').yelp;
+const fb = require('./firebase.js');
 
 module.exports = {searchBusinesses, autocomplete, businessDetail};
 
-
 /**
  * a utility class to use functions that simplify the usage of the yelp fusion api using a third party package
- * examples are included below, you can run 'node ./utils/yelp.js' to try
- * functions are below the examples
+ * examples are included below, you can
  */
 
 // example of searching for a business returning all results
-searchBusinesses('mcdonalds', 'westminster, CA').then(searchResults => {
-    console.log(searchResults);
-})
+//searchBusinesses('mcdonalds', 'westminster, CA').then(searchResults => {
+//    console.log(searchResults);
+//})
 
 // example of getting you all details from mcdonalds
-searchBusinesses('mcdonalds', 'westminster, CA').then(searchResults => {
-    businessDetail(searchResults[0]).then(details => console.log(details));
-})
+//searchBusinesses('mcdonalds', 'westminster, CA').then(searchResults => {
+//    businessDetail(searchResults[0]).then(details => console.log(details));
+//})
 
 // example of getting you hours from the nearest chipotle
-searchBusinesses('chipotle', 'westminster, CA').then(searchResults => {
-    businessDetail(searchResults[0]).then(details => console.log(details.hours[0].open));
-})
+//searchBusinesses('chipotle', 'westminster, CA').then(searchResults => {
+//    businessDetail(searchResults[0]).then(details => console.log(details.hours[0].open));
+//})
+
+const client = yelpApi.client(apiKey);
 
 /**
  * gives all the information of the businesses related to search term
@@ -32,8 +33,6 @@ searchBusinesses('chipotle', 'westminster, CA').then(searchResults => {
  * @returns 
  */
 async function searchBusinesses(searchTerm, locationData){
-    const client = yelpApi.client(apiKey);
-
     const searchContent = {
         term: searchTerm,
         location: locationData
@@ -48,7 +47,6 @@ async function searchBusinesses(searchTerm, locationData){
  * @returns list of autocomplete terms
  */
 async function autocomplete(searchTerm){
-    const client = yelpApi.client(apiKey);
     return client.autocomplete({text: searchTerm})
             .then(response => {
                 let results = [];
@@ -65,7 +63,6 @@ async function autocomplete(searchTerm){
  * @returns more details from a specific business
  */
 async function businessDetail(business){
-    const client = yelpApi.client(apiKey);
     return client.business(business.alias).then(response => response.jsonBody);
 }
 
