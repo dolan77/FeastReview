@@ -3,49 +3,13 @@ import auth, { firebase } from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import React, {useState} from 'react';
 import macaron from '../assets/macarons.jpg'
-const style = StyleSheet.create({
-    container:{
-        flex: 1
-    },
-    header:{
-        flex: 1
-    },
-    restaurantInfo:{
-        flex: 2
-    },
-    restaurantDetail:{
-        flex: 2
-    },
 
-    headerCover: {
-		backgroundColor: '#17202ac0',
-		width: '100%',
-		padding: 15,
-		justifyContent: 'center',
-        color: 'white',
-        flex: 1,
-        height: 150,
-	},
-    text:{
-        color: 'white',
-        fontSize: 20
-    },
+import openMap from 'react-native-open-maps';
+import { PureNativeButton } from 'react-native-gesture-handler/lib/typescript/components/GestureButtons';
 
-   scheduleText:{
-    paddingLeft: 15,
-    
-   },
-   scheduleContainer:{
-    // flexDirection: 'row'
-
-    
-    flexDirection: 'row'
-   },
-
-   scheduleInner:{
-    color: "red"
-   }
-})
+const { initializeApp, cert } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
+const dbKey = require('../db_key.json');
 
 
 // TODO:
@@ -70,6 +34,7 @@ export default function RestaurantProfileScreen(){
         {weekday: "sun", open: "9:00 AM", closed: "9:00 PM"},
     ];
     console.log(testData.length)
+    const nagivation = useNavigation();
 
     
     // I can do an if statement here. if the user is a feaster, return a view without edits to the restaurant profile
@@ -98,6 +63,31 @@ export default function RestaurantProfileScreen(){
         // change the url to a pull from the yelp API
         var url = 'https://www.google.com/'
         Linking.openURL(url)
+    }
+
+    /**
+     * method to navigate to the Reviews Tab
+     */
+    const navigateReview = () => {
+        // TODO: someone figure out how to get this from the DB
+        // I think since we are clicking to go open this restaurantscreen, it has to be passed in from somewhere
+        var restaurant = '000000'
+
+        // navigate to the reviews tab and send in the hash and the type of review we want to see
+        nagivation.navigate('Reviews', 
+        {
+            restaurantDetail: restaurant,
+            type: 'restaurant'
+        })
+    }
+
+    /**
+     * method to open the maps app on your phone
+     */
+    const navigateMaps = () => {
+        // use the YELP API here. ask for help later
+        // openMaps(latitude: (int), longitude: (int))
+        // YELP: business has a coordinates value that gives lat and long in the format openMaps wants
     }
 
     return(
@@ -143,10 +133,10 @@ export default function RestaurantProfileScreen(){
 
                     </View> 
 
-                </View> 
-                <View style={style.scheduleText}>
-                    <Text>Call, Website, Directions</Text>
+                </View>
 
+                
+                <View style={[style.scheduleText, style.IconContainer]}>
                     <TouchableOpacity
                     onPress={triggerCall}>
                         
@@ -157,6 +147,11 @@ export default function RestaurantProfileScreen(){
                     onPress={openSite}>
                     <Text style={{color: 'red'}}>Website Icon</Text>
                     </TouchableOpacity>
+
+                    <TouchableOpacity
+                    onPress={navigateMaps}>
+                        <Text style={{color: 'red'}}>Maps Icon</Text>
+                    </TouchableOpacity>
                     
 
                 </View>
@@ -165,8 +160,13 @@ export default function RestaurantProfileScreen(){
                     <Text>Details</Text>
                 </View>
 
-                <View>
-                    <Text>Reviews</Text>
+                <View style={style.buttonContainer}>
+                   <TouchableOpacity
+                   onPress={navigateReview}
+                   style={style.button}
+                >
+                    <Text style={style.buttonText}>See Reviews</Text>
+                   </TouchableOpacity>
                 </View>
 
             </ScrollView>
@@ -174,3 +174,81 @@ export default function RestaurantProfileScreen(){
     );
 
 }
+
+
+
+const style = StyleSheet.create({
+    container:{
+        flex: 1
+    },
+    header:{
+        flex: 1
+    },
+    restaurantInfo:{
+        flex: 2
+    },
+    restaurantDetail:{
+        flex: 2
+    },
+    IconContainer:{
+        flexDirection: 'row',
+        marginTop: 10,
+        justifyContent: 'center'
+    },
+
+    headerCover: {
+		backgroundColor: '#17202ac0',
+		width: '100%',
+		padding: 15,
+		justifyContent: 'center',
+        color: 'white',
+        flex: 1,
+        height: 150,
+	},
+    text:{
+        color: 'white',
+        fontSize: 20
+    },
+
+   scheduleText:{
+    paddingLeft: 15,
+    
+   },
+   scheduleContainer:{
+    flexDirection: 'row'
+   },
+
+   scheduleInner:{
+    color: "red"
+   },
+   buttonContainer: {
+    width: '60%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingLeft: 15
+    
+    },
+    button: {
+        backgroundColor: '#0782F9',
+        width: '100%',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center'
+    },
+    buttonOutline: {
+        backgroundColor: 'white',
+        marginTop: 5,
+        borderColor: '#0782F9',
+        borderWidth: 2
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: '700',
+        fontSize: 16
+    },
+    buttonOutlineText: {
+        color: '#0782F9',
+        fontWeight: '700',
+        fontSize: 16
+    }
+})

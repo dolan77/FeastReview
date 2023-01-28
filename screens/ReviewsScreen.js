@@ -7,7 +7,11 @@ import { useNavigation } from '@react-navigation/core';
 
 import * as React from 'react';
 
-export default function ReviewsScreen(){
+export default function ReviewsScreen({route, navigation}){
+    // dbID is the ID of a restaurant/Feaster. type = where we pull the info from
+    const {dbID, type} = route.params;
+
+
     return(
         <View>
             <View>

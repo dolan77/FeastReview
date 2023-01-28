@@ -1,5 +1,5 @@
 const yelpApi = require('yelp-fusion');
-const apiKey = require('../../yelp_key.json').key;
+const apiKey = require('../yelp_key.json').key;
 
 module.exports = {searchBusinesses, autocomplete, businessDetail};
 
