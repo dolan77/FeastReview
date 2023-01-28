@@ -1,16 +1,26 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import {Button} from 'react-native'
 
 export default function HomeScreen() {
+	const [user, setUser] = useState({});
+
 	const navigation = useNavigation()
-	const user = auth().currentUser
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({headerShown: false});
-	  }, [navigation]);
+	}, [navigation]);
+
+	useEffect(() => {
+		const subscriber = auth().onAuthStateChanged((user) => {
+			console.log("user", JSON.stringify(user));
+			setUser(user);
+		});
+
+		return subscriber;
+	}, []);
 
 	logoff = () => {
 		auth()
@@ -31,7 +41,6 @@ export default function HomeScreen() {
 			>
 				<Text>{user.displayName}</Text>
 			</TouchableOpacity>
-
 			<Button title = "UserProfile" onPress={() => navigation.navigate('Your Profile')} />
 			<Button title = "RestaurantProfile" onPress={() => navigation.navigate('RestaurantProfile')} />
 		</View>

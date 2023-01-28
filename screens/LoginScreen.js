@@ -1,22 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Button, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Button, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 
 export default function LoginScreen() {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [forgotPassword, setForgotPassword] = useState(false)
 
 	const navigation = useNavigation()
-
-	useEffect(() => {
-		const unsubscribe = auth().onAuthStateChanged(user => {
-			if (user) {
-				navigation.replace("Home")
-			}
-		});
-		return unsubscribe; // unsubscribe on unmount
-	}, []);
 
 	login = () => {
 		auth()
@@ -24,6 +16,7 @@ export default function LoginScreen() {
 			.then(userCreds => {
 				const user = userCreds.user
 				console.log(user.email, 'has logged in')
+				if (user) navigation.replace("Home");
 			})
 			.catch(error => {
 				if (error.code === 'auth/invalid-email') {
@@ -34,11 +27,26 @@ export default function LoginScreen() {
 			});
 	}
 
+	passwordReset = () => {
+		auth()
+			.sendPasswordResetEmail(email)
+			.then((link) => {
+				console.log('Email sent! to', email)
+			})
+			.catch((error) => {
+				console.log('Please enter email first')
+			})
+	}
+
 	return (
 		<KeyboardAvoidingView
 			style={styles.container}
 			behavior="padding"
 		>
+			<Image 
+				source={require('../assets/feast_blue.png')}  
+				style={styles.logo} 
+			/>
 			<View style={styles.inputContainer}>
 				<TextInput 
 					placeholder='Email'
@@ -53,6 +61,11 @@ export default function LoginScreen() {
 					style={styles.input}
 					secureTextEntry
 				/>
+				<TouchableOpacity
+					onPress={() => passwordReset()}
+				>
+					<Text style={styles.forgot}>Forgot Password</Text>
+				</TouchableOpacity>
 			</View>
 
 			<View style={styles.buttonContainer}>
@@ -66,7 +79,7 @@ export default function LoginScreen() {
 			<TouchableOpacity
 				onPress={() => navigation.navigate("Register")}
 			>
-				<Text>Don't have account? Click here to register</Text>
+				<Text style={{color: 'black'}}>Don't have account? Click here to register</Text>
 			</TouchableOpacity>
 		</KeyboardAvoidingView>
 	);
@@ -76,7 +89,8 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		backgroundColor: '#75d9fc'
 	},
 	inputContainer: {
 		width: '80%'
@@ -86,8 +100,12 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 15,
 		paddingVertical: 10,
 		borderRadius: 10,
-		marginStart: 5,
-		margin: 5,
+		marginBottom: 10
+	},
+	forgot: {
+		textAlign: 'right',
+		paddingHorizontal: 2,
+		color: 'black'
 	},
 	buttonContainer: {
 		width: '60%',
@@ -96,26 +114,22 @@ const styles = StyleSheet.create({
 		marginTop: 40
 	},
 	button: {
-		backgroundColor: '#0782F9',
+		backgroundColor: 'white',
 		width: '100%',
 		padding: 15,
 		borderRadius: 10,
 		alignItems: 'center'
 	},
-	buttonOutline: {
-		backgroundColor: 'white',
-		marginTop: 5,
-		borderColor: '#0782F9',
-		borderWidth: 2
-	},
 	buttonText: {
-		color: 'white',
+		color: 'black',
 		fontWeight: '700',
 		fontSize: 16
 	},
-	buttonOutlineText: {
-		color: '#0782F9',
-		fontWeight: '700',
-		fontSize: 16
+	logo: {
+		width: 175, 
+		height: 175, 
+		borderRadius: 175/ 2,
+		marginBottom: 75,
+		marginTop: -30
 	}
 })
