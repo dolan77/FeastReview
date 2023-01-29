@@ -144,10 +144,17 @@ export default function UserProfileScreen(){
     /**
      * nagivate to the ReviewsScreen
      */
-    seeReview = () => {navigation.navigate('Reviews')} 
+    function seeReview () {
+        nagivation.navigate('Reviews', 
+        {
+            details: user.uid,
+            type: 'user'
+        })
+    } 
 
     console.log(user.email, 'has signed up')
     console.log(name, 'state')
+    
     
     
     // modals refresh the screen, stacks do not. if you leave a stack and re-enter it refreshres but adding to the stack will not
@@ -225,10 +232,6 @@ export default function UserProfileScreen(){
             <Text style={styles.buttonText}>Following</Text>
         </TouchableOpacity>
 
-        <View style={styles.horizontalLine} />
-        <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Messages')}>
-            <Text style={styles.buttonText}>Messages</Text>
-        </TouchableOpacity>
         <View style={styles.horizontalLine} />
 
         </View>

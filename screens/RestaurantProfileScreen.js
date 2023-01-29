@@ -3,6 +3,7 @@ import auth, { firebase } from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import React, {useState} from 'react';
 import macaron from '../assets/macarons.jpg'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import openMap from 'react-native-open-maps';
 import { PureNativeButton } from 'react-native-gesture-handler/lib/typescript/components/GestureButtons';
@@ -17,6 +18,11 @@ const dbKey = require('../db_key.json');
 // maybe pass in the restaurant-id when you click on a restaurant to display this profile
 
 export default function RestaurantProfileScreen(){
+
+    
+
+
+
     // I can pull from the database here before I create the view
     var restaurantName = "Amy's Bakery"
     var reviewCount = 10
@@ -57,7 +63,7 @@ export default function RestaurantProfileScreen(){
     
     /**
      * function to open a url
-     * TODO
+     * 
      */
     const openSite = () => {
         // change the url to a pull from the yelp API
@@ -76,7 +82,7 @@ export default function RestaurantProfileScreen(){
         // navigate to the reviews tab and send in the hash and the type of review we want to see
         nagivation.navigate('Reviews', 
         {
-            restaurantDetail: restaurant,
+            details: restaurant,
             type: 'restaurant'
         })
     }
@@ -139,25 +145,21 @@ export default function RestaurantProfileScreen(){
                 <View style={[style.scheduleText, style.IconContainer]}>
                     <TouchableOpacity
                     onPress={triggerCall}>
+                        <Ionicons name='call'/>
                         
-                        <Text style={{color: 'red'}}>Phone Icon</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                     onPress={openSite}>
-                    <Text style={{color: 'red'}}>Website Icon</Text>
+                        <Ionicons name='globe'/>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                     onPress={navigateMaps}>
-                        <Text style={{color: 'red'}}>Maps Icon</Text>
+                        <Ionicons name='map'/>
                     </TouchableOpacity>
                     
 
-                </View>
-
-                <View>
-                    <Text>Details</Text>
                 </View>
 
                 <View style={style.buttonContainer}>
