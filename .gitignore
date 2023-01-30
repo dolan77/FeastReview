@@ -64,7 +64,6 @@ buck-out/
 /vendor/bundle/
 
 # Our files
-db_key.json
-yelp_key.json
+api_keys.json
 yarn.lock
 package-lock.json
