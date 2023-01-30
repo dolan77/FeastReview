@@ -1,65 +1,28 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, Modal, ScrollView, SafeAreaView, FlatList, Linking} from 'react-native'
-import auth, { firebase } from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import React, {useState} from 'react';
-import macaron from '../assets/macarons.jpg'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import openMap from 'react-native-open-maps';
-import { PureNativeButton } from 'react-native-gesture-handler/lib/typescript/components/GestureButtons';
+import openMap, { createMapLink, createOpenLink } from 'react-native-open-maps';
 import image from "../assets/maps-icon.png"
-
-const { initializeApp, cert } = require('firebase-admin/app');
-const { getFirestore } = require('firebase-admin/firestore');
-const dbKey = require('../db_key.json');
 
 
 // TODO:
 // Back-End: figure out how to know which restaurant profile to display
 // maybe pass in the restaurant-id when you click on a restaurant to display this profile
 
-export default function RestaurantProfileScreen(){
-
-    
-
-
-
-    // I can pull from the database here before I create the view
-    var restaurantName = "Amy's Bakery"
-    var reviewCount = 10
-
-    // test, this will be turned into an api call from YELP to hopefully edit easily
-    // TODO: change this to a call from the yelp API
-    const testData = [
-
-        {weekday: "mon", open: "9:00 AM", closed: "9:00 PM"},
-        {weekday: "tues", open: "9:00 AM", closed: "9:00 PM"},
-        {weekday: "wed", open: "9:00 AM", closed: "9:00 PM"},
-        {weekday: "thurs", open: "9:00 AM", closed: "9:00 PM"},
-        {weekday: "fri", open: "9:00 AM", closed: "9:00 PM"},
-        {weekday: "sat", open: "9:00 AM", closed: "9:00 PM"},
-        {weekday: "sun", open: "9:00 AM", closed: "9:00 PM"},
-    ];
-    console.log(testData.length)
+export default function RestaurantProfileScreen({route}){
     const nagivation = useNavigation();
-
-    
-    // I can do an if statement here. if the user is a feaster, return a view without edits to the restaurant profile
-    // if the user is an owner, return a view with edits to the profile
-
-    // TODO:
-    //  talk about importing a font package into node_modules. utilizes font-awesome or other stuff: https://reactnativeelements.com/docs/1.2.0/icon
-    //  talk about importing a date-time picker for owners to edit hours: https://github.com/henninghall/react-native-date-picker
+    const dayOfTheWeek = ["mon", "tues", "wed", "thurs", "fri", "sat", "sun"]
+    const restaurantData = route.params;
+    // console.log(restaurantData)
+    // console.log(restaurantData.data.hours[0].open[0])
     
     /**
      * function to call a phone number
-     * TODO
      */
     const triggerCall = () => {
-        // this will be changed to a phone number we pull from the yelp API
-        var number = '1'
-        // call(args).catch(console.error);
-        Linking.openURL(`tel:${number}`)
+        Linking.openURL(`tel:${restaurantData.data.phone}`)
     };
     
     /**
@@ -67,9 +30,7 @@ export default function RestaurantProfileScreen(){
      * 
      */
     const openSite = () => {
-        // change the url to a pull from the yelp API
-        var url = 'https://www.google.com/'
-        Linking.openURL(url)
+        Linking.openURL(restaurantData.data.url)
     }
 
     /**
@@ -88,13 +49,14 @@ export default function RestaurantProfileScreen(){
         })
     }
 
-    /**
-     * method to open the maps app on your phone
-     */
-    const navigateMaps = () => {
-        // use the YELP API here. ask for help later
-        // openMaps(latitude: (int), longitude: (int))
-        // YELP: business has a coordinates value that gives lat and long in the format openMaps wants
+    // printing the rating for the restaurant as star icons
+    var stars = [];
+    for(let i = 0; i < parseInt(restaurantData.data.rating); i++){
+        stars.push(<View key={i}><Ionicons name="star" color="white" size={20}/></View>);
+        
+    }
+    if (restaurantData.data.rating % 1 == 0.5){
+        stars.push(<View key={i}><Ionicons name="star-half" color="white" size={20}/></View>);
     }
 
     return(
@@ -103,35 +65,43 @@ export default function RestaurantProfileScreen(){
                 <View>
                     
                     <ImageBackground
-                    source = {macaron}
+                    source = {{uri: restaurantData.data.photos[0]}}
                     resizeMode='cover'>
 
                         
                         <View style={[style.headerCover]}>
                             <Text style={style.text}>
-                                {restaurantName}
-                                <Text>{"\n"}***** {reviewCount} reviews</Text>
+                                {restaurantData.data.name}
                             </Text>
+                            <View style={{flexDirection: 'row'}}>
+                                {stars}
+                                <Text style={[style.text]}>{"\t\t"}{restaurantData.data.review_count} reviews</Text>
+                                
+                            </View>
+                            
                         </View>
                     </ImageBackground>
+                    <View style={style.horizontalLine}></View>
                 </View>
 
-                <Text style={[style.scheduleText, {paddingLeft: 30, paddingTop: 15}]}>Hours</Text>
+                <Text style={[style.scheduleText, {paddingLeft: 20, paddingTop: 15, fontSize: 20, fontWeight: 'bold'}]}>Hours</Text>
                 
-                <View style={[style.scheduleContainer, {justifyContent: 'space-evenly'}]}>
+                
+                <View style={[style.scheduleContainer, {justifyContent: 'space-evenly', marginTop:5},]}>
                         
                     <View style={style.scheduleContainer}>
 
+                    
                         <View>
-                            {testData.map(hoursData => (
-                                <Text key={hoursData.weekday} style={style.scheduleText}>{hoursData.weekday}:</Text>
+                            {restaurantData.data.hours[0].open.map(hoursData => (
+                                <Text key={hoursData.day} style={style.scheduleText}>{dayOfTheWeek[hoursData.day]}:</Text>
                             ))}
                         </View>
 
                        
                         <View>
-                            {testData.map(hoursData => (
-                                <Text key={hoursData.weekday} style={style.scheduleText}>{"\t"}{hoursData.open} - {hoursData.closed}</Text>
+                            {restaurantData.data.hours[0].open.map(hoursData => (
+                                <Text key={hoursData.day} style={style.scheduleText}>{"\t"}{hoursData.start} - {hoursData.end}</Text>
                             ))}
                         </View>
 
@@ -139,12 +109,10 @@ export default function RestaurantProfileScreen(){
 
                     <View>
 
-                    <TouchableOpacity onPress={navigateMaps}>
+                    <TouchableOpacity onPress={createOpenLink({ latitude: restaurantData.data.coordinates.latitude, longitude: restaurantData.data.coordinates.longitude})}>
                        <Image style={style.tinylogo} source={image} />
                     </TouchableOpacity>
-
                     <Text style={[{textAlign: 'center'}, style.scheduleText]}>Get Directions</Text>
-                    <Text style={[{textAlign: 'center'}, style.scheduleText]}>Do OnPress Later</Text>
 
                     </View> 
 
@@ -153,14 +121,14 @@ export default function RestaurantProfileScreen(){
                 
                 <View style={[style.IconContainer]}>
                     <TouchableOpacity
-                    onPress={triggerCall}>
-                        <Ionicons name='call-outline' size={30} color='#ffffff'/>
+                    onPress={triggerCall} style={[{backgroundColor: 'white', borderRadius: 20, marginRight: 5}]}>
+                        <Ionicons style= {{padding: 5}} name='call-outline' size={30} color='black'/>
                         
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                    onPress={openSite}>
-                        <Ionicons name='globe-outline' size={30} color='#ffffff'/>
+                    onPress={openSite} style={[{backgroundColor: 'white', borderRadius: 20}]}>
+                        <Ionicons style= {{padding: 5}} name='globe-outline' size={30} color='black'/>
                     </TouchableOpacity>
 
 
@@ -185,16 +153,20 @@ export default function RestaurantProfileScreen(){
 }
 
 
-
+// CSS for the View that is being returned
 const style = StyleSheet.create({
     tinylogo:{
         height: 130,
         width: 130,
         borderRadius: 130
     },
+    horizontalLine:{
+        height: 2, 
+        backgroundColor: '#ffffff'
+    },
     container:{
         flex: 1,
-        backgroundColor: '#17202ac0',
+        backgroundColor: '#3d4051',
     },
     header:{
         flex: 1
@@ -240,7 +212,8 @@ const style = StyleSheet.create({
 
     buttonContainer: {
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginTop: 10
     },
 
     button: {
