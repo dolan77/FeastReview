@@ -49,6 +49,11 @@ export default function RestaurantProfileScreen({route}){
         })
     }
 
+    const addReview = () => {
+        // CODE FOR SOMEONE ELSE TO DO
+    }
+
+
     // printing the rating for the restaurant as star icons
     var stars = [];
     for(let i = 0; i < parseInt(restaurantData.data.rating); i++){
@@ -65,7 +70,7 @@ export default function RestaurantProfileScreen({route}){
                 <View>
                     
                     <ImageBackground
-                    source = {{uri: restaurantData.data.photos[0]}}
+                    source = {{uri: restaurantData.data.image_url}}
                     resizeMode='cover'>
 
                         
@@ -143,7 +148,13 @@ export default function RestaurantProfileScreen({route}){
                 >
                     <Text style={style.buttonText}>See Reviews</Text>
                    </TouchableOpacity>
-                   
+
+                   <TouchableOpacity
+                   onPress={addReview}
+                   style={style.button}
+                >
+                    <Text style={style.buttonText}>Add Review</Text>
+                   </TouchableOpacity>
                 </View>
 
             </ScrollView>
