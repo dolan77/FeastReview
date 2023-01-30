@@ -7,6 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import openMap from 'react-native-open-maps';
 import { PureNativeButton } from 'react-native-gesture-handler/lib/typescript/components/GestureButtons';
+import image from "../assets/maps-icon.png"
 
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
@@ -115,15 +116,12 @@ export default function RestaurantProfileScreen(){
                     </ImageBackground>
                 </View>
 
+                <Text style={[style.scheduleText, {paddingLeft: 30, paddingTop: 15}]}>Hours</Text>
                 
-                <View>
-                    <Text style={style.scheduleText}>Hours</Text>
-
-                    
+                <View style={[style.scheduleContainer, {justifyContent: 'space-evenly'}]}>
+                        
                     <View style={style.scheduleContainer}>
 
-
-                       
                         <View>
                             {testData.map(hoursData => (
                                 <Text key={hoursData.weekday} style={style.scheduleText}>{hoursData.weekday}:</Text>
@@ -133,31 +131,39 @@ export default function RestaurantProfileScreen(){
                        
                         <View>
                             {testData.map(hoursData => (
-                                <Text key={hoursData.weekday} style={style.scheduleText}>{hoursData.open} - {hoursData.closed}</Text>
+                                <Text key={hoursData.weekday} style={style.scheduleText}>{"\t"}{hoursData.open} - {hoursData.closed}</Text>
                             ))}
                         </View>
+
+                    </View>
+
+                    <View>
+
+                    <TouchableOpacity onPress={navigateMaps}>
+                       <Image style={style.tinylogo} source={image} />
+                    </TouchableOpacity>
+
+                    <Text style={[{textAlign: 'center'}, style.scheduleText]}>Get Directions</Text>
+                    <Text style={[{textAlign: 'center'}, style.scheduleText]}>Do OnPress Later</Text>
 
                     </View> 
 
                 </View>
 
                 
-                <View style={[style.scheduleText, style.IconContainer]}>
+                <View style={[style.IconContainer]}>
                     <TouchableOpacity
                     onPress={triggerCall}>
-                        <Ionicons name='call'/>
+                        <Ionicons name='call-outline' size={30} color='#ffffff'/>
                         
                     </TouchableOpacity>
 
                     <TouchableOpacity
                     onPress={openSite}>
-                        <Ionicons name='globe'/>
+                        <Ionicons name='globe-outline' size={30} color='#ffffff'/>
                     </TouchableOpacity>
 
-                    <TouchableOpacity
-                    onPress={navigateMaps}>
-                        <Ionicons name='map'/>
-                    </TouchableOpacity>
+
                     
 
                 </View>
@@ -169,6 +175,7 @@ export default function RestaurantProfileScreen(){
                 >
                     <Text style={style.buttonText}>See Reviews</Text>
                    </TouchableOpacity>
+                   
                 </View>
 
             </ScrollView>
@@ -180,8 +187,14 @@ export default function RestaurantProfileScreen(){
 
 
 const style = StyleSheet.create({
+    tinylogo:{
+        height: 130,
+        width: 130,
+        borderRadius: 130
+    },
     container:{
-        flex: 1
+        flex: 1,
+        backgroundColor: '#17202ac0',
     },
     header:{
         flex: 1
@@ -212,30 +225,31 @@ const style = StyleSheet.create({
         fontSize: 20
     },
 
-   scheduleText:{
-    paddingLeft: 15,
-    
-   },
-   scheduleContainer:{
-    flexDirection: 'row'
-   },
-
-   scheduleInner:{
-    color: "red"
-   },
-   buttonContainer: {
-    width: '60%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingLeft: 15
-    
+    scheduleText:{
+        color: 'white',
+        fontSize: 17
+        
     },
+    scheduleContainer:{
+        flexDirection: 'row',
+    },
+
+    scheduleInner:{
+        color: "red"
+    },
+
+    buttonContainer: {
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+
     button: {
         backgroundColor: '#0782F9',
-        width: '100%',
+        width: '60%',
         padding: 15,
         borderRadius: 10,
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     buttonOutline: {
         backgroundColor: 'white',

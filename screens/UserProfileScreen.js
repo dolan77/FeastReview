@@ -26,11 +26,12 @@ const styles = StyleSheet.create({
     },
 
     tinyLogo: {
-        width: 150,
-        height: 150,
+        width: 100,
+        height: 120,
+        borderRadius: 150,
         flex: 1,
         marginLeft: 5,
-        borderRadius: 150/2,
+        
         overflow: 'hidden',
         borderWidth: 2,
         borderColor: 'white'
@@ -48,8 +49,6 @@ const styles = StyleSheet.create({
         marginRight: 15,
         justifyContent: 'center',
         alignItems: 'baseline',
-        borderColor: 'white',
-        borderWidth: 2,
         paddingLeft: 10,
         paddingTop: 5,
         borderRadius: 10,
