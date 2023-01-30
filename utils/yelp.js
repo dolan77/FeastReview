@@ -1,71 +1,61 @@
-const yelpApi = require('yelp-fusion');
-const apiKey = require('../yelp_key.json').key;
+import axios from 'axios';
+
+
+/**
+ * Simple helper function to help format API key in BEARER header format
+ * @param {*} apiKey 
+ * @returns formated for axios GET call
+ */
+function auth(apiKey){
+    return {
+        headers: {
+            Authorization: 'Bearer ' + apiKey,
+        }
+    };
+}
+
+/**
+ * use YELP api to search for businesses using user text
+ * @param {*} searchTerm text user is using to search
+ * @param {*} locationData location object with lat (latitude) and long (longitude) key-values
+ * @param {*} apiKey the api key of yelp
+ * @returns an array of businesses (default 20 i think)
+ */
+async function searchBusinesses(searchTerm, locationData, apiKey) {
+    var apiString = 'https://api.yelp.com/v3/businesses/search?'+
+        `term=${searchTerm}`+
+        `&latitude=${locationData.lat}` +
+        `&longitude=${locationData.long}`
+    return axios.get(apiString, auth(apiKey)).then(response => response.data.businesses);
+}
+
+
+/**
+ * use YELP api to autcomplete user text
+ * @param {*} searchTerm text user is using to search
+ * @param {*} locationData location object with lat (latitude) and long (longitude) key-values
+ * @param {*} apiKey the api key of yelp
+ * @returns a list of terms to autocomplete what user is typing
+ */
+async function autocomplete(searchTerm, locationData, apiKey) {
+    var apiString = 'https://api.yelp.com/v3/autocomplete?'+
+        `text=${searchTerm}`+
+        `&latitude=${locationData.lat}` +
+        `&longitude=${locationData.long}`
+    return axios.get(apiString, auth(apiKey)).then(response => response.data);
+}
+
+/**
+ * use YELP api to get full details of a specific business by alias
+ * @param {*} businessAlias the unique readable alias that identifies the restaurant
+ * @param {*} apiKey the api key of yelp
+ * @returns an object with full information on a restaurant business
+ */
+async function businessDetail(businessAlias, apiKey){
+    var apiString = `https://api.yelp.com/v3/businesses/${businessAlias}`
+    return axios.get(apiString, auth(apiKey)).then(response => response.data);
+}
 
 module.exports = {searchBusinesses, autocomplete, businessDetail};
 
-
-/**
- * a utility class to use functions that simplify the usage of the yelp fusion api using a third party package
- * examples are included below, you can run 'node ./utils/yelp.js' to try
- * functions are below the examples
- */
-
-// example of searching for a business returning all results
-searchBusinesses('mcdonalds', 'westminster, CA').then(searchResults => {
-    console.log(searchResults);
-})
-
-// example of getting you all details from mcdonalds
-searchBusinesses('mcdonalds', 'westminster, CA').then(searchResults => {
-    businessDetail(searchResults[0]).then(details => console.log(details));
-})
-
-// example of getting you hours from the nearest chipotle
-searchBusinesses('chipotle', 'westminster, CA').then(searchResults => {
-    businessDetail(searchResults[0]).then(details => console.log(details.hours[0].open));
-})
-
-/**
- * gives all the information of the businesses related to search term
- * @param {*} searchTerm text for search
- * @param {*} locationData accepts location in format "city, state code"
- * @returns 
- */
-async function searchBusinesses(searchTerm, locationData){
-    const client = yelpApi.client(apiKey);
-
-    const searchContent = {
-        term: searchTerm,
-        location: locationData
-    };
-    
-    return client.search(searchContent).then((response) => response.jsonBody.businesses);
-}
-
-/**
- * intended to autocomplete text in search bar
- * @param {*} searchTerm the text currently in search
- * @returns list of autocomplete terms
- */
-async function autocomplete(searchTerm){
-    const client = yelpApi.client(apiKey);
-    return client.autocomplete({text: searchTerm})
-            .then(response => {
-                let results = [];
-                response.jsonBody.terms.forEach(element => {
-                    results.push(element.text);
-                });
-                return results})
-            .catch(e => console.error(e));
-}
-
-/**
- * takes result from business search and gets you more details
- * @param {*} business object from business search
- * @returns more details from a specific business
- */
-async function businessDetail(business){
-    const client = yelpApi.client(apiKey);
-    return client.business(business.alias).then(response => response.jsonBody);
-}
 
