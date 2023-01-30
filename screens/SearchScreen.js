@@ -19,6 +19,7 @@ export default function SearchScreen() {
 
     dbGet('api_keys','key').then(keys => {
         searchBusinesses("mcdonalds", {lat:33.755131, long:-117.981018}, keys.yelp).then(result => console.log(result));
+        autocomplete("mcdon", {lat:33.755131, long:-117.981018}, keys.yelp).then(result => console.log(result));
     });
     
 

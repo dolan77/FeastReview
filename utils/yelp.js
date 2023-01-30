@@ -9,19 +9,24 @@ function auth(apiKey){
 }
 
 async function searchBusinesses(searchTerm, locationData, apiKey) {
-    var apiString = 'https://api.yelp.com/v3/businesses/' +
-        `search?term=${searchTerm}`+
+    var apiString = 'https://api.yelp.com/v3/businesses/search?'+
+        `term=${searchTerm}`+
         `&latitude=${locationData.lat}` +
         `&longitude=${locationData.long}`
-    return axios.get(apiString, auth(apiKey)).then(result => JSON.parse(result));
+    return axios.get(apiString, auth(apiKey)).then(response => response.data);
 }
 
 async function autocomplete(searchTerm, locationData, apiKey) {
-    return '';
+    var apiString = 'https://api.yelp.com/v3/autocomplete?'+
+        `text=${searchTerm}`+
+        `&latitude=${locationData.lat}` +
+        `&longitude=${locationData.long}`
+    return axios.get(apiString, auth(apiKey)).then(response => response.data);
 }
 
-async function businessDetail(businessId, apiKey){
-    return '';
+async function businessDetail(businessAlias, apiKey){
+    var apiString = `https://api.yelp.com/v3/businesses/${businessAlias}`
+    return axios.get(apiString, auth(apiKey)).then(response => response.data);
 }
 
 module.exports = {searchBusinesses, autocomplete, businessDetail};
