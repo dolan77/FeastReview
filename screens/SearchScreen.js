@@ -1,8 +1,8 @@
 import { StyleSheet, Text, TouchableOpacity, View, TextInput} from 'react-native'
 import * as React from 'react'
 import { useNavigation } from '@react-navigation/core';
-import yelp from '../utils/yelp.js';
-//import firebase from '../utils/firebase.js';
+//import yelp from '../utils/yelp.js';
+import {dbGet, dbSet} from '../utils/firebase.js';
 
 export default function SearchScreen() {
     const navigation = useNavigation();
@@ -15,6 +15,7 @@ export default function SearchScreen() {
     //searchBusinesses(searchText, 'westminster, CA').then(results => {
     //    console.log(results);
     //});
+    dbGet('users','000000').then(results => console.log(results));
 
     return (
         <View style={styles.container}>
