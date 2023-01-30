@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View, TextInput} from 'react-native'
 import * as React from 'react'
 import { useNavigation } from '@react-navigation/core';
-//import yelp from '../utils/yelp.js';
+import {searchBusinesses, autocomplete, businessDetail} from '../utils/yelp.js';
 import {dbGet, dbSet} from '../utils/firebase.js';
 
 export default function SearchScreen() {
@@ -11,11 +11,16 @@ export default function SearchScreen() {
         navigation.setOptions({ headerShown: false });
     }, [navigation]);
 
-    var searchText = "";
     //searchBusinesses(searchText, 'westminster, CA').then(results => {
     //    console.log(results);
     //});
-    dbGet('users','000000').then(results => console.log(results));
+    
+    var searchText = '';
+
+    dbGet('api_keys','key').then(keys => {
+        searchBusinesses("mcdonalds", {lat:33.755131, long:-117.981018}, keys.yelp).then(result => console.log(result));
+    });
+    
 
     return (
         <View style={styles.container}>
