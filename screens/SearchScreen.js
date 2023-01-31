@@ -1,26 +1,53 @@
-import { StyleSheet, Text, TouchableOpacity, View, TextInput} from 'react-native'
-import * as React from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, Button} from 'react-native'
+import React, { useState, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/core';
+import Geolocation from 'react-native-geolocation-service';
 import {searchBusinesses, autocomplete, businessDetail} from '../utils/yelp.js';
 import {dbGet, dbSet} from '../utils/firebase.js';
+import { requestLocationPermission } from '../utils/locationPermission.js'
+
 
 export default function SearchScreen() {
+	const [searchText, setSearchText] = useState('')
+	const [location, setLocation] = useState(false)
     const navigation = useNavigation();
 
-    React.useLayoutEffect(() => {
+    useLayoutEffect(() => {
         navigation.setOptions({ headerShown: false });
     }, [navigation]);
 
-    //searchBusinesses(searchText, 'westminster, CA').then(results => {
-    //    console.log(results);
-    //});
-    
-    var searchText = '';
+	/**
+	 * uses the geolocation package to get the user's current latitude and longitude
+	 */
+	getLocation = () => {
+		const result = requestLocationPermission();
+		result.then(res => {
+			if (res) {
+				Geolocation.getCurrentPosition(
+				position => {
+					console.log("position", position)
+				},
+				error => {
+					// See error code charts below.
+					console.log(error.code, error.message);
+					setLocation(false)
+				},
+				{enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+				);
+			}
+		});
+	};
 
-    dbGet('api_keys','key').then(keys => {
-        searchBusinesses("mcdonalds", {lat:33.755131, long:-117.981018}, keys.yelp).then(result => console.log(result));
-        autocomplete("mcdon", {lat:33.755131, long:-117.981018}, keys.yelp).then(result => console.log(result));
-    });
+	handleSearch = (event) => {
+		getLocation()
+		console.log(location)
+		// dbGet('api_keys','key').then(keys => {
+		// 	searchBusinesses(searchText, {lat:33.755131, long:-117.981018}, keys.yelp)
+		// 	.then(result => console.log(result));
+		// });
+
+		setSearchText('')
+	}
     
 
     return (
@@ -29,6 +56,8 @@ export default function SearchScreen() {
                 style={styles.searchBar}
                 placeholder='Search for foods...'
                 value = {searchText}
+				onChangeText={text => setSearchText(text)}
+				onSubmitEditing={handleSearch}
             />
         </View>
     )
