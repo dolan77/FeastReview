@@ -12,7 +12,7 @@ export default function HomeScreen() {
 	const [user, setUser] = useState({});
 
 	const navigation = useNavigation()
-
+}
 	/*
 	React.useLayoutEffect(() => {
 		navigation.setOptions({headerShown: false});
@@ -92,3 +92,4 @@ const styles = StyleSheet.create({
 		// paddingVertical: 25
 	}
 })
+*/
