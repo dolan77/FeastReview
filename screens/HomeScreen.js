@@ -99,6 +99,8 @@ export default function HomeScreen() {
 
 					<Button title = "User Profile" onPress={() => navigation.navigate('Your Profile')} />
 					<Button title = "Restaurant Profile" onPress={() => navigation.navigate('RestaurantProfile')} />
+					{/* BUTTON IMPLEMENTED BELOW IS FOR TESTING */}
+					<Button title = "Create Review Page" onPress={() => navigation.navigate('Create Review')} />
 				</View>
 			</ScrollView>
 		</View>
