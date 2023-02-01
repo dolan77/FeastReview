@@ -15,7 +15,7 @@ export default function RestaurantProfileScreen({route}){
     const nagivation = useNavigation();
     const dayOfTheWeek = ["mon", "tues", "wed", "thurs", "fri", "sat", "sun"]
     const restaurantData = route.params;
-    // console.log(restaurantData)
+     console.log(restaurantData)
     // console.log(restaurantData.data.hours[0].open[0])
     
     /**
@@ -37,14 +37,12 @@ export default function RestaurantProfileScreen({route}){
      * method to navigate to the Reviews Tab
      */
     const navigateReview = () => {
-        // TODO: someone figure out how to get this from the DB
-        // I think since we are clicking to go open this restaurantscreen, it has to be passed in from somewhere
-        var restaurant = '000000'
 
         // navigate to the reviews tab and send in the hash and the type of review we want to see
+        // pass in alias and type of review we want to ReviewsScreen
         nagivation.navigate('Reviews', 
         {
-            details: restaurant,
+            dbID: restaurantData.data.alias,
             type: 'restaurant'
         })
     }
@@ -53,6 +51,7 @@ export default function RestaurantProfileScreen({route}){
         // CODE FOR SOMEONE ELSE TO DO
     }
 
+    // latitude: restaurantData.data.coordinates.latitude, longitude: restaurantData.data.coordinates.longitude
 
     // printing the rating for the restaurant as star icons
     var stars = [];
@@ -114,7 +113,7 @@ export default function RestaurantProfileScreen({route}){
 
                     <View>
 
-                    <TouchableOpacity onPress={createOpenLink({ latitude: restaurantData.data.coordinates.latitude, longitude: restaurantData.data.coordinates.longitude})}>
+                    <TouchableOpacity onPress={createOpenLink({ end: restaurantData.data.location.address1})}>
                        <Image style={style.tinylogo} source={image} />
                     </TouchableOpacity>
                     <Text style={[{textAlign: 'center'}, style.scheduleText]}>Get Directions</Text>
