@@ -21,7 +21,6 @@ const Tab = createBottomTabNavigator();
 
 export default function NavBar() {
     return(
-        <NavigationContainer>
             <Tab.Navigator
                 initialRouteName={homeName}
                 screenOptions={({route}) => ({
@@ -50,6 +49,5 @@ export default function NavBar() {
 
 
             </Tab.Navigator>
-        </NavigationContainer>
     )
 }

@@ -10,6 +10,15 @@ export default function LoginScreen() {
 
 	const navigation = useNavigation()
 
+	useEffect(() => {
+		const unsubscribe = auth().onAuthStateChanged(user => {
+			if (user) {
+				navigation.replace("TabNavigator")
+			}
+		});
+		return unsubscribe; // unsubscribe on unmount
+	}, []);
+
 	login = () => {
 		if(email && password){
 			auth()
