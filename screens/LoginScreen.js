@@ -11,7 +11,8 @@ export default function LoginScreen() {
 	const navigation = useNavigation()
 
 	login = () => {
-		auth()
+		if(email && password){
+			auth()
 			.signInWithEmailAndPassword(email, password)
 			.then(userCreds => {
 				const user = userCreds.user
@@ -20,22 +21,31 @@ export default function LoginScreen() {
 			})
 			.catch(error => {
 				if (error.code === 'auth/invalid-email') {
-				console.log('That email address is invalid!');
+					console.log('That email address is invalid!');
 				}
 
 				console.error(error);
 			});
+		}
+		else {
+			console.error("Please fill in all fields");
+		}
 	}
 
 	passwordReset = () => {
-		auth()
-			.sendPasswordResetEmail(email)
-			.then((link) => {
-				console.log('Email sent! to', email)
-			})
-			.catch((error) => {
-				console.log('Please enter email first')
-			})
+		if(email){
+			auth()
+				.sendPasswordResetEmail(email)
+				.then((link) => {
+					console.log('Email sent! to', email)
+				})
+				.catch((error) => {
+					console.error('Please enter email first')
+				})
+		}
+		else {
+			console.error("Please enter email first");
+		}
 	}
 
 	return (
