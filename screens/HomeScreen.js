@@ -1,8 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import {Button} from 'react-native'
+
+import image from "../assets/feast_blue.png"
 
 export default function HomeScreen() {
 	const [user, setUser] = useState({});
@@ -49,6 +51,7 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
 	container: {
+		backgroundColor: '#3d4051',
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center'
@@ -64,5 +67,18 @@ const styles = StyleSheet.create({
 		color: 'white',
 		fontWeight: '700',
 		fontSize: 16
+	},
+
+	fittedSize: {
+		backgroundColor: '#020878',
+		width: 385,
+		height: 385,
+		flex: 1,
+		borderRadius: 25,
+		borderWidth: 1,
+		borderColor: 'black',
+		alignSelf: 'center',
+		margin: 3
+		// paddingVertical: 25
 	}
 })
