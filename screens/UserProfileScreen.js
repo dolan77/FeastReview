@@ -122,17 +122,18 @@ export default function UserProfileScreen(){
 
     const [modalVisible, setModalVisible] = React.useState(false);
     // I am able to do user.email within the use state. if we are able to save the bio and pull from the database that would be epic but for now this is all i can do
-    const [name, setName] = React.useState(user.email);
+    const [bio, setBio] = React.useState(user.email);
     
     console.log(user.email, 'has signed up')
-    console.log(name, 'state')
+    console.log(bio, 'state')
     
     const navigation = useNavigation();
 
     function changeBio(newValue) {
         // push changes to database
         
-        setName(newValue)}
+        setBio(newValue)
+    }
     
     seeReview = () => {navigation.navigate('Reviews')} 
 
@@ -176,7 +177,7 @@ export default function UserProfileScreen(){
                 </Modal>
                 
                 {/* Text that is the BIO for the User Profile */}
-                <Text style = {[styles.bioWrap]}>{name}
+                <Text style = {[styles.bioWrap]}>{bio}
                 
                     <Text style = {styles.editButton} onPress={() => setModalVisible(true)}>{"\n\n"}Edit Bio</Text>
                 </Text>
@@ -187,7 +188,7 @@ export default function UserProfileScreen(){
 
             {/* View that contains the name and the Expertise the User is */}
             <View style = {styles.bioSubscript}>
-            <Text style = {styles.bioSubscriptContent}>{user.email}</Text>
+            <Text style = {styles.bioSubscriptContent}>{user.displayName}</Text>
             <Text style = {styles.bioSubscriptContent}>Dessert Expert</Text>
             </View>
         </View>
