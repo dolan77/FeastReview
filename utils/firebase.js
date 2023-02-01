@@ -1,28 +1,32 @@
-const { initializeApp, cert } = require('firebase-admin/app');
-const { getFirestore } = require('firebase-admin/firestore');
-const apiKey = require('../../api_keys.json').firebase;
+import firestore from '@react-native-firebase/firestore';
 
-module.exports = {get, set};
+module.exports = {dbGet, dbSet};
 
 /**
- * a utility class to simply usage of firebase functions
+ * a utility class to simplify usage of firebase functions
  */
 
-// example of usage
-//get('api_keys', 'key').then((result) => console.log(result));
 
-initializeApp({
-    credential: cert(apiKey)
-});
+const db = firestore();
 
-const db = getFirestore();
-
-async function get(collection, doc){
+/**
+ * simple getter function
+ * @param {*} collection 
+ * @param {*} doc 
+ * @returns the object stored in the collection's document
+ */
+async function dbGet(collection, doc){
     const docSnapshot = await db.collection(collection).doc(doc).get();
     return docSnapshot.data();
 }
 
-async function set(collection, doc, value){
+/**
+ * simple setter
+ * @param {*} collection 
+ * @param {*} doc 
+ * @param {*} value the object overwriting the collection's doc value
+ */
+async function dbSet(collection, doc, value){
     const docRef = db.collection(collection).doc(doc);
     await docRef.set(value);
 }
