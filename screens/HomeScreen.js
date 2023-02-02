@@ -12,8 +12,8 @@ export default function HomeScreen() {
 	const [user, setUser] = useState({});
 
 	const navigation = useNavigation()
-}
-	/*
+
+	
 	React.useLayoutEffect(() => {
 		navigation.setOptions({headerShown: false});
 	}, [navigation]);
@@ -43,6 +43,11 @@ export default function HomeScreen() {
 		.then(result => navigation.navigate('RestaurantProfile',{data: result}))});
 	}
 
+	// testing following this user.
+	const navigateOtherUserProfile = () => {
+		navigation.navigate("OtherUserProfile", {id: "pm6f9wpKmZM9GyEVL2HJuowhEda2"});
+	}
+
 	// RestaurantProfile and UserProfile might not be needed on the stack in the future. they are there for testing
 	return (
 		
@@ -55,6 +60,7 @@ export default function HomeScreen() {
 			</TouchableOpacity>
 			<Button title = "UserProfile" onPress={() => navigation.navigate('Your Profile')} />
 			<Button title = "RestaurantProfile" onPress={nagivateRestaurant} />
+			<Button title = "Matthew's Profile" onPress={navigateOtherUserProfile} />
 		</View>
 	)
 }
@@ -92,4 +98,3 @@ const styles = StyleSheet.create({
 		// paddingVertical: 25
 	}
 })
-*/
