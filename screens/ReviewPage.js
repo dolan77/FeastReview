@@ -21,23 +21,24 @@ export default function ReviewPage() {
     const starIconCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
     const starIconFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
 
-    const [defaultRating, setdefaultRating] = useState(null);
-    const [maxRating, setmaxRating] = useState([1,2,3,4,5]);
-    const StarRating = () => {
+    // Star review rating for category 'Food'
+    const [foodDefaultRating, setfoodDefaultRating] = useState(3);
+    const [foodMaxRating, setfoodMaxRating] = useState([1,2,3,4,5]);
+    const FoodRating = () => {
         return (
             <View style={styles.starRatingsStyle}>
                 {
-                    maxRating.map((item, key) => {
+                    foodMaxRating.map((item, key) => {
                         return (
                             <TouchableOpacity
                             activeOpacity={0.7}
                             key={item}
-                            onPress={() => setdefaultRating(item)}
+                            onPress={() => setfoodDefaultRating(item)}
                             >
                                 <Image 
                                     style={styles.starImgStyle}
                                     source={
-                                        item <= defaultRating
+                                        item <= foodDefaultRating
                                         ? {uri: starIconFilled}
                                         : {uri: starIconCorner}
                                     }
@@ -50,7 +51,70 @@ export default function ReviewPage() {
             </View>
         )
     }
-    
+
+    // Star review rating for category 'Atmosphere'
+    const [atmosphereDefaultRating, setatmosphereDefaultRating] = useState(3);
+    const [atmosphereMaxRating, setatmosphereMaxRating] = useState([1,2,3,4,5]);
+    const AtmosphereRating = () => {
+        return (
+            <View style={styles.starRatingsStyle}>
+                {
+                    atmosphereMaxRating.map((item, key) => {
+                        return (
+                            <TouchableOpacity
+                            activeOpacity={0.7}
+                            key={item}
+                            onPress={() => setatmosphereDefaultRating(item)}
+                            >
+                                <Image 
+                                    style={styles.starImgStyle}
+                                    source={
+                                        item <= atmosphereDefaultRating
+                                        ? {uri: starIconFilled}
+                                        : {uri: starIconCorner}
+                                    }
+                                />
+                            </TouchableOpacity>
+                            
+                        )
+                    })
+                }
+            </View>
+        )
+    }
+
+    // Star review rating for category 'Price'
+
+    // Star review rating for category 'Service'
+    const [serviceDefaultRating, setserviceDefaultRating] = useState(3);
+    const [serviceMaxRating, setserviceMaxRating] = useState([1,2,3,4,5]);
+    const ServiceRating = () => {
+        return (
+            <View style={styles.starRatingsStyle}>
+                {
+                    serviceMaxRating.map((item, key) => {
+                        return (
+                            <TouchableOpacity
+                            activeOpacity={0.7}
+                            key={item}
+                            onPress={() => setserviceDefaultRating(item)}
+                            >
+                                <Image 
+                                    style={styles.starImgStyle}
+                                    source={
+                                        item <= serviceDefaultRating
+                                        ? {uri: starIconFilled}
+                                        : {uri: starIconCorner}
+                                    }
+                                />
+                            </TouchableOpacity>
+                            
+                        )
+                    })
+                }
+            </View>
+        )
+    }
     function changeReview(userReview) {
         setReview(userReview)
     };
@@ -63,33 +127,18 @@ export default function ReviewPage() {
                     Restaurant Name
             </Text>
             
-            <StarRating/>
+            <FoodRating/>
+            <Text style={styles.whiteText}> {'Food'} </Text>
+            <Text style={styles.whiteText}> {foodDefaultRating + ' / ' + foodMaxRating.length} </Text>
 
-            {/* Stars ratings placeholder */}
+            <AtmosphereRating/>
+            <Text style={styles.whiteText}> {'Atmosphere'} </Text>
+            <Text style={styles.whiteText}> {atmosphereDefaultRating + ' / ' + atmosphereMaxRating.length} </Text>
 
-            <View style = {{flexDirection: 'row'}}>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-            </View>
+            <ServiceRating/>
+            <Text style={styles.whiteText}> {'Service'} </Text>
+            <Text style={styles.whiteText}> {serviceDefaultRating + ' / ' + serviceMaxRating.length} </Text>
 
-            <View style = {{flexDirection: 'row'}}>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-            </View>
-
-            <View style = {{flexDirection: 'row'}}>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-                <Ionicons style={styles.locationIcon} name= "star-outline" ></Ionicons>
-            </View>
 
             {/* Text that contains the user's written review */}
             <View style = {styles.userReviewBox}>
@@ -153,7 +202,7 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         fontSize: 18,
         color: 'white', 
-        // flex: 1,
+        flex: 1,
         alignSelf: 'flex-start'
     },
     locationIcon: {
@@ -173,6 +222,8 @@ const styles = StyleSheet.create({
     whiteText: {
         color: 'white',
         justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
     },
     modalView: {
         margin: 20,
@@ -193,7 +244,10 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         marginLeft: 5,
         marginRight: 5,
-        width: 380,
+        marginTop:10,
+        marginBottom: 10,
+        width: 370,
+        height: 345,
         borderRadius:10,
         borderWidth: 1,
         padding: 10,
@@ -201,6 +255,7 @@ const styles = StyleSheet.create({
     },
     editButton: {
         fontSize: 18,
+        color: '#73C9E0',
         fontWeight: 'bold',
         justifyContent: 'center',
     },
@@ -215,7 +270,8 @@ const styles = StyleSheet.create({
     starRatingsStyle: {
         justifyContent: 'center',
         flexDirection: 'row',
-        marginTop: 30,
+        marginTop: 10,
+        marginBottom: 3
     },
     starImgStyle:{
         width: 40,
