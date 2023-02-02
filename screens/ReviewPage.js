@@ -17,8 +17,38 @@ export default function ReviewPage() {
     const [modalVisible, setModalVisible] = React.useState(false);
     const [review, setReview] = React.useState(userReview);
 
+
+    const starIconCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
+    const starIconFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
+
+    const [defaultRating, setdefaultRating] = useState(null);
+    const [maxRating, setmaxRating] = useState([1,2,3,4,5]);
     const StarRating = () => {
-        const [rating, setRating] = useState(null);
+        return (
+            <View style={styles.starRatingsStyle}>
+                {
+                    maxRating.map((item, key) => {
+                        return (
+                            <TouchableOpacity
+                            activeOpacity={0.7}
+                            key={item}
+                            onPress={() => setdefaultRating(item)}
+                            >
+                                <Image 
+                                    style={styles.starImgStyle}
+                                    source={
+                                        item <= defaultRating
+                                        ? {uri: starIconFilled}
+                                        : {uri: starIconCorner}
+                                    }
+                                />
+                            </TouchableOpacity>
+                            
+                        )
+                    })
+                }
+            </View>
+        )
     }
     
     function changeReview(userReview) {
@@ -26,7 +56,6 @@ export default function ReviewPage() {
     };
     
     
-
       return(
         <View style={styles.container1}>
             {/* Restaurant Name */}
@@ -34,6 +63,8 @@ export default function ReviewPage() {
                     Restaurant Name
             </Text>
             
+            <StarRating/>
+
             {/* Stars ratings placeholder */}
 
             <View style = {{flexDirection: 'row'}}>
@@ -180,4 +211,16 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 10,
       },
+
+    starRatingsStyle: {
+        justifyContent: 'center',
+        flexDirection: 'row',
+        marginTop: 30,
+    },
+    starImgStyle:{
+        width: 40,
+        height: 40,
+        resizeMode: 'cover',
+    }
+
 })
