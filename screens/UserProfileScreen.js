@@ -1,10 +1,12 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, useState, Modal} from 'react-native'
-import auth, { firebase } from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 
 import { useNavigation } from '@react-navigation/core';
 import image from "../assets/feast_blue.png"
 
 import * as React from 'react';
+import * as firebase from '../utils/firebase'
+import * as yelp from '../utils/yelp'
 
 const styles = StyleSheet.create({
 
@@ -127,7 +129,7 @@ export default function UserProfileScreen(){
 
     const [modalVisible, setModalVisible] = React.useState(false);
     // I am able to do user.email within the use state. if we are able to save the bio and pull from the database that would be epic but for now this is all i can do
-    const [bio, setBio] = React.useState(user.email);
+    const [bio, setBio] = React.useState('');
     const navigation = useNavigation();
 
     
@@ -135,9 +137,11 @@ export default function UserProfileScreen(){
      * 
      * @param {value.nativeEvent.text} newValue - this is the value of the textbox
      */
-    function changeBio(newValue) {
+    const changeBio = async (newValue) => {
         // push changes to database, backend can do that
-        setBio(newValue)
+        
+        // update the bio on the database
+        populateBio();
     }
     
     /**
@@ -151,10 +155,17 @@ export default function UserProfileScreen(){
         })
     } 
 
-    console.log(user.email, 'has signed up')
-    console.log(bio, 'state')
+    const populateBio = async() => {
+        const currentUser = await firebase.dbGet('users', user.uid);
+        // console.log(currentUser.bio)
+        setBio(currentUser.bio)
+    }
     
-    
+    React.useEffect(() => {
+        populateBio();
+    },
+    []
+    )
     
     // modals refresh the screen, stacks do not. if you leave a stack and re-enter it refreshres but adding to the stack will not
     return(
