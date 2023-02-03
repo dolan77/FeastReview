@@ -1,11 +1,11 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, useState, Modal} from 'react-native'
-import auth, { firebase } from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 
 import { useNavigation } from '@react-navigation/core';
 import image from "../assets/feast_blue.png"
 
 import * as React from 'react';
-
+import * as firebase from '../utils/firebase'
 
 // background color: #3d4051 change for View, bioSubscript, flexbio, flexbutton
 export default function UserProfileScreen(){
@@ -20,7 +20,7 @@ export default function UserProfileScreen(){
 
     const [modalVisible, setModalVisible] = React.useState(false);
     // I am able to do user.email within the use state. if we are able to save the bio and pull from the database that would be epic but for now this is all i can do
-    const [bio, setBio] = React.useState(user.email);
+    const [bio, setBio] = React.useState('');
     const navigation = useNavigation();
 
     
@@ -28,9 +28,30 @@ export default function UserProfileScreen(){
      * 
      * @param {value.nativeEvent.text} newValue - this is the value of the textbox
      */
-    function changeBio(newValue) {
+    async function changeBio(newValue) {
         // push changes to database, backend can do that
+        try {
+            await firebase.dbUpdateOnce('users', user.uid, "bio", newValue);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function getBio() {
+        // push changes to database, backend can do that
+        try {
+            const userBio = await firebase.dbGet('users', user.uid);
+            setBio(userBio.bio)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
+
+    const updateBio = (newValue) => {
         setBio(newValue)
+        changeBio(newValue)
     }
     
     /**
@@ -47,7 +68,11 @@ export default function UserProfileScreen(){
     console.log(user.email, 'has signed up')
     console.log(bio, 'state')
     
-    
+    React.useEffect(() => {
+        getBio();
+    },
+    []
+    )
     
     // modals refresh the screen, stacks do not. if you leave a stack and re-enter it refreshres but adding to the stack will not
     return(
@@ -76,7 +101,7 @@ export default function UserProfileScreen(){
                     style={styles.input}
                     maxLength={60}
                     numberOfLines = {4}
-                    onSubmitEditing={(value) => changeBio(value.nativeEvent.text)}
+                    onSubmitEditing={(value) => updateBio(value.nativeEvent.text)}
                     />
                     <Button
                     title="go back"
