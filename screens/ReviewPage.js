@@ -3,7 +3,6 @@ import React, {useState} from 'react'
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import {Button} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function ReviewPage() {
     const navigation = useNavigation();
@@ -17,7 +16,7 @@ export default function ReviewPage() {
     const [modalVisible, setModalVisible] = React.useState(false);
     const [review, setReview] = React.useState(userReview);
 
-
+    // Images used for the stars
     const starIconCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
     const starIconFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
 
@@ -108,13 +107,13 @@ export default function ReviewPage() {
                                     }
                                 />
                             </TouchableOpacity>
-                            
                         )
                     })
                 }
             </View>
         )
     }
+
     function changeReview(userReview) {
         setReview(userReview)
     };
@@ -158,7 +157,7 @@ export default function ReviewPage() {
                 }}>
                 <View style={styles.modalView}>
                     <Text style = {styles.whiteText}>Write a review:</Text>
-                    <TextInput 
+                    <TextInput
                     style = {styles.input}
                     onSubmitEditing={(value) => changeReview(value.nativeEvent.text)}
                     />
