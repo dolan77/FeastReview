@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, Modal } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, Modal, ScrollView } from 'react-native'
 import React, {useState} from 'react'
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
@@ -21,7 +21,7 @@ export default function ReviewPage() {
     const starIconCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
     const starIconFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
 
-    // Star review rating for category 'Food'
+    // Star review rating contents for category 'Food'
     const [foodDefaultRating, setfoodDefaultRating] = useState(3);
     const [foodMaxRating, setfoodMaxRating] = useState([1,2,3,4,5]);
     const FoodRating = () => {
@@ -52,7 +52,7 @@ export default function ReviewPage() {
         )
     }
 
-    // Star review rating for category 'Atmosphere'
+    // Star review rating contents for category 'Atmosphere'
     const [atmosphereDefaultRating, setatmosphereDefaultRating] = useState(3);
     const [atmosphereMaxRating, setatmosphereMaxRating] = useState([1,2,3,4,5]);
     const AtmosphereRating = () => {
@@ -85,7 +85,7 @@ export default function ReviewPage() {
 
     // Star review rating for category 'Price'
 
-    // Star review rating for category 'Service'
+    // Star review rating contents for category 'Service'
     const [serviceDefaultRating, setserviceDefaultRating] = useState(3);
     const [serviceMaxRating, setserviceMaxRating] = useState([1,2,3,4,5]);
     const ServiceRating = () => {
@@ -127,21 +127,26 @@ export default function ReviewPage() {
                     Restaurant Name
             </Text>
             
+            {/* Selectable star review rating for food. */}
             <FoodRating/>
             <Text style={styles.whiteText}> {'Food'} </Text>
             <Text style={styles.whiteText}> {foodDefaultRating + ' / ' + foodMaxRating.length} </Text>
 
+            {/* Selectable star review rating for atmosphere. */}
             <AtmosphereRating/>
             <Text style={styles.whiteText}> {'Atmosphere'} </Text>
             <Text style={styles.whiteText}> {atmosphereDefaultRating + ' / ' + atmosphereMaxRating.length} </Text>
 
+            {/* Selectable star review rating for Service. */}
             <ServiceRating/>
             <Text style={styles.whiteText}> {'Service'} </Text>
             <Text style={styles.whiteText}> {serviceDefaultRating + ' / ' + serviceMaxRating.length} </Text>
 
 
             {/* Text that contains the user's written review */}
-            <View style = {styles.userReviewBox}>
+            <ScrollView style = {styles.userReviewBox}
+                // Allows you to fully see "Edit Review" if review is very long. 
+                contentContainerStyle={{paddingBottom:20}}>
 
                 {/* POPUP when user is writing the text for the review */}
                 <Modal
@@ -170,8 +175,19 @@ export default function ReviewPage() {
                     <Text style = {styles.editButton} onPress={() => setModalVisible(true)}>{"\n\n"}Edit Review</Text>
                 </Text>
             
+            </ScrollView>
+            
+            <View style={styles.container}>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => navigation.goBack(null)}
+                    >
+                    <Text style={styles.whiteText}> Submit Review </Text>
+                    
+                </TouchableOpacity>
+                    
             </View>
-
+            
             
                 
         </View>
@@ -202,7 +218,7 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         fontSize: 18,
         color: 'white', 
-        flex: 1,
+        flex: .4,
         alignSelf: 'flex-start'
     },
     locationIcon: {
@@ -240,14 +256,16 @@ const styles = StyleSheet.create({
     },
     userReviewBox: {
         color: 'white',
-        flexDirection: 'row',
+        // flexDirection: 'row',
         flexWrap: 'wrap',
         marginLeft: 5,
         marginRight: 5,
         marginTop:10,
         marginBottom: 10,
+        maxWidth: 370,
         width: 370,
-        height: 345,
+        height: 280,
+        maxHeight: 280,
         borderRadius:10,
         borderWidth: 1,
         padding: 10,
@@ -258,6 +276,7 @@ const styles = StyleSheet.create({
         color: '#73C9E0',
         fontWeight: 'bold',
         justifyContent: 'center',
+        paddingBottom: 5,
     },
     input: {
         height: 300,
@@ -277,6 +296,14 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         resizeMode: 'cover',
-    }
+    },
+    button: {
+		backgroundColor: '#0782F9',
+		width: '100%',
+		padding: 15,
+        marginBottom:10,
+		borderRadius: 10,
+		alignItems: 'center'
+	},
 
 })
