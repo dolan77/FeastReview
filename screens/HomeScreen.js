@@ -58,7 +58,6 @@ export default function HomeScreen() {
 			>
 				<Text>{user.displayName}</Text>
 			</TouchableOpacity>
-			<Button title = "UserProfile" onPress={() => navigation.navigate('Your Profile')} />
 			<Button title = "RestaurantProfile" onPress={nagivateRestaurant} />
 			<Button title = "Matthew's Profile" onPress={navigateOtherUserProfile} />
 		</View>
