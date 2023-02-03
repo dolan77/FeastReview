@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 
-module.exports = {dbGet, dbSet};
+module.exports = {dbGet, dbSet, dbUpdate};
 
 /**
  * a utility class to simplify usage of firebase functions
@@ -28,5 +28,18 @@ async function dbGet(collection, doc){
  */
 async function dbSet(collection, doc, value){
     const docRef = db.collection(collection).doc(doc);
-    await docRef.set(value);
+    return docRef.set(value);
+}
+
+
+/**
+ * simple adder
+ * @param {*} collection 
+ * @param {*} doc 
+ * @param {*} field an object that has the fields you want to update in a document
+ *                example => {field:"to update"}
+ */
+async function dbUpdate(collection, doc, field){
+    const docRef = db.collection(collection).doc(doc);
+    return docRef.update(field);
 }
