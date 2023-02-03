@@ -37,13 +37,13 @@ export default function OtherUserProfileScreen({route}){
             // if we are following the user, unfollow them
             if (otherUser.following.includes(otherID.id)){
                 console.log('in if')
-                const removeFollower = await firebase.dbSet('users', user.uid, {"following": arrayRemove(otherID.id)});
+                await firebase.dbSet('users', user.uid, {"following": arrayRemove(otherID.id)});
                 PopulateButton();
             }
             // we are not following the user, follow them
             else{
                 console.log('in else')
-                const addFollower = await firebase.dbSet('users', user.uid, {"following": arrayUnion(otherID.id)});
+                await firebase.dbSet('users', user.uid, {"following": arrayUnion(otherID.id)});
                 PopulateButton();
             }
                 
@@ -89,8 +89,15 @@ export default function OtherUserProfileScreen({route}){
     }
 
     // initiate the button before we create the view
-    ShowOtherUserName();
-    PopulateButton();
+    React.useEffect(() => {
+        ShowOtherUserName();
+        PopulateButton();
+    },
+    []
+    )
+    
+    
+    
     
     return (
         <View>
