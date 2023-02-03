@@ -6,114 +6,7 @@ import image from "../assets/feast_blue.png"
 
 import * as React from 'react';
 
-const styles = StyleSheet.create({
 
-    flexbio:{
-        flexDirection: 'row',
-        
-    },
-
-    flexbutton:{
-        flex: 2,
-        
-       
-
-    },
-
-    space:{
-        width: 10,
-        height: 10
-    },
-
-    tinyLogo: {
-        width: 100,
-        height: 120,
-        borderRadius: 150,
-        flex: 1,
-        marginLeft: 5,
-        
-        overflow: 'hidden',
-        borderWidth: 2,
-        borderColor: 'white'
-    },
-
-    topContent:{
-        marginTop: 5
-    },
-
-    bioWrap:{
-        flexWrap: 'wrap',
-        flex: 2,
-        marginTop: 10,
-        marginLeft: 15,
-        marginRight: 15,
-        justifyContent: 'center',
-        alignItems: 'baseline',
-        paddingLeft: 10,
-        paddingTop: 5,
-        borderRadius: 10,
-        fontSize: 15,
-        color: 'white'
-       
-    },
-
-    bioSubscript:{
-        
-    },
-
-    bioSubscriptContent:{
-        marginLeft: 10,
-        color: 'white',
-        paddingTop: 10
-    },
-
-    button: {
-		backgroundColor: '#17202ac0',
-		width: '100%',
-		padding: 15,
-		alignItems: 'center',
-        justifyContent: 'center',
-        
-        
-        
-	},
-	buttonText: {
-		color: 'white',
-		fontWeight: '700',
-		fontSize: 16,
-	},
-
-    horizontalLine:{
-        height: 2, 
-        backgroundColor: '#ffffff'
-    },
-    input: {
-        height: 40,
-        width: 300,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-      },
-      modalView: {
-        margin: 20,
-        height: 500,
-        backgroundColor: '#a2bef0',
-        borderRadius: 20,
-        padding: 35,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        }
-    },
-    editButton: {
-        color: 'white',
-        fontWeight: 'bold',
-        
-    }
-
-})
 // background color: #3d4051 change for View, bioSubscript, flexbio, flexbutton
 export default function UserProfileScreen(){
     const user = auth().currentUser;
@@ -237,3 +130,113 @@ export default function UserProfileScreen(){
     </View>
     );
 }
+
+
+const styles = StyleSheet.create({
+
+    flexbio:{
+        flexDirection: 'row',
+        
+    },
+
+    flexbutton:{
+        flex: 2,
+        
+       
+
+    },
+
+    space:{
+        width: 10,
+        height: 10
+    },
+
+    tinyLogo: {
+        width: 100,
+        height: 120,
+        borderRadius: 150,
+        flex: 1,
+        marginLeft: 5,
+        
+        overflow: 'hidden',
+        borderWidth: 2,
+        borderColor: 'white'
+    },
+
+    topContent:{
+        marginTop: 5
+    },
+
+    bioWrap:{
+        flexWrap: 'wrap',
+        flex: 2,
+        marginTop: 10,
+        marginLeft: 15,
+        marginRight: 15,
+        justifyContent: 'center',
+        alignItems: 'baseline',
+        paddingLeft: 10,
+        paddingTop: 5,
+        borderRadius: 10,
+        fontSize: 15,
+        color: 'white'
+       
+    },
+
+    bioSubscript:{
+        
+    },
+
+    bioSubscriptContent:{
+        marginLeft: 10,
+        color: 'white',
+        paddingTop: 10
+    },
+
+    button: {
+		backgroundColor: '#17202ac0',
+		width: '100%',
+		padding: 15,
+		alignItems: 'center',
+        justifyContent: 'center',
+        
+        
+        
+	},
+	buttonText: {
+		color: 'white',
+		fontWeight: '700',
+		fontSize: 16,
+	},
+
+    horizontalLine:{
+        height: 2, 
+        backgroundColor: '#ffffff'
+    },
+    input: {
+        height: 40,
+        width: 300,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+      },
+      modalView: {
+        margin: 20,
+        height: 500,
+        backgroundColor: '#a2bef0',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        }
+    },
+    editButton: {
+        color: 'white',
+        fontWeight: 'bold',
+        
+    }
+
+})

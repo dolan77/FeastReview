@@ -32,18 +32,16 @@ export default function OtherUserProfileScreen({route}){
         try {
 
             const otherUser = await firebase.dbGet('users', user.uid);
-            console.log(" in click Follow");
 
             // if we are following the user, unfollow them
             if (otherUser.following.includes(otherID.id)){
-                console.log('in if')
-                await firebase.dbSet('users', user.uid, {"following": arrayRemove(otherID.id)});
+                await firebase.dbUpdateArrayRemove('users', user.uid, 'following', [otherID.id])
                 PopulateButton();
             }
+
             // we are not following the user, follow them
             else{
-                console.log('in else')
-                await firebase.dbSet('users', user.uid, {"following": arrayUnion(otherID.id)});
+                await firebase.dbUpdateArrayAdd('users', user.uid, 'following', [otherID.id]);
                 PopulateButton();
             }
                 
@@ -61,14 +59,14 @@ export default function OtherUserProfileScreen({route}){
             const currentUser = await firebase.dbGet('users', user.uid);
             // if we are following the user, prompt the unfollow button
             if (currentUser.following.includes(otherID.id)){
-                console.log("in if");
+                
                 setFollow('Unfollow');
                 setColor('#636362');
                 
             }
             // we are not following the user,prompt the follow button
             else{
-                console.log("in else");
+                
                 setFollow('Follow');
                 setColor('#0782F9');
             }
@@ -80,15 +78,13 @@ export default function OtherUserProfileScreen({route}){
     /**
      * method to show the other user's display name when you click on their profile
      * @returns Text to be shown on our application that involves the other user's display name
-     * {firebase.dbGet('users', otherID.id).then(doc => doc.name)}
      */
     const ShowOtherUserName = async () => {
-        // firebase.dbGet('users', otherID.id).then(doc => setName(doc.name))
         const otherUser = await firebase.dbGet('users', otherID.id); 
         setName(otherUser.name);     
     }
 
-    // initiate the button before we create the view
+    // initiate the button and user name we create the view
     React.useEffect(() => {
         ShowOtherUserName();
         PopulateButton();
@@ -111,15 +107,17 @@ export default function OtherUserProfileScreen({route}){
                 </View>
                 
                 <View>
-                <TouchableOpacity style={[styles.button, {backgroundColor: color}]}
-                onPress={clickFollow}
-                >
+                <TouchableOpacity style={[styles.button, {backgroundColor: color}]} onPress={clickFollow}>
                     <Text style={styles.buttonText}>{follow}</Text>
                 </TouchableOpacity>
                 </View>
 
+                <View style={styles.space}></View>
+
                 <View>
-                    <Text>See Reviews</Text>
+                <TouchableOpacity style={[styles.button]}>
+                    <Text style={styles.buttonText}>See Reviews</Text>
+                </TouchableOpacity>
                 </View>
 
             </View>
@@ -154,6 +152,10 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: '700',
         fontSize: 16
+    },
+    space:{
+        width: 10,
+        height: 10
     },
 
 })
