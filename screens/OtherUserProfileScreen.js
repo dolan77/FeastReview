@@ -17,109 +17,105 @@ export default function OtherUserProfileScreen({route}){
     const otherID = route.params;
 
     const [follow, setFollow] = React.useState('');
-    const [color, setColor] = "blue";
+    const [color, setColor] = React.useState('');
+    const [name, setName] = React.useState('');
     const navigation = useNavigation();
     
     const user = auth().currentUser;
-
+    // console.log(otherID.id);
     /**
      * method for when the user clicks on the follow button or not
      * https://firebase.google.com/docs/firestore/manage-data/add-data
      */
-    const clickFollow = () => {
+    // this does not work, need to fix the firebase methods
+    const clickFollow = async () => {
         try {
-            console.log(user.uid)
-            firebase.dbGet('users', user.uid)
-            /*
-            firebase.dbGet('users', user.uid).then(doc => {
-                if (doc.following.includes(otherID.id)){
-                    setFollow('Unfollow');
-                    setColor('gray');
-                    firebase.dbSet('users', user.uid, {following: arrayRemove(otherID.id)});
-                }
-                else{
-                    setFollow('Follow');
-                    setColor('blue');
-                    firebase.dbSet('users', user.uid, {following: arrayUnion(otherID.id)});
-                }
+
+            const otherUser = await firebase.dbGet('users', user.uid);
+            console.log(" in click Follow");
+
+            // if we are following the user, unfollow them
+            if (otherUser.following.includes(otherID.id)){
+                console.log('in if')
+                const removeFollower = await firebase.dbSet('users', user.uid, {"following": arrayRemove(otherID.id)});
+                PopulateButton();
+            }
+            // we are not following the user, follow them
+            else{
+                console.log('in else')
+                const addFollower = await firebase.dbSet('users', user.uid, {"following": arrayUnion(otherID.id)});
+                PopulateButton();
             }
                 
-                
-                );
-                */
 
         } catch (error) {
             console.log("error");
         }
+    }
 
-
-
-
-        /* if(userResult.following.includes(otherID.id)){
-            // if condition pass, change the following button to unfollow
-            setFollow('Unfollow');
-            setColor('gray');
-            firebase.dbSet('users', user.uid, {following: arrayRemove(otherID.id)});
-            
+    /**
+     * method to change the button depending if the current user is following the other user
+     */
+    const PopulateButton = async () => {
+        try {
+            const currentUser = await firebase.dbGet('users', user.uid);
+            // if we are following the user, prompt the unfollow button
+            if (currentUser.following.includes(otherID.id)){
+                console.log("in if");
+                setFollow('Unfollow');
+                setColor('#636362');
+                
+            }
+            // we are not following the user,prompt the follow button
+            else{
+                console.log("in else");
+                setFollow('Follow');
+                setColor('#0782F9');
+            }
+        } catch (error) {
+            console.log(error)
         }
-        // else we not following that user and want to follow them
-        else{
-            setFollow('Follow');
-            setColor('blue');
-            firebase.dbSet('users', user.uid, {following: arrayUnion(otherID.id)});
-        } */
-        
     }
 
     /**
      * method to show the other user's display name when you click on their profile
      * @returns Text to be shown on our application that involves the other user's display name
+     * {firebase.dbGet('users', otherID.id).then(doc => doc.name)}
      */
-    const showOtherUserName = () => {
-        return(
-            <View>
-            <Text>
-                {firebase.dbGet('users', otherID.id).then(doc => doc.name)}
-            </Text>
-            </View>
-        )
+    const ShowOtherUserName = async () => {
+        // firebase.dbGet('users', otherID.id).then(doc => setName(doc.name))
+        const otherUser = await firebase.dbGet('users', otherID.id); 
+        setName(otherUser.name);     
     }
 
-    /*
-    // get the firebase result as a variable to use
-    var userResult;
+    // initiate the button before we create the view
+    ShowOtherUserName();
+    PopulateButton();
     
-    // call the DB to get the user and see if the otherID is in the user's following list
-    firebase.dbGet('users', user.uid).then(doc => userResult = doc);
-    console.log(userResult);
-    */
-
-
-
-
-    // we get the current user's info from our firebase and check to see if the "following" array includes the looked up user's ID
-    clickFollow();
     return (
         <View>
             <View style = {styles.display}>
                 <Image style = {[styles.tinyLogo]} source ={image}/>
 
-                <Text>
-                {firebase.dbGet('users', otherID.id).then(doc => doc.name)}
-                </Text>
 
-                <TouchableOpacity style={[styles.button, {color: color}]}>
+                <View>
+                <Text style={{borderRadius: 1, borderColor: 'black'}}>{name}</Text>
+
+                </View>
+                
+                <View>
+                <TouchableOpacity style={[styles.button, {backgroundColor: color}]}
+                onPress={clickFollow}
+                >
                     <Text style={styles.buttonText}>{follow}</Text>
                 </TouchableOpacity>
+                </View>
+
+                <View>
+                    <Text>See Reviews</Text>
+                </View>
 
             </View>
-            
-
-
-
-
-
-
         </View>
     )
 }
@@ -128,15 +124,12 @@ export default function OtherUserProfileScreen({route}){
 
 const styles = StyleSheet.create({
     display:{
-        alignItems: 'center',
-        justifyContent: 'center'
+        alignItems: "center"
     },
     tinyLogo: {
         width: 100,
-        height: 120,
+        height: 100,
         borderRadius: 150,
-        flex: 1,
-        marginLeft: 5,
         
         overflow: 'hidden',
         borderWidth: 2,
@@ -144,11 +137,11 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: '#0782F9',
-        width: '60%',
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        width: 200
     },
     buttonText: {
         color: 'white',
