@@ -2,10 +2,12 @@ import { StyleSheet, Text, TouchableOpacity, View, TextInput, Button, Image, Scr
 import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import Geolocation from 'react-native-geolocation-service';
-import {searchBusinesses, autocomplete, businessDetail} from '../utils/yelp.js';
-import {dbGet, dbSet} from '../utils/firebase.js';
+import { searchBusinesses } from '../utils/yelp.js';
+import { dbGet, dbSet } from '../utils/firebase.js';
 import { requestLocationPermission } from '../utils/locationPermission.js'
 import { SearchBar} from '../components/SearchBar.js';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function SearchScreen() {
 	const [searchText, setSearchText] = useState('')
@@ -34,7 +36,6 @@ export default function SearchScreen() {
 	useEffect(() => {
 		if (pressed !== 1) {
 			const limit = 10 * pressed
-			console.log("here", limit)
 			handleSearch({limit})
 		}
 	}, [pressed])
@@ -88,6 +89,18 @@ export default function SearchScreen() {
 		setPressed(pressed + 1)
 	}
     
+	starRating = (rating) => {
+		let stars = []
+		for(let i = 0; i < Math.floor(rating); i++) {
+			stars.push(<Ionicons name="star" color="white" size={20} />);
+		}
+
+		if (rating % 1 !== 0) {
+			stars.push(<Ionicons name="star-half" color="white" size={20} />);
+		}
+
+		return stars
+	}
 
     return (
         <ScrollView style={styles.container}>
@@ -113,8 +126,15 @@ export default function SearchScreen() {
 								/>
 								<View style={{flex: 1, marginLeft: 5}}>
 									<Text style={styles.restaurantText}>{restaurant.name}</Text>
-									<Text style={styles.restaurantText}>{restaurant.rating}</Text>
 									<Text style={styles.restaurantText}>
+										{starRating(restaurant.rating)} {restaurant.rating}
+									</Text>
+									<Text style={{
+										fontSize: 17, 
+										flexShrink: 1, 
+										flexWrap: 'wrap', 
+										color: restaurant.is_closed.toString() ? '#26B702' : '#FF0000'
+									}}>
 										{restaurant.is_closed.toString() ? 'Open' : 'Closed'}
 									</Text>
 									<Text style={styles.restaurantText}>{restaurant.location.address1}</Text>
@@ -161,8 +181,7 @@ const styles = StyleSheet.create({
 	restaurantContainer: {
         flex: 1,
 		padding: 10,
-		display: 'flex',
-		marginBottom: 55
+		marginBottom: 5
     },
 	restaurant: {
 		width: '100%',
@@ -186,15 +205,18 @@ const styles = StyleSheet.create({
 		borderRadius: 15,
 	},
 	buttonContainer: {
-		width: '60%',
+		flex: 1,
+		paddingLeft: 100,
+		paddingRight: 100,
 		justifyContent: 'center',
 		alignItems: 'center',
+		
 	},
 	button: {
-		backgroundColor: '#0782F9',
+		backgroundColor: '#4A9B6A',
 		width: '100%',
 		padding: 15,
-		borderRadius: 10,
+		borderRadius: 50,
 		alignItems: 'center',
 		marginBottom: 35
 	},
