@@ -26,11 +26,12 @@ const styles = StyleSheet.create({
     },
 
     tinyLogo: {
-        width: 150,
-        height: 150,
+        width: 100,
+        height: 120,
+        borderRadius: 150,
         flex: 1,
         marginLeft: 5,
-        borderRadius: 150/2,
+        
         overflow: 'hidden',
         borderWidth: 2,
         borderColor: 'white'
@@ -48,8 +49,6 @@ const styles = StyleSheet.create({
         marginRight: 15,
         justifyContent: 'center',
         alignItems: 'baseline',
-        borderColor: 'white',
-        borderWidth: 2,
         paddingLeft: 10,
         paddingTop: 5,
         borderRadius: 10,
@@ -119,33 +118,49 @@ const styles = StyleSheet.create({
 export default function UserProfileScreen(){
     const user = auth().currentUser;
 
+    /*
     React.useLayoutEffect(() => {
 		navigation.setOptions({headerShown: false});
 	  }, [navigation]);
+    */
     
 
     const [modalVisible, setModalVisible] = React.useState(false);
     // I am able to do user.email within the use state. if we are able to save the bio and pull from the database that would be epic but for now this is all i can do
-    const [name, setName] = React.useState(user.email);
-    
-    console.log(user.email, 'has signed up')
-    console.log(name, 'state')
-    
+    const [bio, setBio] = React.useState(user.email);
     const navigation = useNavigation();
 
-    function changeBio(newValue) {
-        // push changes to database
-        
-        setName(newValue)}
     
-    seeReview = () => {navigation.navigate('Reviews')} 
+    /**
+     * 
+     * @param {value.nativeEvent.text} newValue - this is the value of the textbox
+     */
+    function changeBio(newValue) {
+        // push changes to database, backend can do that
+        setBio(newValue)
+    }
+    
+    /**
+     * nagivate to the ReviewsScreen
+     */
+    function seeReview () {
+        navigation.navigate('Reviews', 
+        {
+            details: user.uid,
+            type: 'user'
+        })
+    } 
 
+    console.log(user.email, 'has signed up')
+    console.log(bio, 'state')
+    
+    
     
     // modals refresh the screen, stacks do not. if you leave a stack and re-enter it refreshres but adding to the stack will not
     return(
     <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
 
-        {/* container for the UserProfile */}
+        
         <View style= {{flex: 1}}>
 
             <View style = {styles.flexbio}>
@@ -153,7 +168,7 @@ export default function UserProfileScreen(){
 
                 
                 
-                {/* POPUP menu for when the user wants to edit the video */}
+                
                 <Modal
                 animationType="slide"
                 transparent={true}
@@ -179,26 +194,24 @@ export default function UserProfileScreen(){
                 </View>
                 </Modal>
                 
-                {/* Text that is the BIO for the User Profile */}
-                <Text style = {[styles.bioWrap]}>{name}
                 
+                <Text style = {[styles.bioWrap]}>
+                    {bio}
                     <Text style = {styles.editButton} onPress={() => setModalVisible(true)}>{"\n\n"}Edit Bio</Text>
                 </Text>
-                
+            
+            </View> 
 
-
-            </View>
-
-            {/* View that contains the name and the Expertise the User is */}
+            
             <View style = {styles.bioSubscript}>
-            <Text style = {styles.bioSubscriptContent}>{user.email}</Text>
+            <Text style = {styles.bioSubscriptContent}>{user.displayName}</Text>
             <Text style = {styles.bioSubscriptContent}>Dessert Expert</Text>
             </View>
-        </View>
+        </View> 
 
 
 
-        {/* View that will contain the buttons for the User to click on */}
+        
         <View style = {styles.flexbutton}>
         <View style={styles.horizontalLine} />
 
@@ -212,14 +225,12 @@ export default function UserProfileScreen(){
         <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Followers')}>
             <Text style={styles.buttonText}>Followers</Text>
         </TouchableOpacity>
+
         <View style={styles.horizontalLine} />
         <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Following')}>
             <Text style={styles.buttonText}>Following</Text>
         </TouchableOpacity>
-        <View style={styles.horizontalLine} />
-        <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Messages')}>
-            <Text style={styles.buttonText}>Messages</Text>
-        </TouchableOpacity>
+
         <View style={styles.horizontalLine} />
 
         </View>

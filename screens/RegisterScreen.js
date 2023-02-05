@@ -1,55 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import { Button, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Button, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 
 export default function RegisterScreen() {
-	const [displayName, setDisplayName] = useState('')
+	const [userName, setUserName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [passwordAgain, setPasswordAgain] = useState('')
 
 	const navigation = useNavigation()
 
-	useEffect(() => {
-		const unsubscribe = auth().onAuthStateChanged(user => {
-			if (user) {
-				navigation.replace("Home")
-			}
-		});
-		return unsubscribe; // unsubscribe on unmount
-	}, []);
-
   	createUser = () => {
 		if (password !== passwordAgain) {
 			console.log('Passwords do not match')
 		}
 
-		else if (password === '' || passwordAgain === '' || email === '' || displayName === '') {
+		else if (password === '' || passwordAgain === '' || email === '' || userName === '') {
 			console.log('Not all details are entered!')
 		}
 
 		else {
 			auth()
-			.createUserWithEmailAndPassword(email, password)
-			.then(userCreds => {
-				const user = userCreds.user
-				user.updateProfile({
-					displayName: displayName
+				.createUserWithEmailAndPassword(email, password)
+				.then((userCreds) => {
+					console.log("Registration successful")
+					if (userCreds) {
+						auth()
+							.currentUser.updateProfile({
+								displayName: userName,
+						  	})
+						  	.then(() => navigation.replace("Home"))
+						  	.catch((error) => {
+								console.error(error);
+						  	});
+					  }
 				})
-				console.log(user.email, 'has signed up')
-			})
-			.catch(error => {
-				if (error.code === 'auth/email-already-in-use') {
-					console.log('That email address is already in use!');
-				}
+				.catch(error => {
+					if (error.code === 'auth/email-already-in-use') {
+						console.log('That email address is already in use!');
+					}
 
-				if (error.code === 'auth/invalid-email') {
-					console.log('That email address is invalid!');
-				}
+					if (error.code === 'auth/invalid-email') {
+						console.log('That email address is invalid!');
+					}
 
-				console.error(error);
-			});
+					console.error(error);
+				});
 		}
 		
 	}
@@ -59,11 +56,15 @@ export default function RegisterScreen() {
 			style={styles.container}
 			behavior="padding"
 		>
+			<Image 
+				source={require('../assets/feast_blue.png')}  
+				style={styles.logo} 
+			/>
 			<View style={styles.inputContainer}>
 				<TextInput 
-					placeholder='Display name'
-					value={displayName}
-					onChangeText={text => setDisplayName(text)}
+					placeholder='Username'
+					value={userName}
+					onChangeText={text => setUserName(text)}
 					style={styles.input}
 				/>
 				<TextInput 
@@ -110,7 +111,8 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		backgroundColor: '#75d9fc'
 	},
 	inputContainer: {
 		width: '80%'
@@ -130,7 +132,7 @@ const styles = StyleSheet.create({
 		marginTop: 40
 	},
 	button: {
-		backgroundColor: '#0782F9',
+		backgroundColor: 'white',
 		width: '100%',
 		padding: 15,
 		borderRadius: 10,
@@ -139,17 +141,24 @@ const styles = StyleSheet.create({
 	buttonOutline: {
 		backgroundColor: 'white',
 		marginTop: 5,
-		borderColor: '#0782F9',
+		borderColor: '#e43d4c',
 		borderWidth: 2
 	},
 	buttonText: {
-		color: 'white',
+		color: 'black',
 		fontWeight: '700',
 		fontSize: 16
 	},
 	buttonOutlineText: {
-		color: '#0782F9',
+		color: '#e43d4c',
 		fontWeight: '700',
 		fontSize: 16
+	},
+	logo: {
+		width: 175, 
+		height: 175, 
+		borderRadius: 175/ 2,
+		marginBottom: 5,
+		marginTop: -30
 	}
 })

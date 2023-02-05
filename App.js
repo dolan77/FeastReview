@@ -18,11 +18,15 @@ import RegisterScreen from './screens/RegisterScreen';
 
 const Stack = createNativeStackNavigator()
 
+function NavTabs(){
+	return <NavBar/>
+}
 
 export default function App() {
 	return (
 		<NavigationContainer>
-			<Stack.Navigator>
+			<Stack.Navigator initialRouteName='Login'>
+				<Stack.Screen options={{ headerShown: false }} name="TabNavigator" component={NavTabs} />
 				<Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
 		        <Stack.Screen options={{ headerShown: false }} name="Register" component={RegisterScreen} />
 				<Stack.Screen name="Home" component={HomeScreen} />
@@ -32,6 +36,7 @@ export default function App() {
 				<Stack.Screen name="Followers" component={FollowersScreen} />
 				<Stack.Screen name="Following" component={FollowingScreen} />
 				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
+				
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
