@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
         height: 120,
         borderRadius: 150,
         overflow: 'hidden',
-        borderWidth: 2,
+        borderWidth: 5,
         borderColor: '#EECACA'
     },
 
