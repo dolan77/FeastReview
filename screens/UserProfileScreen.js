@@ -89,7 +89,7 @@ export default function UserProfileScreen(){
                 <Text styles = {{fontWeight: 'bold'}}>Your New bio will be...</Text>
                 <TextInput
                 style={styles.input}
-                maxLength={60}
+                maxLength={100}
                 numberOfLines = {4}
                 onSubmitEditing={(value) => updateBio(value.nativeEvent.text)}
                 />
@@ -144,16 +144,9 @@ export default function UserProfileScreen(){
 
 const styles = StyleSheet.create({
 
-    flexbio:{
-        flexDirection: 'row',
-        
-    },
-
     flexbutton:{
         flex: 2,
-        
-       
-
+        justifyContent: 'space-evenly'
     },
 
     space:{
@@ -170,22 +163,6 @@ const styles = StyleSheet.create({
         borderColor: '#EECACA'
     },
 
-    bioWrap:{
-        flexWrap: 'wrap',
-        flex: 2,
-        marginTop: 10,
-        marginLeft: 15,
-        marginRight: 15,
-        justifyContent: 'center',
-        alignItems: 'baseline',
-        paddingLeft: 10,
-        paddingTop: 5,
-        borderRadius: 10,
-        fontSize: 15,
-        color: 'white'
-       
-    },
-
     bioSubscriptContent:{
         paddingHorizontal: 15
     },
@@ -198,7 +175,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderColor: '#000000',
         borderWidth: 1,
-        marginTop: 10,
         height: 75
         
         
