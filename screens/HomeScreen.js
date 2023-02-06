@@ -1,20 +1,31 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import {Button} from 'react-native'
 import * as firebase from '../utils/firebase'
 import * as yelp from '../utils/yelp'
 
-export default function HomeScreen() {
-	const navigation = useNavigation()
-	const user = auth().currentUser
+import image from "../assets/feast_blue.png"
 
-	/*
+export default function HomeScreen() {
+	const [user, setUser] = useState({});
+
+	const navigation = useNavigation()
+
+	
 	React.useLayoutEffect(() => {
 		navigation.setOptions({headerShown: false});
-	  }, [navigation]);
-	*/
+	}, [navigation]);
+
+	useEffect(() => {
+		const subscriber = auth().onAuthStateChanged((user) => {
+			console.log("user", JSON.stringify(user));
+			setUser(user);
+		});
+
+		return subscriber;
+	}, []);
 
 	logoff = () => {
 		auth()
@@ -32,6 +43,11 @@ export default function HomeScreen() {
 		.then(result => navigation.navigate('RestaurantProfile',{data: result}))});
 	}
 
+	// testing following this user.
+	const navigateOtherUserProfile = () => {
+		navigation.navigate("OtherUserProfile", {id: "pm6f9wpKmZM9GyEVL2HJuowhEda2"});
+	}
+
 	// RestaurantProfile and UserProfile might not be needed on the stack in the future. they are there for testing
 	return (
 		
@@ -42,15 +58,15 @@ export default function HomeScreen() {
 			>
 				<Text>{user.displayName}</Text>
 			</TouchableOpacity>
-
-			<Button title = "UserProfile" onPress={() => navigation.navigate('Your Profile')} />
 			<Button title = "RestaurantProfile" onPress={nagivateRestaurant} />
+			<Button title = "Matthew's Profile" onPress={navigateOtherUserProfile} />
 		</View>
 	)
 }
 
 const styles = StyleSheet.create({
 	container: {
+		backgroundColor: '#3d4051',
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center'
@@ -66,5 +82,18 @@ const styles = StyleSheet.create({
 		color: 'white',
 		fontWeight: '700',
 		fontSize: 16
+	},
+
+	fittedSize: {
+		backgroundColor: '#020878',
+		width: 385,
+		height: 385,
+		flex: 1,
+		borderRadius: 25,
+		borderWidth: 1,
+		borderColor: 'black',
+		alignSelf: 'center',
+		margin: 3
+		// paddingVertical: 25
 	}
 })
