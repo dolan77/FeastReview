@@ -11,11 +11,11 @@ import * as firebase from '../utils/firebase'
 export default function UserProfileScreen(){
     const user = auth().currentUser;
 
-    /*
+    
     React.useLayoutEffect(() => {
 		navigation.setOptions({headerShown: false});
 	  }, [navigation]);
-    */
+    
     
 
     const [modalVisible, setModalVisible] = React.useState(false);
@@ -77,61 +77,50 @@ export default function UserProfileScreen(){
     // modals refresh the screen, stacks do not. if you leave a stack and re-enter it refreshres but adding to the stack will not
     return(
     <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
-
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+            
+            setModalVisible(!modalVisible);
+            }}>
+            <View style = {styles.modalView}>
+                <Text styles = {{fontWeight: 'bold'}}>Your New bio will be...</Text>
+                <TextInput
+                style={styles.input}
+                maxLength={60}
+                numberOfLines = {4}
+                onSubmitEditing={(value) => updateBio(value.nativeEvent.text)}
+                />
+                <Button
+                title="go back"
+                onPress={() => setModalVisible(!modalVisible)}
+                />
+                <Text>{"\n"}60 characters max</Text>
+                <Text>Press Enter before you click the go back button if you want to submit your changes to bio</Text>
+            </View>
+        </Modal>
         
-        <View style= {{flex: 1}}>
+        <View style= {{flex: 3, backgroundColor: '#171414'}}>
 
-            <View style = {styles.flexbio}>
+            
+            <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
                 <Image style = {[styles.tinyLogo, styles.topContent]} source ={image}/>
+                <Text style = {styles.globalFont}>{user.email}</Text>
+                <Text style = {styles.globalFont}>Dessert Expert</Text>
+            </View> 
 
-                
-                
-                
-                <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                
-                setModalVisible(!modalVisible);
-                }}>
-                <View style = {styles.modalView}>
-                    <Text styles = {{fontWeight: 'bold'}}>Your New bio will be...</Text>
-                    <TextInput
-                    style={styles.input}
-                    maxLength={60}
-                    numberOfLines = {4}
-                    onSubmitEditing={(value) => updateBio(value.nativeEvent.text)}
-                    />
-                    <Button
-                    title="go back"
-                    onPress={() => setModalVisible(!modalVisible)}
-                    />
-                    <Text>{"\n"}60 characters max</Text>
-                    <Text>Press Enter before you click the go back button if you want to submit your changes to bio</Text>
-                </View>
-                </Modal>
-                
-                
-                <Text style = {[styles.bioWrap]}>
+            <View style = {[{flex: 1}]}>
+                <Text style={[styles.globalFont, styles.bioSubscriptContent]}>
                     {bio}
                     <Text style = {styles.editButton} onPress={() => setModalVisible(true)}>{"\n\n"}Edit Bio</Text>
                 </Text>
-            
-            </View> 
-
-            
-            <View style = {styles.bioSubscript}>
-            <Text style = {styles.bioSubscriptContent}>{user.displayName}</Text>
-            <Text style = {styles.bioSubscriptContent}>Dessert Expert</Text>
             </View>
+
         </View> 
-
-
-
         
         <View style = {styles.flexbutton}>
-        <View style={styles.horizontalLine} />
 
         <TouchableOpacity
         style={[styles.button]}
@@ -139,19 +128,15 @@ export default function UserProfileScreen(){
         <Text style={styles.buttonText}>See Your Reviews</Text>
         </TouchableOpacity>
 
-        <View style={styles.horizontalLine} />
         <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Followers')}>
             <Text style={styles.buttonText}>Followers</Text>
         </TouchableOpacity>
 
-        <View style={styles.horizontalLine} />
         <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Following')}>
             <Text style={styles.buttonText}>Following</Text>
         </TouchableOpacity>
-
-        <View style={styles.horizontalLine} />
-
         </View>
+        
     </View>
     );
 }
@@ -177,19 +162,12 @@ const styles = StyleSheet.create({
     },
 
     tinyLogo: {
-        width: 100,
+        width: 120,
         height: 120,
         borderRadius: 150,
-        flex: 1,
-        marginLeft: 5,
-        
         overflow: 'hidden',
         borderWidth: 2,
-        borderColor: 'white'
-    },
-
-    topContent:{
-        marginTop: 5
+        borderColor: '#EECACA'
     },
 
     bioWrap:{
@@ -208,23 +186,20 @@ const styles = StyleSheet.create({
        
     },
 
-    bioSubscript:{
-        
-    },
-
     bioSubscriptContent:{
-        marginLeft: 10,
-        color: 'white',
-        paddingTop: 10
+        paddingHorizontal: 15
     },
 
     button: {
-		backgroundColor: '#17202ac0',
+		backgroundColor: '#342B2B51',
 		width: '100%',
 		padding: 15,
 		alignItems: 'center',
         justifyContent: 'center',
-        
+        borderColor: '#000000',
+        borderWidth: 1,
+        marginTop: 10,
+        height: 75
         
         
 	},
@@ -234,10 +209,7 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 	},
 
-    horizontalLine:{
-        height: 2, 
-        backgroundColor: '#ffffff'
-    },
+
     input: {
         height: 40,
         width: 300,
@@ -262,6 +234,10 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         
-    }
+    },
 
+    globalFont:{
+        color: 'white',
+        fontSize: 20
+    }
 })
