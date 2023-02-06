@@ -6,7 +6,156 @@ import image from "../assets/feast_blue.png"
 
 import * as React from 'react';
 import * as firebase from '../utils/firebase'
-import * as yelp from '../utils/yelp'
+
+// background color: #3d4051 change for View, bioSubscript, flexbio, flexbutton
+export default function UserProfileScreen(){
+    const user = auth().currentUser;
+
+    /*
+    React.useLayoutEffect(() => {
+		navigation.setOptions({headerShown: false});
+	  }, [navigation]);
+    */
+    
+
+    const [modalVisible, setModalVisible] = React.useState(false);
+    // I am able to do user.email within the use state. if we are able to save the bio and pull from the database that would be epic but for now this is all i can do
+    const [bio, setBio] = React.useState('');
+    const navigation = useNavigation();
+
+    
+    /**
+     * 
+     * @param {value.nativeEvent.text} newValue - this is the value of the textbox
+     */
+    async function changeBio(newValue) {
+        // push changes to database, backend can do that
+        try {
+            await firebase.dbUpdateOnce('users', user.uid, "bio", newValue);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function getBio() {
+        // push changes to database, backend can do that
+        try {
+            const userBio = await firebase.dbGet('users', user.uid);
+            setBio(userBio.bio)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
+
+    const updateBio = (newValue) => {
+        setBio(newValue)
+        changeBio(newValue)
+    }
+    
+    /**
+     * nagivate to the ReviewsScreen
+     */
+    function seeReview () {
+        navigation.navigate('Reviews', 
+        {
+            details: user.uid,
+            type: 'user'
+        })
+    } 
+
+    console.log(user.email, 'has signed up')
+    console.log(bio, 'state')
+    
+    React.useEffect(() => {
+        getBio();
+    },
+    []
+    )
+    
+    // modals refresh the screen, stacks do not. if you leave a stack and re-enter it refreshres but adding to the stack will not
+    return(
+    <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
+
+        
+        <View style= {{flex: 1}}>
+
+            <View style = {styles.flexbio}>
+                <Image style = {[styles.tinyLogo, styles.topContent]} source ={image}/>
+
+                
+                
+                
+                <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                
+                setModalVisible(!modalVisible);
+                }}>
+                <View style = {styles.modalView}>
+                    <Text styles = {{fontWeight: 'bold'}}>Your New bio will be...</Text>
+                    <TextInput
+                    style={styles.input}
+                    maxLength={60}
+                    numberOfLines = {4}
+                    onSubmitEditing={(value) => updateBio(value.nativeEvent.text)}
+                    />
+                    <Button
+                    title="go back"
+                    onPress={() => setModalVisible(!modalVisible)}
+                    />
+                    <Text>{"\n"}60 characters max</Text>
+                    <Text>Press Enter before you click the go back button if you want to submit your changes to bio</Text>
+                </View>
+                </Modal>
+                
+                
+                <Text style = {[styles.bioWrap]}>
+                    {bio}
+                    <Text style = {styles.editButton} onPress={() => setModalVisible(true)}>{"\n\n"}Edit Bio</Text>
+                </Text>
+            
+            </View> 
+
+            
+            <View style = {styles.bioSubscript}>
+            <Text style = {styles.bioSubscriptContent}>{user.displayName}</Text>
+            <Text style = {styles.bioSubscriptContent}>Dessert Expert</Text>
+            </View>
+        </View> 
+
+
+
+        
+        <View style = {styles.flexbutton}>
+        <View style={styles.horizontalLine} />
+
+        <TouchableOpacity
+        style={[styles.button]}
+        onPress={seeReview}>
+        <Text style={styles.buttonText}>See Your Reviews</Text>
+        </TouchableOpacity>
+
+        <View style={styles.horizontalLine} />
+        <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Followers')}>
+            <Text style={styles.buttonText}>Followers</Text>
+        </TouchableOpacity>
+
+        <View style={styles.horizontalLine} />
+        <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Following')}>
+            <Text style={styles.buttonText}>Following</Text>
+        </TouchableOpacity>
+
+        <View style={styles.horizontalLine} />
+
+        </View>
+    </View>
+    );
+}
+
 
 const styles = StyleSheet.create({
 
@@ -116,135 +265,3 @@ const styles = StyleSheet.create({
     }
 
 })
-// background color: #3d4051 change for View, bioSubscript, flexbio, flexbutton
-export default function UserProfileScreen(){
-    const user = auth().currentUser;
-
-    /*
-    React.useLayoutEffect(() => {
-		navigation.setOptions({headerShown: false});
-	  }, [navigation]);
-    */
-    
-
-    const [modalVisible, setModalVisible] = React.useState(false);
-    // I am able to do user.email within the use state. if we are able to save the bio and pull from the database that would be epic but for now this is all i can do
-    const [bio, setBio] = React.useState('');
-    const navigation = useNavigation();
-
-    
-    /**
-     * 
-     * @param {value.nativeEvent.text} newValue - this is the value of the textbox
-     */
-    const changeBio = async (newValue) => {
-        // push changes to database, backend can do that
-        
-        // update the bio on the database
-        populateBio();
-    }
-    
-    /**
-     * nagivate to the ReviewsScreen
-     */
-    function seeReview () {
-        navigation.navigate('Reviews', 
-        {
-            details: user.uid,
-            type: 'user'
-        })
-    } 
-
-    const populateBio = async() => {
-        const currentUser = await firebase.dbGet('users', user.uid);
-        // console.log(currentUser.bio)
-        setBio(currentUser.bio)
-    }
-    
-    React.useEffect(() => {
-        populateBio();
-    },
-    []
-    )
-    
-    // modals refresh the screen, stacks do not. if you leave a stack and re-enter it refreshres but adding to the stack will not
-    return(
-    <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
-
-        
-        <View style= {{flex: 1}}>
-
-            <View style = {styles.flexbio}>
-                <Image style = {[styles.tinyLogo, styles.topContent]} source ={image}/>
-
-                
-                
-                
-                <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                
-                setModalVisible(!modalVisible);
-                }}>
-                <View style = {styles.modalView}>
-                    <Text styles = {{fontWeight: 'bold'}}>Your New bio will be...</Text>
-                    <TextInput
-                    style={styles.input}
-                    maxLength={60}
-                    numberOfLines = {4}
-                    onSubmitEditing={(value) => changeBio(value.nativeEvent.text)}
-                    />
-                    <Button
-                    title="go back"
-                    onPress={() => setModalVisible(!modalVisible)}
-                    />
-                    <Text>{"\n"}60 characters max</Text>
-                    <Text>Press Enter before you click the go back button if you want to submit your changes to bio</Text>
-                </View>
-                </Modal>
-                
-                
-                <Text style = {[styles.bioWrap]}>
-                    {bio}
-                    <Text style = {styles.editButton} onPress={() => setModalVisible(true)}>{"\n\n"}Edit Bio</Text>
-                </Text>
-            
-            </View> 
-
-            
-            <View style = {styles.bioSubscript}>
-            <Text style = {styles.bioSubscriptContent}>{user.displayName}</Text>
-            <Text style = {styles.bioSubscriptContent}>Dessert Expert</Text>
-            </View>
-        </View> 
-
-
-
-        
-        <View style = {styles.flexbutton}>
-        <View style={styles.horizontalLine} />
-
-        <TouchableOpacity
-        style={[styles.button]}
-        onPress={seeReview}>
-        <Text style={styles.buttonText}>See Your Reviews</Text>
-        </TouchableOpacity>
-
-        <View style={styles.horizontalLine} />
-        <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Followers')}>
-            <Text style={styles.buttonText}>Followers</Text>
-        </TouchableOpacity>
-
-        <View style={styles.horizontalLine} />
-        <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Following')}>
-            <Text style={styles.buttonText}>Following</Text>
-        </TouchableOpacity>
-
-        <View style={styles.horizontalLine} />
-
-        </View>
-    </View>
-    );
-}
