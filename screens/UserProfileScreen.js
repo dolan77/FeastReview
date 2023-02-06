@@ -107,7 +107,7 @@ export default function UserProfileScreen(){
             
             <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
                 <Image style = {[styles.tinyLogo, styles.topContent]} source ={image}/>
-                <Text style = {styles.globalFont}>{user.displayName}</Text>
+                <Text style = {styles.globalFont}>{user.email}</Text>
                 <Text style = {styles.globalFont}>Dessert Expert</Text>
             </View> 
 
