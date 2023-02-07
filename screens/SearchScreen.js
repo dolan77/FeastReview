@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View, TextInput, Button, Image, Scr
 import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import Geolocation from 'react-native-geolocation-service';
+import { starRating } from '../methods/star.js';
 import { searchBusinesses } from '../utils/yelp.js';
 import { dbGet, dbSet } from '../utils/firebase.js';
 import { requestLocationPermission } from '../utils/locationPermission.js'
@@ -88,19 +89,6 @@ export default function SearchScreen() {
 	handlePress = () => {
 		setPressed(pressed + 1)
 	}
-    
-	starRating = (rating) => {
-		let stars = []
-		for(let i = 0; i < Math.floor(rating); i++) {
-			stars.push(<Ionicons name="star" color="white" size={20} />);
-		}
-
-		if (rating % 1 !== 0) {
-			stars.push(<Ionicons name="star-half" color="white" size={20} />);
-		}
-
-		return stars
-	}
 
     return (
         <ScrollView style={styles.container}>
@@ -127,7 +115,7 @@ export default function SearchScreen() {
 								<View style={{flex: 1, marginLeft: 5}}>
 									<Text style={styles.restaurantText}>{restaurant.name}</Text>
 									<Text style={styles.restaurantText}>
-										{starRating(restaurant.rating)} {restaurant.rating}
+										{starRating(restaurant.id, restaurant.rating)} {restaurant.rating}
 									</Text>
 									<Text style={{
 										fontSize: 17, 
@@ -135,7 +123,7 @@ export default function SearchScreen() {
 										flexWrap: 'wrap', 
 										color: restaurant.is_closed.toString() ? '#26B702' : '#FF0000'
 									}}>
-										{restaurant.is_closed.toString() ? 'Open' : 'Closed'}
+										{restaurant.is_closed.toString() ? `Open` : `Closed`}
 									</Text>
 									<Text style={styles.restaurantText}>{restaurant.location.address1}</Text>
 									{/* {restaurant.coordinates.latitude} {restaurant.coordinates.longitude} */}
