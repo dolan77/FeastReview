@@ -2,7 +2,8 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBa
 import { useNavigation } from '@react-navigation/core';
 import React, {useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import {timeConvert} from "../methods/time"
+import { starRating } from '../methods/star';
 import openMap, { createMapLink, createOpenLink } from 'react-native-open-maps';
 import image from "../assets/maps-icon.png"
 
@@ -15,7 +16,9 @@ export default function RestaurantProfileScreen({route}){
     const nagivation = useNavigation();
     const dayOfTheWeek = ["mon", "tues", "wed", "thurs", "fri", "sat", "sun"]
     const restaurantData = route.params;
-     console.log(restaurantData)
+    console.log(restaurantData)
+    console.log(restaurantData.data.hours[0])
+    
     // console.log(restaurantData.data.hours[0].open[0])
     
     /**
@@ -47,22 +50,13 @@ export default function RestaurantProfileScreen({route}){
         })
     }
 
-    const addReview = () => {
+    const addReview = (hoursData) => {
         // CODE FOR SOMEONE ELSE TO DO
     }
 
     // latitude: restaurantData.data.coordinates.latitude, longitude: restaurantData.data.coordinates.longitude
 
-    // printing the rating for the restaurant as star icons
-    var stars = [];
-    for(let i = 0; i < parseInt(restaurantData.data.rating); i++){
-        stars.push(<View key={i}><Ionicons name="star" color="gold" size={20}/></View>);
-        
-    }
-    if (restaurantData.data.rating % 1 == 0.5){
-        stars.push(<View key={i}><Ionicons name="star-half" color="gold" size={20}/></View>);
-    }
-
+    
     return(
         <SafeAreaView style={style.container}>
             <ScrollView>
@@ -79,7 +73,7 @@ export default function RestaurantProfileScreen({route}){
                                 {restaurantData.data.name}
                             </Text>
                             <View>
-                                <Text>{stars}</Text>
+                                <Text>{starRating(restaurantData.data.id, restaurantData.data.rating)}</Text>
                                 <Text style={[style.text]}>{restaurantData.data.review_count} reviews</Text>
                                 
                             </View>
@@ -109,7 +103,7 @@ export default function RestaurantProfileScreen({route}){
                         
                             <View>
                                 {restaurantData.data.hours[0].open.map(hoursData => (
-                                    <Text key={hoursData.day} style={style.scheduleText}>{"\t"}{hoursData.start} - {hoursData.end}</Text>
+                                    <Text key={hoursData.day} style={style.scheduleText}>{"\t"}{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
                                 ))}
                             </View>
 
@@ -202,7 +196,8 @@ const style = StyleSheet.create({
 
     scheduleText:{
         color: 'white',
-        fontSize: 20
+        fontSize: 20,
+        textTransform: 'capitalize'
         
     },
     scheduleContainer:{
