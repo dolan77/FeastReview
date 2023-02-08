@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/core';
 import {Button} from 'react-native'
 import * as firebase from '../utils/firebase'
 import * as yelp from '../utils/yelp'
-import {Button} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import image from "../assets/feast_blue.png"
@@ -98,8 +97,8 @@ export default function HomeScreen() {
 					</TouchableOpacity>
 
 					<Button title = "User Profile" onPress={() => navigation.navigate('Your Profile')} />
-					<Button title = "Restaurant Profile" onPress={() => navigation.navigate('RestaurantProfile')} />
-					{/* BUTTON IMPLEMENTED BELOW IS FOR TESTING */}
+					<Button title = "RestaurantProfile" onPress={nagivateRestaurant} />
+            		<Button title = "Matthew's Profile" onPress={navigateOtherUserProfile} />
 					<Button title = "Create Review Page" onPress={() => navigation.navigate('Create Review')} />
 				</View>
 			</ScrollView>

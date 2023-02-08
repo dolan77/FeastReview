@@ -52,6 +52,7 @@ export default function RestaurantProfileScreen({route}){
 
     const addReview = (hoursData) => {
         // CODE FOR SOMEONE ELSE TO DO
+        nagivation.replace('Create Review')
     }
 
     // latitude: restaurantData.data.coordinates.latitude, longitude: restaurantData.data.coordinates.longitude

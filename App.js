@@ -14,7 +14,7 @@ import FollowingScreen from './screens/FollowingScreen';
 import RestaurantProfileScreen from './screens/RestaurantProfileScreen';
 import NavBar from './screens/NavBar';
 import OtherUserProfileScreen from './screens/OtherUserProfileScreen';
-import ReviewPageScreen from './screens/ReviewPage';
+import CreateReviewScreen from './screens/CreateReviewScreen';
 
 import RegisterScreen from './screens/RegisterScreen';
 
@@ -39,7 +39,7 @@ export default function App() {
 				<Stack.Screen name="Following" component={FollowingScreen} />
 				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
 				<Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen}/>
-				<Stack.Screen name="Create Review" component={ReviewPageScreen} />
+				<Stack.Screen name="Create Review" component={CreateReviewScreen} />
 				
 			</Stack.Navigator>
 		</NavigationContainer>
