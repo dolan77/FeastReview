@@ -8,8 +8,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Screens
 import HomeScreen from './HomeScreen';
-// import SearchScreen from './screens/SearchScreen'
 import ProfileScreen from './UserProfileScreen';
+import SearchScreen from './SearchScreen';
 
 
 // Screen names
@@ -44,7 +44,7 @@ export default function NavBar() {
 
             <Tab.Screen name={homeName} component={HomeScreen}/>
             {/* todo: need to create the search screen */}
-            <Tab.Screen name={searchName} component={HomeScreen}/>   
+            <Tab.Screen name={searchName} component={SearchScreen}/>   
             <Tab.Screen name={profileName} component={ProfileScreen}/>
 
 
