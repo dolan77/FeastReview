@@ -17,10 +17,6 @@ export default function SearchScreen() {
 	const [pressed, setPressed] = useState(1)
     const navigation = useNavigation();
 
-    useLayoutEffect(() => {
-        navigation.setOptions({ headerShown: false });
-    }, [navigation]);
-
 	/**
 	 * After refresh, the app will get the user's location
 	 */
@@ -66,7 +62,7 @@ export default function SearchScreen() {
 	
 	/**
 	 * @param {*} limit amount of results that will be displayed (default value of 10)
-	 * calls the yelp api function to return search results
+	 * calls the yelp api function then sets the results to restaurant state
 	 */
 	handleSearch = ({limit = 10}) => {
 		dbGet('api_keys','key')
