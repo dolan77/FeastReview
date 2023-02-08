@@ -42,10 +42,10 @@ export default function NavBar() {
                     }
             })}>
 
-            <Tab.Screen name={homeName} component={HomeScreen}/>
+            <Tab.Screen options={{ headerShown: false }} name={homeName} component={HomeScreen}/>
             {/* todo: need to create the search screen */}
-            <Tab.Screen name={searchName} component={SearchScreen}/>   
-            <Tab.Screen name={profileName} component={ProfileScreen}/>
+            <Tab.Screen options={{ headerShown: false }} name={searchName} component={SearchScreen}/>   
+            <Tab.Screen options={{ headerShown: false }} name={profileName} component={ProfileScreen}/>
 
 
             </Tab.Navigator>
