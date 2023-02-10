@@ -86,6 +86,7 @@ export default function SearchScreen() {
 		setPressed(pressed + 1)
 	}
 
+	// displays a map with markers of the restaurants that the user searched
     return (
         <View style={styles.container}>
 			<View style={styles.searchContainer}>
