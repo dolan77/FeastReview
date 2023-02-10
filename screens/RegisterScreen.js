@@ -11,6 +11,8 @@ export default function RegisterScreen() {
 
 	const navigation = useNavigation()
 
+	// calls the Firebase api with user input to create a user object and put it in the
+	// Firestore
   	createUser = () => {
 		if (password !== passwordAgain) {
 			console.log('Passwords do not match')
@@ -50,7 +52,8 @@ export default function RegisterScreen() {
 		}
 		
 	}
-  
+	
+	// displays an input form for user to make an account for FeastReview
   	return (
 		<KeyboardAvoidingView
 			style={styles.container}
