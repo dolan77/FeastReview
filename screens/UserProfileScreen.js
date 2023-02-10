@@ -8,6 +8,8 @@ import * as React from 'react';
 import * as firebase from '../utils/firebase'
 
 // background color: #3d4051 change for View, bioSubscript, flexbio, flexbutton
+
+// function that returns the screen for the current user
 export default function UserProfileScreen(){
     const user = auth().currentUser;
 
@@ -19,7 +21,6 @@ export default function UserProfileScreen(){
     
 
     const [modalVisible, setModalVisible] = React.useState(false);
-    // I am able to do user.email within the use state. if we are able to save the bio and pull from the database that would be epic but for now this is all i can do
     const [bio, setBio] = React.useState('');
     const navigation = useNavigation();
 
@@ -37,6 +38,7 @@ export default function UserProfileScreen(){
         }
     }
 
+    // function that retrieves the bio from the firestore database
     async function getBio() {
         // push changes to database, backend can do that
         try {
@@ -48,7 +50,7 @@ export default function UserProfileScreen(){
     }
 
 
-
+    // function that will update the bio on the user's screen
     const updateBio = (newValue) => {
         setBio(newValue)
         changeBio(newValue)
@@ -74,7 +76,8 @@ export default function UserProfileScreen(){
     []
     )
     
-    // modals refresh the screen, stacks do not. if you leave a stack and re-enter it refreshres but adding to the stack will not
+    // this returns the User Profile Screen onto the application on the mobile device. The screen consists of a picture, user name, biography, expertise, and three
+    // buttons to navigate to another screen. The user is also able to edit their bio, which leads to a different screen and updates the bio on the database.
     return(
     <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
         <Modal
@@ -97,7 +100,7 @@ export default function UserProfileScreen(){
                 title="go back"
                 onPress={() => setModalVisible(!modalVisible)}
                 />
-                <Text>{"\n"}60 characters max</Text>
+                <Text>{"\n"}100 characters max</Text>
                 <Text>Press Enter before you click the go back button if you want to submit your changes to bio</Text>
             </View>
         </Modal>

@@ -8,10 +8,8 @@ import openMap, { createMapLink, createOpenLink } from 'react-native-open-maps';
 import image from "../assets/maps-icon.png"
 
 
-// TODO:
-// Back-End: figure out how to know which restaurant profile to display
-// maybe pass in the restaurant-id when you click on a restaurant to display this profile
 
+// function that returns the screen for a Restaurant's profile
 export default function RestaurantProfileScreen({route}){
     const nagivation = useNavigation();
     const dayOfTheWeek = ["mon", "tues", "wed", "thurs", "fri", "sat", "sun"]
@@ -50,13 +48,15 @@ export default function RestaurantProfileScreen({route}){
         })
     }
 
+    /**
+     * method to add a review to the current restaurant
+     */
     const addReview = (hoursData) => {
         // CODE FOR SOMEONE ELSE TO DO
     }
 
-    // latitude: restaurantData.data.coordinates.latitude, longitude: restaurantData.data.coordinates.longitude
-
-    
+    // returns the screen of the restaurant that the current user is looking at. This contains information about the restaurant's
+    // hours, name, rating, reviews, directions, phone number, and website to the restaurant
     return(
         <SafeAreaView style={style.container}>
             <ScrollView>

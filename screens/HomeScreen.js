@@ -47,8 +47,7 @@ export default function HomeScreen() {
 	const navigateOtherUserProfile = () => {
 		navigation.navigate("OtherUserProfile", {id: "pm6f9wpKmZM9GyEVL2HJuowhEda2"});
 	}
-
-	// RestaurantProfile and UserProfile might not be needed on the stack in the future. they are there for testing
+	
 	return (
 		
 		<View style={styles.container}>
@@ -59,7 +58,7 @@ export default function HomeScreen() {
 				<Text>{user.displayName}</Text>
 			</TouchableOpacity>
 			<Button title = "RestaurantProfile" onPress={nagivateRestaurant} />
-			<Button title = "Matthew's Profile" onPress={navigateOtherUserProfile} />
+			
 		</View>
 	)
 }
