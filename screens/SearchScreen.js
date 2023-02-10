@@ -64,7 +64,7 @@ export default function SearchScreen() {
 	 * @param {*} limit amount of results that will be displayed (default value of 10)
 	 * calls the yelp api function then sets the results to restaurant state
 	 */
-	handleSearch = ({limit = 10}) => {
+	handleSearch = (limit = 10) => {
 		dbGet('api_keys','key')
 			.then(keys => {
 				searchBusinesses(
@@ -77,6 +77,15 @@ export default function SearchScreen() {
 					setRestaurants([...result])
 				});
 		});
+	}
+
+	/**
+	 * Allows live complete by putting searchtext together with handleSearch
+	 * @param {*} limit amount of results that will be displayed (default value of 10)
+	 */
+	autoComplete = (text) => {
+		setSearchText(text);
+		handleSearch();
 	}
 
 	/**
@@ -95,7 +104,7 @@ export default function SearchScreen() {
 					placeholder='Search for foods...'
 					placeholderTextColor='white'
 					value = {searchText}
-					onChangeText={text => setSearchText(text)}
+					onChangeText={text => autoComplete(text)}
 					onSubmitEditing={handleSearch}
 				/>
 			</View>
