@@ -3,12 +3,12 @@ import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import Geolocation from 'react-native-geolocation-service';
 import { starRating } from '../methods/star.js';
+import { map } from '../methods/map.js';
 import { searchBusinesses } from '../utils/yelp.js';
 import { dbGet, dbSet } from '../utils/firebase.js';
 import { requestLocationPermission } from '../utils/locationPermission.js'
 import { SearchBar} from '../components/SearchBar.js';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function SearchScreen() {
 	const [searchText, setSearchText] = useState('')
@@ -87,7 +87,7 @@ export default function SearchScreen() {
 	}
 
     return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
 			<View style={styles.searchContainer}>
 				<TextInput 
 					style={styles.searchBar}
@@ -98,8 +98,9 @@ export default function SearchScreen() {
 					onSubmitEditing={handleSearch}
 				/>
 			</View>
-			<View style={styles.restaurantContainer}>
-				{restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20}}>Results</Text> : <></>}
+			{restaurants.length !== 0 ? map(restaurants, location) : <></>}
+			{restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20, padding: 10, marginBottom: 5}}>Results</Text> : <></>}
+			<ScrollView style={styles.restaurantContainer}>
 				{restaurants !== [] &&
 					restaurants.map(restaurant => {
 						return (
@@ -122,24 +123,23 @@ export default function SearchScreen() {
 										{restaurant.is_closed.toString() ? `Open` : `Closed`}
 									</Text>
 									<Text style={styles.restaurantText}>{restaurant.location.address1}</Text>
-									{/* {restaurant.coordinates.latitude} {restaurant.coordinates.longitude} */}
 								</View>
 							</View>
 						)
 					})
 				}
-			</View>
-			{restaurants.length !== 0 && 
-				<View style={styles.buttonContainer}>
-					<TouchableOpacity
-						onPress={handlePress}
-						style={styles.button}
-					>
-						<Text style={styles.buttonText}>See More Results</Text>
-					</TouchableOpacity>
-				</View>
-			}
-        </ScrollView>
+				{restaurants.length !== 0 && 
+					<View style={styles.buttonContainer}>
+						<TouchableOpacity
+							onPress={handlePress}
+							style={styles.button}
+						>
+							<Text style={styles.buttonText}>See More Results</Text>
+						</TouchableOpacity>
+					</View>
+				}
+			</ScrollView>
+        </View>
     )
 }
 
