@@ -1,10 +1,6 @@
 import * as React from 'react';
-
-
-import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import { Ionicons } from '@expo/vector-icons';
 
 // Screens
 import HomeScreen from './HomeScreen';
@@ -19,6 +15,8 @@ const profileName = 'Profile';
 
 const Tab = createBottomTabNavigator();
 
+// Creates a bottom tab navigator with three buttons: home, search, and outline. Pressing each of the buttons will
+// take you to its corresponding screens.
 export default function NavBar() {
     return(
             <Tab.Navigator
@@ -43,7 +41,6 @@ export default function NavBar() {
             })}>
 
             <Tab.Screen name={homeName} component={HomeScreen}/>
-            {/* todo: need to create the search screen */}
             <Tab.Screen name={searchName} component={SearchScreen}/>   
             <Tab.Screen name={profileName} component={ProfileScreen}/>
 
