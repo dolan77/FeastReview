@@ -114,6 +114,7 @@ export default function ReviewPage() {
         )
     }
 
+    // Changes the text content inside of the review box after the user presses Enter after editing.
     function changeReview(userReview) {
         setReview(userReview)
     };
@@ -176,6 +177,7 @@ export default function ReviewPage() {
             
             </ScrollView>
             
+            {/* Button for 'Submit Review' */}
             <View style={styles.container}>
                 <TouchableOpacity
                     style={styles.button}
