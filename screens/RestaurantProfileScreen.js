@@ -124,7 +124,7 @@ export default function RestaurantProfileScreen({route}){
                             <Ionicons style= {{padding: 5}} name='globe-outline' size={40} color='white'/>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={createOpenLink({ end: restaurantData.data.location.address1})}>
+                        <TouchableOpacity >
                         <Ionicons style = {{padding: 5}} name = 'compass-outline' color='white' size = {40}/>
                         </TouchableOpacity>
 
@@ -160,6 +160,7 @@ export default function RestaurantProfileScreen({route}){
 
 
 // CSS for the View that is being returned
+// onPress={createOpenLink({ end: restaurantData.data.location.address1})}
 const style = StyleSheet.create({
     tinylogo:{
         height: 130,
