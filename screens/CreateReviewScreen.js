@@ -4,9 +4,10 @@ import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import {Button} from 'react-native';
 
-export default function ReviewPage() {
+export default function ReviewPage({route}) {
     const navigation = useNavigation();
     const user = auth().currentUser;
+    const restaurantData = route.params.restaurantData;
     var userReview = 'Your Review';
 
     React.useLayoutEffect(() => {
@@ -124,7 +125,7 @@ export default function ReviewPage() {
         <View style={styles.container1}>
             {/* Restaurant Name */}
             <Text style={styles.restaurantName}>
-                    Restaurant Name
+                    {restaurantData.data.name}
             </Text>
             
             {/* Selectable star review rating for food. */}
