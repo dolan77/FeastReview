@@ -6,19 +6,63 @@ import {timeConvert} from "../methods/time"
 import { starRating } from '../methods/star';
 import openMap, { createMapLink, createOpenLink } from 'react-native-open-maps';
 import image from "../assets/maps-icon.png"
-
-
+import * as firebase from '../utils/firebase'
+import auth from '@react-native-firebase/auth';
 
 // function that returns the screen for a Restaurant's profile
 export default function RestaurantProfileScreen({route}){
     const nagivation = useNavigation();
     const dayOfTheWeek = ["mon", "tues", "wed", "thurs", "fri", "sat", "sun"]
     const restaurantData = route.params;
-    console.log(restaurantData)
-    console.log(restaurantData.data.hours[0])
-    
+    const [saved, setSaved] = React.useState('')
+    const [color, setColor] = React.useState('')
+    // console.log(restaurantData)
+    // console.log(restaurantData.data.hours[0])
+    const user = auth().currentUser;
     // console.log(restaurantData.data.hours[0].open[0])
-    
+
+    React.useEffect( () => {
+        PopulateButton();
+    }
+
+    )
+    const clickSaved = async () => {
+        try{
+            const currentUser = await firebase.dbGet('users', user.uid);
+
+            if (currentUser.saved_restaurants.includes(restaurantData.data.alias)){
+                await firebase.dbUpdateArrayRemove('users', user.uid, 'saved_restaurants', [restaurantData.data.alias]);
+                PopulateButton();
+            }
+            else{
+                await firebase.dbUpdateArrayAdd('users', user.uid, 'saved_restaurants', [restaurantData.data.alias]);
+                PopulateButton();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const PopulateButton = async () => {
+        try {
+            const currentUser = await firebase.dbGet('users', user.uid);
+            // if we are following the user, prompt the unfollow button
+            if (currentUser.saved_restaurants.includes(restaurantData.data.alias)){
+                
+                setSaved('Remove');
+                setColor('#636362');
+                
+            }
+            // we are not following the user,prompt the follow button
+            else{
+                
+                setSaved('Save');
+                setColor('#0782F9');
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
     /**
      * function to call a phone number
      */
@@ -124,7 +168,8 @@ export default function RestaurantProfileScreen({route}){
                             <Ionicons style= {{padding: 5}} name='globe-outline' size={40} color='white'/>
                         </TouchableOpacity>
 
-                        <TouchableOpacity >
+                        <TouchableOpacity 
+                        onPress={createOpenLink({ end: restaurantData.data.location.address1})}>
                         <Ionicons style = {{padding: 5}} name = 'compass-outline' color='white' size = {40}/>
                         </TouchableOpacity>
 
@@ -150,6 +195,13 @@ export default function RestaurantProfileScreen({route}){
                 >
                     <Text style={style.buttonText}>Add Review</Text>
                    </TouchableOpacity>
+
+
+
+                    <TouchableOpacity style={[style.button, {backgroundColor: color}]} onPress={clickSaved}>
+                        <Text style={style.buttonText}>{saved}</Text>
+                    </TouchableOpacity>
+
                 </View>
 
             </ScrollView>
