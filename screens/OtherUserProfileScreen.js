@@ -31,10 +31,10 @@ export default function OtherUserProfileScreen({route}){
     const clickFollow = async () => {
         try {
 
-            const otherUser = await firebase.dbGet('users', user.uid);
+            const currentUser = await firebase.dbGet('users', user.uid);
 
             // if we are following the user, unfollow them
-            if (otherUser.following.includes(otherID.id)){
+            if (currentUser.following.includes(otherID.id)){
                 await firebase.dbUpdateArrayRemove('users', user.uid, 'following', [otherID.id])
                 PopulateButton();
             }
