@@ -19,6 +19,7 @@ export default function SearchScreen() {
 
 	/**
 	 * After refresh, the app will get the user's location
+	 * written by Matthew Hirai
 	 */
 	useEffect(() => {
 		setPressed(1)
@@ -29,6 +30,7 @@ export default function SearchScreen() {
 	/**
 	 * If pressed state is changed, it will call the handleSearch 
 	 * function with a new limit
+	 * written by Matthew Hirai
 	 */
 	useEffect(() => {
 		if (pressed !== 1) {
@@ -38,7 +40,8 @@ export default function SearchScreen() {
 	}, [pressed])
 
 	/**
-	 * uses the geolocation package to get the user's current latitude and longitude
+	 * Uses the geolocation package to get the user's current latitude and longitude
+	 * written by Matthew Hirai
 	 */
 	getLocation = () => {
 		const result = requestLocationPermission();
@@ -61,10 +64,11 @@ export default function SearchScreen() {
 	};
 	
 	/**
+	 * Calls the yelp api function then sets the results to restaurant state
 	 * @param {*} limit amount of results that will be displayed (default value of 10)
-	 * calls the yelp api function then sets the results to restaurant state
+	 * by Nathan Lai
 	 */
-	handleSearch = (limit = 10) => {
+	handleSearch = ({limit = 10}) => {
 		dbGet('api_keys','key')
 			.then(keys => {
 				searchBusinesses(
@@ -81,21 +85,26 @@ export default function SearchScreen() {
 
 	/**
 	 * Allows live complete by putting searchtext together with handleSearch
-	 * @param {*} limit amount of results that will be displayed (default value of 10)
+	 * @param {*} text the string that the user types
+	 * by Nathan Lai
 	 */
 	autoComplete = (text) => {
 		setSearchText(text);
-		handleSearch();
+		handleSearch(10);
 	}
 
 	/**
-	 * increments the amount of times the 'See More Results' button is pressed
+	 * Increments the amount of times the 'See More Results' button is pressed
+	 * by Nathan Lai
 	 */
 	handlePress = () => {
 		setPressed(pressed + 1)
 	}
 
-	// displays a map with markers of the restaurants that the user searched
+	/**
+	 * displays a map with markers of the restaurants that the user searched
+	 * by Matthew Hirai
+	*/
     return (
         <View style={styles.container}>
 			<View style={styles.searchContainer}>
@@ -109,7 +118,7 @@ export default function SearchScreen() {
 				/>
 			</View>
 			{restaurants.length !== 0 ? map(restaurants, location) : <></>}
-			{restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20, padding: 10, marginBottom: 5}}>Results</Text> : <></>}
+			{restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20, padding: 10}}>Results</Text> : <></>}
 			<ScrollView style={styles.restaurantContainer}>
 				{restaurants !== [] &&
 					restaurants.map(restaurant => {
@@ -168,7 +177,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         alignItems: 'center',
         borderStyle: 'solid',
-        borderColor: '#4A9B6A',
+        borderColor: '#75d9fc',
         borderWidth: 2,
 		color: 'white'
     },
@@ -207,7 +216,7 @@ const styles = StyleSheet.create({
 		
 	},
 	button: {
-		backgroundColor: '#4A9B6A',
+		backgroundColor: '#75d9fc',
 		width: '100%',
 		padding: 15,
 		borderRadius: 50,
@@ -215,7 +224,7 @@ const styles = StyleSheet.create({
 		marginBottom: 35
 	},
 	buttonText: {
-		color: 'white',
+		color: 'black',
 		fontWeight: '700',
 		fontSize: 16
 	},
