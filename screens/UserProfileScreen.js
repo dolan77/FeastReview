@@ -73,10 +73,13 @@ export default function UserProfileScreen(){
     const seeFollow = async () => {
         try{
             const currentUser = await firebase.dbGet('users', user.uid);
+            
         let following_names = []
         for (let i = 0; i < currentUser.following.length; i++){
+            
             // loop thru the UID's the user is following and add their name
             otherUser = await firebase.dbGet('users', currentUser.following[i])
+            // console.log(otherUser)
             following_names.push(otherUser.name)
         }
         // console.log('following_names' + following_names)
