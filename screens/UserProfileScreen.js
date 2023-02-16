@@ -78,7 +78,7 @@ export default function UserProfileScreen(){
         for (let i = 0; i < currentUser.following.length; i++){
             
             // loop thru the UID's the user is following and add their name
-            otherUser = await firebase.dbGet('users', currentUser.following[i])
+            otherUser = await firebase.dbGet('users', currentUser.following[i]);
             // console.log(otherUser)
             following_names.push(otherUser.name)
         }
@@ -96,6 +96,19 @@ export default function UserProfileScreen(){
         
     }
 
+    const seeFollowing = async () => {
+        const currentUser = await firebase.dbGet('users', user.uid);
+        let followersNames = [];
+        for (let i = 0; i < currentUser.followers.length; i++){
+            otherUser = await firebase.dbGet('users', currentUser.following[i]);
+            followersNames.push(otherUser.name)
+        }
+        navigation.navigate('Followers',
+        {
+            followersUID: currentUser.followers,
+            followersNames: followersNames
+        })
+    }
     React.useEffect(() => {
         getBio();
     },
