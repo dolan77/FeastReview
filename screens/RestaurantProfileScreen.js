@@ -2,22 +2,67 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBa
 import { useNavigation } from '@react-navigation/core';
 import React, {useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import {timeConvert} from "../methods/time"
+import { starRating } from '../methods/star';
 import openMap, { createMapLink, createOpenLink } from 'react-native-open-maps';
 import image from "../assets/maps-icon.png"
+import * as firebase from '../utils/firebase'
+import auth from '@react-native-firebase/auth';
 
-
-// TODO:
-// Back-End: figure out how to know which restaurant profile to display
-// maybe pass in the restaurant-id when you click on a restaurant to display this profile
-
+// function that returns the screen for a Restaurant's profile
 export default function RestaurantProfileScreen({route}){
     const nagivation = useNavigation();
     const dayOfTheWeek = ["mon", "tues", "wed", "thurs", "fri", "sat", "sun"]
     const restaurantData = route.params;
-     console.log(restaurantData)
+    const [saved, setSaved] = React.useState('')
+    const [color, setColor] = React.useState('')
+    // console.log(restaurantData)
+    // console.log(restaurantData.data.hours[0])
+    const user = auth().currentUser;
     // console.log(restaurantData.data.hours[0].open[0])
-    
+
+    React.useEffect( () => {
+        PopulateButton();
+    }
+
+    )
+    const clickSaved = async () => {
+        try{
+            const currentUser = await firebase.dbGet('users', user.uid);
+
+            if (currentUser.saved_restaurants.includes(restaurantData.data.alias)){
+                await firebase.dbUpdateArrayRemove('users', user.uid, 'saved_restaurants', [restaurantData.data.alias]);
+                PopulateButton();
+            }
+            else{
+                await firebase.dbUpdateArrayAdd('users', user.uid, 'saved_restaurants', [restaurantData.data.alias]);
+                PopulateButton();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const PopulateButton = async () => {
+        try {
+            const currentUser = await firebase.dbGet('users', user.uid);
+            // if we are following the user, prompt the unfollow button
+            if (currentUser.saved_restaurants.includes(restaurantData.data.alias)){
+                
+                setSaved('Remove');
+                setColor('#636362');
+                
+            }
+            // we are not following the user,prompt the follow button
+            else{
+                
+                setSaved('Save');
+                setColor('#0782F9');
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
     /**
      * function to call a phone number
      */
@@ -47,25 +92,19 @@ export default function RestaurantProfileScreen({route}){
         })
     }
 
-    const addReview = () => {
+    /**
+     * method to add a review to the current restaurant
+     */
+    const addReview = (hoursData) => {
         // CODE FOR SOMEONE ELSE TO DO
     }
 
-    // latitude: restaurantData.data.coordinates.latitude, longitude: restaurantData.data.coordinates.longitude
-
-    // printing the rating for the restaurant as star icons
-    var stars = [];
-    for(let i = 0; i < parseInt(restaurantData.data.rating); i++){
-        stars.push(<View key={i}><Ionicons name="star" color="white" size={20}/></View>);
-        
-    }
-    if (restaurantData.data.rating % 1 == 0.5){
-        stars.push(<View key={i}><Ionicons name="star-half" color="white" size={20}/></View>);
-    }
-
+    // returns the screen of the restaurant that the current user is looking at. This contains information about the restaurant's
+    // hours, name, rating, reviews, directions, phone number, and website to the restaurant
     return(
         <SafeAreaView style={style.container}>
             <ScrollView>
+                <View stlye={{flex: 3}}>
                 <View>
                     
                     <ImageBackground
@@ -77,70 +116,72 @@ export default function RestaurantProfileScreen({route}){
                             <Text style={style.text}>
                                 {restaurantData.data.name}
                             </Text>
-                            <View style={{flexDirection: 'row'}}>
-                                {stars}
-                                <Text style={[style.text]}>{"\t\t"}{restaurantData.data.review_count} reviews</Text>
+                            <View>
+                                <Text>{starRating(restaurantData.data.id, restaurantData.data.rating)}</Text>
+                                <Text style={[style.text]}>{restaurantData.data.review_count} reviews</Text>
                                 
                             </View>
                             
                         </View>
                     </ImageBackground>
-                    <View style={style.horizontalLine}></View>
+                
                 </View>
 
-                <Text style={[style.scheduleText, {paddingLeft: 20, paddingTop: 15, fontSize: 20, fontWeight: 'bold'}]}>Hours</Text>
                 
                 
-                <View style={[style.scheduleContainer, {justifyContent: 'space-evenly', marginTop:5},]}>
+                <View style = {{backgroundColor: '#161414'}}>
+                <View style={style.horizontalLine} />
+                    <Text style={[style.scheduleText, {fontSize: 20, fontWeight: 'bold', alignSelf: 'center', paddingTop: 20}]}>Hours</Text>
+
+                    <View style={[style.scheduleContainer, {justifyContent: 'space-evenly', marginTop:5},]}>
+                            
+                        <View style={style.scheduleContainer}>
+
                         
-                    <View style={style.scheduleContainer}>
+                            <View>
+                                {restaurantData.data.hours[0].open.map(hoursData => (
+                                    <Text key={hoursData.day} style={style.scheduleText}>{dayOfTheWeek[hoursData.day]}:</Text>
+                                ))}
+                            </View>
 
-                    
-                        <View>
-                            {restaurantData.data.hours[0].open.map(hoursData => (
-                                <Text key={hoursData.day} style={style.scheduleText}>{dayOfTheWeek[hoursData.day]}:</Text>
-                            ))}
-                        </View>
+                        
+                            <View>
+                                {restaurantData.data.hours[0].open.map(hoursData => (
+                                    <Text key={hoursData.day} style={style.scheduleText}>{"\t"}{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
+                                ))}
+                            </View>
 
-                       
-                        <View>
-                            {restaurantData.data.hours[0].open.map(hoursData => (
-                                <Text key={hoursData.day} style={style.scheduleText}>{"\t"}{hoursData.start} - {hoursData.end}</Text>
-                            ))}
                         </View>
 
                     </View>
 
-                    <View>
-
-                    <TouchableOpacity onPress={createOpenLink({ end: restaurantData.data.location.address1})}>
-                       <Image style={style.tinylogo} source={image} />
-                    </TouchableOpacity>
-                    <Text style={[{textAlign: 'center'}, style.scheduleText]}>Get Directions</Text>
-
-                    </View> 
-
-                </View>
-
                 
-                <View style={[style.IconContainer]}>
-                    <TouchableOpacity
-                    onPress={triggerCall} style={[{backgroundColor: 'white', borderRadius: 20, marginRight: 5}]}>
-                        <Ionicons style= {{padding: 5}} name='call-outline' size={30} color='black'/>
-                        
-                    </TouchableOpacity>
+                    <View style={[style.IconContainer]}>
+                        <TouchableOpacity
+                        onPress={triggerCall}>
+                            <Ionicons style= {{padding: 5}} name='call-outline' size={40} color='white'/>
+                            
+                        </TouchableOpacity>
 
-                    <TouchableOpacity
-                    onPress={openSite} style={[{backgroundColor: 'white', borderRadius: 20}]}>
-                        <Ionicons style= {{padding: 5}} name='globe-outline' size={30} color='black'/>
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                        onPress={openSite}>
+                            <Ionicons style= {{padding: 5}} name='globe-outline' size={40} color='white'/>
+                        </TouchableOpacity>
 
+                        <TouchableOpacity 
+                        onPress={createOpenLink({ end: restaurantData.data.location.address1})}>
+                        <Ionicons style = {{padding: 5}} name = 'compass-outline' color='white' size = {40}/>
+                        </TouchableOpacity>
 
-                    
+                    </View>
+                    <View style={style.horizontalLine} />
 
                 </View>
 
-                <View style={style.buttonContainer}>
+
+                </View>
+
+                <View style={[style.buttonContainer]}>
                    <TouchableOpacity
                    onPress={navigateReview}
                    style={style.button}
@@ -154,6 +195,13 @@ export default function RestaurantProfileScreen({route}){
                 >
                     <Text style={style.buttonText}>Add Review</Text>
                    </TouchableOpacity>
+
+
+
+                    <TouchableOpacity style={[style.button, {backgroundColor: color}]} onPress={clickSaved}>
+                        <Text style={style.buttonText}>{saved}</Text>
+                    </TouchableOpacity>
+
                 </View>
 
             </ScrollView>
@@ -164,6 +212,7 @@ export default function RestaurantProfileScreen({route}){
 
 
 // CSS for the View that is being returned
+// onPress={createOpenLink({ end: restaurantData.data.location.address1})}
 const style = StyleSheet.create({
     tinylogo:{
         height: 130,
@@ -178,19 +227,10 @@ const style = StyleSheet.create({
         flex: 1,
         backgroundColor: '#3d4051',
     },
-    header:{
-        flex: 1
-    },
-    restaurantInfo:{
-        flex: 2
-    },
-    restaurantDetail:{
-        flex: 2
-    },
     IconContainer:{
         flexDirection: 'row',
         marginTop: 10,
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
 
     headerCover: {
@@ -209,31 +249,38 @@ const style = StyleSheet.create({
 
     scheduleText:{
         color: 'white',
-        fontSize: 17
+        fontSize: 20,
+        textTransform: 'capitalize'
         
     },
     scheduleContainer:{
         flexDirection: 'row',
     },
 
-    scheduleInner:{
-        color: "red"
-    },
-
     buttonContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 10
+       
+
     },
 
     button: {
-        backgroundColor: '#0782F9',
-        width: '60%',
-        padding: 15,
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
+		backgroundColor: '#342B2B51',
+		width: '100%',
+		padding: 15,
+		alignItems: 'center',
+        justifyContent: 'center',
+        borderColor: '#000000',
+        borderWidth: 1,
+        height: 75,
+        marginTop: 20
+        
+        
+	},
+	buttonText: {
+		color: 'white',
+		fontWeight: '700',
+		fontSize: 16,
+	},
+
     buttonOutline: {
         backgroundColor: 'white',
         marginTop: 5,
