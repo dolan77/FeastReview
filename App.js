@@ -15,6 +15,7 @@ import RestaurantProfileScreen from './screens/RestaurantProfileScreen';
 import NavBar from './screens/NavBar';
 import OtherUserProfileScreen from './screens/OtherUserProfileScreen';
 import RegisterScreen from './screens/RegisterScreen';
+import LoadingScreen from './screens/LoadingScreen';
 
 const Stack = createNativeStackNavigator()
 
@@ -29,6 +30,7 @@ export default function App() {
 				<Stack.Screen options={{ headerShown: false }} name="TabNavigator" component={NavTabs} />
 				<Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
 		        <Stack.Screen options={{ headerShown: false }} name="Register" component={RegisterScreen} />
+				<Stack.Screen name='Loading' component={LoadingScreen} />
 				<Stack.Screen name="Home" component={HomeScreen} />
 				<Stack.Screen name="Your Profile" component={UserProfileScreen} />
 				<Stack.Screen name="Reviews" component={ReviewsScreen} />
