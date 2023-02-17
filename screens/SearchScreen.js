@@ -126,7 +126,7 @@ export default function SearchScreen() {
 							<TouchableOpacity 
 								key={restaurant.id} 
 								onPressIn={() => 
-									navigation.navigate('RestaurantProfile',{data: restaurant})
+									navigation.navigate('RestaurantProfile',{data: restaurant.alias})
 								}
 							>
 								<View style={styles.restaurant}>
