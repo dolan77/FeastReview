@@ -113,37 +113,44 @@ export default function SearchScreen() {
 					placeholder='Search for foods...'
 					placeholderTextColor='white'
 					value = {searchText}
-					onChangeText={text => autoComplete(text)}
+					onChangeText={text => setSearchText(text)}
 					onSubmitEditing={handleSearch}
 				/>
 			</View>
 			{restaurants.length !== 0 ? map(restaurants, location) : <></>}
 			{restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20, padding: 10}}>Results</Text> : <></>}
-			<ScrollView style={styles.restaurantContainer}>
+			<ScrollView style={styles.restaurantContainer} keyboardShouldPersistTaps={'handled'}>
 				{restaurants !== [] &&
 					restaurants.map(restaurant => {
 						return (
-							<View key={restaurant.id} style={styles.restaurant}>
-								<Image 
-									style={styles.logo}
-									source={{uri: restaurant.image_url}} 
-								/>
-								<View style={{flex: 1, marginLeft: 5}}>
-									<Text style={styles.restaurantText}>{restaurant.name}</Text>
-									<Text style={styles.restaurantText}>
-										{starRating(restaurant.id, restaurant.rating)} {restaurant.rating}
-									</Text>
-									<Text style={{
-										fontSize: 17, 
-										flexShrink: 1, 
-										flexWrap: 'wrap', 
-										color: restaurant.is_closed.toString() ? '#26B702' : '#FF0000'
-									}}>
-										{restaurant.is_closed.toString() ? `Open` : `Closed`}
-									</Text>
-									<Text style={styles.restaurantText}>{restaurant.location.address1}</Text>
+							<TouchableOpacity 
+								key={restaurant.id} 
+								onPressIn={() => 
+									navigation.navigate('RestaurantProfile',{data: restaurant})
+								}
+							>
+								<View style={styles.restaurant}>
+									<Image 
+										style={styles.logo}
+										source={{uri: restaurant.image_url}} 
+									/>
+									<View style={{flex: 1, marginLeft: 5}}>
+										<Text style={styles.restaurantText}>{restaurant.name}</Text>
+										<Text style={styles.restaurantText}>
+											{starRating(restaurant.id, restaurant.rating)} {restaurant.rating}
+										</Text>
+										<Text style={{
+											fontSize: 17, 
+											flexShrink: 1, 
+											flexWrap: 'wrap', 
+											color: restaurant.is_closed.toString() ? '#26B702' : '#FF0000'
+										}}>
+											{restaurant.is_closed.toString() ? `Open` : `Closed`}
+										</Text>
+										<Text style={styles.restaurantText}>{restaurant.location.address1}</Text>
+									</View>
 								</View>
-							</View>
+							</TouchableOpacity>
 						)
 					})
 				}
