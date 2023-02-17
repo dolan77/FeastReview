@@ -157,21 +157,26 @@ export default function ReviewPage({route}) {
                 onRequestClose={() => {
                     setModalVisible(!modalVisible);
                 }}>
-                <View style={styles.modalView}>
-                    <Text style = {styles.whiteText}>Write a review:</Text>
-                    <TextInput
-                    style = {styles.input}
-                    onSubmitEditing={(value) => changeReview(value.nativeEvent.text)}
-                    defaultValue = {review}/>
-                    <Button
-                    title="go back"
-                    onPress={() => setModalVisible(!modalVisible)}
-                    />
-                </View>
+                    <View style={styles.modalView}>
+                        <Text style = {styles.whiteText}>Write a review:</Text>
+                        <TextInput
+                        style = {styles.input}
+                        multiline={true}
+                        onChange={(value) => changeReview(value.nativeEvent.text)}
+                        defaultValue = {review}
+                        maxLength ={1200}
+                        />
+                        <Text style={{color: review.length < 100? 'red' : "green", textAlign: 'center', paddingBottom: 5}}>
+                            Min 100 Characters{'\n'}{review.length}/{1200}</Text>
+                        <Button
+                        title="go back"
+                        onPress={() => setModalVisible(!modalVisible)}
+                        />
+                    </View>
                 </Modal>
 
                 {/* Text that shows user's review after they finish typing */}
-                <Text style = {[styles.whiteText]}>
+                <Text style = {[styles.whiteText]} placeholder="Your review">
                     {review}
                     <Text style = {styles.editButton} onPress={() => setModalVisible(true)}>{"\n\n"}Edit Review</Text>
                 </Text>
@@ -240,6 +245,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     whiteText: {
+        fontSize: 15,
         color: 'white',
         justifyContent: 'center',
         alignItems: 'center',
@@ -283,6 +289,7 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
     },
     input: {
+        textAlignVertical: 'top',
         height: 300,
         width: 300,
         margin: 12,
@@ -293,7 +300,7 @@ const styles = StyleSheet.create({
     starRatingsStyle: {
         justifyContent: 'center',
         flexDirection: 'row',
-        marginTop: 10,
+        marginTop: 1,
         marginBottom: 3
     },
     starImgStyle:{
