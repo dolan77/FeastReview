@@ -13,7 +13,7 @@ import FollowersScreen from './screens/FollowersScreen';
 import FollowingScreen from './screens/FollowingScreen';
 import RestaurantProfileScreen from './screens/RestaurantProfileScreen';
 import NavBar from './screens/NavBar';
-
+import OtherUserProfileScreen from './screens/OtherUserProfileScreen';
 import RegisterScreen from './screens/RegisterScreen';
 
 const Stack = createNativeStackNavigator()
@@ -36,6 +36,7 @@ export default function App() {
 				<Stack.Screen name="Followers" component={FollowersScreen} />
 				<Stack.Screen name="Following" component={FollowingScreen} />
 				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
+				<Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen}/>
 				
 			</Stack.Navigator>
 		</NavigationContainer>
