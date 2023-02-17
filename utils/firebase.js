@@ -1,6 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 
-module.exports = {dbGet, dbSet};
+module.exports = {dbGet, dbSet, dbFileGetUrl};
 
 /**
  * a utility class to simplify usage of firebase functions
@@ -29,4 +30,9 @@ async function dbGet(collection, doc){
 async function dbSet(collection, doc, value){
     const docRef = db.collection(collection).doc(doc);
     await docRef.set(value);
+}
+
+
+async function dbFileGetUrl(filename){
+    return storage().ref(filename).getDownloadURL();
 }
