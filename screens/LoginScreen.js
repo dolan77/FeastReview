@@ -13,7 +13,7 @@ export default function LoginScreen() {
 	useEffect(() => {
 		const unsubscribe = auth().onAuthStateChanged(user => {
 			if (user) {
-				navigation.replace("Home")
+				navigation.replace("TabNavigator")
 			}
 		});
 		return unsubscribe; // unsubscribe on unmount
@@ -26,7 +26,7 @@ export default function LoginScreen() {
 			.then(userCreds => {
 				const user = userCreds.user
 				console.log(user.email, 'has logged in')
-				if (user) navigation.replace("Home");
+				if (user) navigation.replace("TabNavigator");
 			})
 			.catch(error => {
 				if (error.code === 'auth/invalid-email') {
