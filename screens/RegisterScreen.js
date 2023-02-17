@@ -32,7 +32,7 @@ export default function RegisterScreen() {
 							.currentUser.updateProfile({
 								displayName: userName,
 						  	})
-						  	.then(() => navigation.replace("Home"))
+						  	.then(() => navigation.replace("Loading"))
 						  	.catch((error) => {
 								console.error(error);
 						  	});
