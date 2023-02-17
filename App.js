@@ -27,21 +27,12 @@ function NavTabs(){
 export default function App() {
 	return (
 		<NavigationContainer>
-			<Stack.Navigator initialRouteName='Login'>
-				<Stack.Screen options={{ headerShown: false }} name="TabNavigator" component={NavTabs} />
-				<Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
-		        <Stack.Screen options={{ headerShown: false }} name="Register" component={RegisterScreen} />
-				<Stack.Screen name="Home" component={HomeScreen} />
-				<Stack.Screen name="Your Profile" component={UserProfileScreen} />
-				<Stack.Screen name="Reviews" component={ReviewsScreen} />
-				<Stack.Screen name="Messages" component={MessagesScreen} />
-				<Stack.Screen name="Followers" component={FollowersScreen} />
-				<Stack.Screen name="Following" component={FollowingScreen} />
-				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
-				<Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen}/>
-				<Stack.Screen name="Create Review" component={CreateReviewScreen} />
+			{/* <Stack.Navigator initialRouteName='Login'> */}
+				<NavBar/>
+				{/* <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
+		        <Stack.Screen options={{ headerShown: false }} name="Register" component={RegisterScreen} /> */}
 				
-			</Stack.Navigator>
+			{/* </Stack.Navigator> */}
 		</NavigationContainer>
 	);
 }
