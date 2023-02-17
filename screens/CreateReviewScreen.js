@@ -162,7 +162,7 @@ export default function ReviewPage({route}) {
                     <TextInput
                     style = {styles.input}
                     onSubmitEditing={(value) => changeReview(value.nativeEvent.text)}
-                    />
+                    defaultValue = {review}/>
                     <Button
                     title="go back"
                     onPress={() => setModalVisible(!modalVisible)}
@@ -183,6 +183,8 @@ export default function ReviewPage({route}) {
                 <TouchableOpacity
                     style={styles.button}
                     onPress={() => navigation.goBack(null)}
+                    // Send review content to the database
+                    
                     >
                     <Text style={styles.whiteText}> Submit Review </Text>
                     
