@@ -11,8 +11,10 @@ import { SearchBar} from '../components/SearchBar.js';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function SearchScreen() {
+	const defaultLocation = {"coords": {"accuracy": 5, "altitude": 5, "altitudeAccuracy": 0.5, "heading": 0, "latitude": 33.78383050167186, "longitude": -118.11367992726652, "speed": 0}, "mocked": false, "provider": "fused", "timestamp": 1676767775647}
+
 	const [searchText, setSearchText] = useState('')
-	const [location, setLocation] = useState(false)
+	const [location, setLocation] = useState(defaultLocation)
 	const [restaurants, setRestaurants] = useState([])
 	const [pressed, setPressed] = useState(1)
     const navigation = useNavigation();
@@ -43,8 +45,9 @@ export default function SearchScreen() {
 	 * Uses the geolocation package to get the user's current latitude and longitude
 	 * written by Matthew Hirai
 	 */
-	getLocation = () => {
+	let getLocation = () => {
 		const result = requestLocationPermission();
+
 		result
 			.then(res => {
 				if (res) {
@@ -55,12 +58,12 @@ export default function SearchScreen() {
 					error => {
 						// See error code charts below.
 						console.log(error.code, error.message);
-						setLocation(false)
 					},
 					{enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
 					);
 				}
-			});
+			})
+			.catch(() => console.log("Error, geolocation"));
 	};
 	
 	/**
@@ -79,8 +82,10 @@ export default function SearchScreen() {
 				)
 				.then(result => {
 					setRestaurants([...result])
-				});
-		});
+				})
+				.catch(() => console.log("Error, searching YELP businesses"));
+		})
+		.catch(() => console.log("Error, getting YELP api key"));
 	}
 
 	/**
@@ -113,37 +118,44 @@ export default function SearchScreen() {
 					placeholder='Search for foods...'
 					placeholderTextColor='white'
 					value = {searchText}
-					onChangeText={text => autoComplete(text)}
+					onChangeText={text => setSearchText(text)}
 					onSubmitEditing={handleSearch}
 				/>
 			</View>
 			{restaurants.length !== 0 ? map(restaurants, location) : <></>}
 			{restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20, padding: 10}}>Results</Text> : <></>}
-			<ScrollView style={styles.restaurantContainer}>
+			<ScrollView style={styles.restaurantContainer} keyboardShouldPersistTaps={'handled'}>
 				{restaurants !== [] &&
 					restaurants.map(restaurant => {
 						return (
-							<View key={restaurant.id} style={styles.restaurant}>
-								<Image 
-									style={styles.logo}
-									source={{uri: restaurant.image_url}} 
-								/>
-								<View style={{flex: 1, marginLeft: 5}}>
-									<Text style={styles.restaurantText}>{restaurant.name}</Text>
-									<Text style={styles.restaurantText}>
-										{starRating(restaurant.id, restaurant.rating)} {restaurant.rating}
-									</Text>
-									<Text style={{
-										fontSize: 17, 
-										flexShrink: 1, 
-										flexWrap: 'wrap', 
-										color: restaurant.is_closed.toString() ? '#26B702' : '#FF0000'
-									}}>
-										{restaurant.is_closed.toString() ? `Open` : `Closed`}
-									</Text>
-									<Text style={styles.restaurantText}>{restaurant.location.address1}</Text>
+							<TouchableOpacity 
+								key={restaurant.id} 
+								onPressIn={() => 
+									navigation.navigate('RestaurantProfile',{data: restaurant.alias})
+								}
+							>
+								<View style={styles.restaurant}>
+									<Image 
+										style={styles.logo}
+										source={{uri: restaurant.image_url}} 
+									/>
+									<View style={{flex: 1, marginLeft: 5}}>
+										<Text style={styles.restaurantText}>{restaurant.name}</Text>
+										<Text style={styles.restaurantText}>
+											{starRating(restaurant.id, restaurant.rating)} {restaurant.rating}
+										</Text>
+										<Text style={{
+											fontSize: 17, 
+											flexShrink: 1, 
+											flexWrap: 'wrap', 
+											color: restaurant.is_closed.toString() ? '#26B702' : '#FF0000'
+										}}>
+											{restaurant.is_closed.toString() ? `Open` : `Closed`}
+										</Text>
+										<Text style={styles.restaurantText}>{restaurant.location.address1}</Text>
+									</View>
 								</View>
-							</View>
+							</TouchableOpacity>
 						)
 					})
 				}
