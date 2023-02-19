@@ -29,7 +29,7 @@ export default function ReviewPage({route}) {
             var review_id = restaurantData.data.alias + '_' + user.uid + '_' + String(Date.now())
             await firebase.dbSet('reviews', review_id, {authorid: user.uid,
                                                         content: review,
-                                                        datemade: String(new Date()),
+                                                        datemade: new Date(),
                                                         image_urls: photos,
                                                         restaurant_alias: restaurantData.data.alias,
                                                         star_atmos: atmosphereDefaultRating,
