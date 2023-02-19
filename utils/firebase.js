@@ -1,7 +1,8 @@
-import firestore from '@react-native-firebase/firestore';
+import firestore, { firebase } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+//import firebase from '@react-native-firebase/app';
 
-module.exports = {dbGet, dbSet, dbFileGetUrl, dbFileAdd};
+module.exports = {dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews};
 
 /**
  * a utility class to simplify usage of firebase functions
@@ -84,4 +85,22 @@ async function dbFileGetUrl(filename){
 async function dbFileAdd(filename, filePath){
     const ref = storage().ref(filename);
     return ref.putFile(filePath);
+}
+
+/**
+ * simple query that returns all reviews that have fields equal to keyword
+ * @param {*} keyword what the field equals
+ * @param {*} field default value is restaurant_alias but can use whatever field you want
+ * @returns list of all objects matching query
+ */
+async function dbGetReviews(keyword, field="restaurant_alias"){
+    let query = db.collection("reviews").where(field, "==", keyword).get().then((reviews_query) => {
+        let reviews = [];
+        reviews_query.docs.forEach((review_query) => {
+            reviews.push(review_query.data())
+        });
+        return reviews;   
+    });
+
+    return query? query: [];
 }
