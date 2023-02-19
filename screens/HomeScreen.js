@@ -18,20 +18,11 @@ export default function HomeScreen() {
 		navigation.setOptions({headerShown: false});
 	}, [navigation]);
 
-	useEffect(() => {
-		const subscriber = auth().onAuthStateChanged((user) => {
-			console.log("user", JSON.stringify(user));
-			setUser(user);
-		});
-
-		return subscriber;
-	}, []);
-
 	logoff = () => {
 		auth()
 			.signOut()
 			.then(() => {
-				navigation.replace("Login")
+				navigation.navigate("Login")
 			})
 			.catch(error => alert(error.message))
 	}
@@ -55,7 +46,7 @@ export default function HomeScreen() {
 				style={styles.button}
 				onPress={logoff}
 			>
-				<Text>{user.displayName}</Text>
+				<Text>Log Out</Text>
 			</TouchableOpacity>
 			<Button title = "RestaurantProfile" onPress={nagivateRestaurant} />
 			
