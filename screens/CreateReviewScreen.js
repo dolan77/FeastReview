@@ -3,12 +3,14 @@ import React, {useState} from 'react'
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import {Button} from 'react-native';
+import * as firebase from '../utils/firebase'
 
 export default function ReviewPage({route}) {
     const navigation = useNavigation();
     const user = auth().currentUser;
     const restaurantData = route.params.restaurantData;
     var userReview = 'Your Review';
+    const photos = []
 
     React.useLayoutEffect(() => {
 		navigation.setOptions({headerShown: true});
@@ -20,6 +22,25 @@ export default function ReviewPage({route}) {
     // Images used for the stars
     const starIconCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
     const starIconFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
+
+    async function uploadReview(){
+        try{
+            console.log('In the upload review function')
+            var review_id = restaurantData.data.alias + '_' + user.uid + '_' + String(Date.now())
+            await firebase.dbSet('reviews', review_id, {authorid: user.uid,
+                                                        content: review,
+                                                        datemade: String(new Date()),
+                                                        image_urls: photos,
+                                                        resaurant_id: restaurantData.data.id,
+                                                        star_atmos: atmosphereDefaultRating,
+                                                        star_foods: foodDefaultRating,
+                                                        star_service: serviceDefaultRating
+                                                        })
+        }
+        catch (error){
+            console.log(error)
+        }
+    }
 
     // Star review rating contents for category 'Food'
     const [foodDefaultRating, setfoodDefaultRating] = useState(3);
@@ -182,13 +203,26 @@ export default function ReviewPage({route}) {
                 </Text>
             
             </ScrollView>
+
+            {/* Add Photos to Upload */}
+            {/* todo */}
             
             {/* Button for 'Submit Review' */}
             <View style={styles.container}>
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={() => navigation.goBack(null)}
                     // Send review content to the database
+                    onPress={() => 
+                        {if (review.length >= 100){
+                            uploadReview();
+                            navigation.goBack(null);
+                            }
+                        else {
+                            console.error('Review length too short: ', review.length)
+                        }
+                        } 
+                    }
+                    
                     
                     >
                     <Text style={styles.whiteText}> Submit Review </Text>
