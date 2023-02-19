@@ -3,12 +3,12 @@ import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import Geolocation from 'react-native-geolocation-service';
 import { starRating } from '../methods/star.js';
+import { map } from '../methods/map.js';
 import { searchBusinesses } from '../utils/yelp.js';
 import { dbGet, dbSet } from '../utils/firebase.js';
 import { requestLocationPermission } from '../utils/locationPermission.js'
 import { SearchBar} from '../components/SearchBar.js';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function SearchScreen() {
 	const [searchText, setSearchText] = useState('')
@@ -17,12 +17,9 @@ export default function SearchScreen() {
 	const [pressed, setPressed] = useState(1)
     const navigation = useNavigation();
 
-    useLayoutEffect(() => {
-        navigation.setOptions({ headerShown: false });
-    }, [navigation]);
-
 	/**
 	 * After refresh, the app will get the user's location
+	 * written by Matthew Hirai
 	 */
 	useEffect(() => {
 		setPressed(1)
@@ -33,6 +30,7 @@ export default function SearchScreen() {
 	/**
 	 * If pressed state is changed, it will call the handleSearch 
 	 * function with a new limit
+	 * written by Matthew Hirai
 	 */
 	useEffect(() => {
 		if (pressed !== 1) {
@@ -42,7 +40,8 @@ export default function SearchScreen() {
 	}, [pressed])
 
 	/**
-	 * uses the geolocation package to get the user's current latitude and longitude
+	 * Uses the geolocation package to get the user's current latitude and longitude
+	 * written by Matthew Hirai
 	 */
 	getLocation = () => {
 		const result = requestLocationPermission();
@@ -65,8 +64,9 @@ export default function SearchScreen() {
 	};
 	
 	/**
+	 * Calls the yelp api function then sets the results to restaurant state
 	 * @param {*} limit amount of results that will be displayed (default value of 10)
-	 * calls the yelp api function to return search results
+	 * by Nathan Lai
 	 */
 	handleSearch = ({limit = 10}) => {
 		dbGet('api_keys','key')
@@ -84,14 +84,29 @@ export default function SearchScreen() {
 	}
 
 	/**
-	 * increments the amount of times the 'See More Results' button is pressed
+	 * Allows live complete by putting searchtext together with handleSearch
+	 * @param {*} text the string that the user types
+	 * by Nathan Lai
+	 */
+	autoComplete = (text) => {
+		setSearchText(text);
+		handleSearch(10);
+	}
+
+	/**
+	 * Increments the amount of times the 'See More Results' button is pressed
+	 * by Nathan Lai
 	 */
 	handlePress = () => {
 		setPressed(pressed + 1)
 	}
 
+	/**
+	 * displays a map with markers of the restaurants that the user searched
+	 * by Matthew Hirai
+	*/
     return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
 			<View style={styles.searchContainer}>
 				<TextInput 
 					style={styles.searchBar}
@@ -102,48 +117,55 @@ export default function SearchScreen() {
 					onSubmitEditing={handleSearch}
 				/>
 			</View>
-			<View style={styles.restaurantContainer}>
-				{restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20}}>Results</Text> : <></>}
+			{restaurants.length !== 0 ? map(restaurants, location) : <></>}
+			{restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20, padding: 10}}>Results</Text> : <></>}
+			<ScrollView style={styles.restaurantContainer} keyboardShouldPersistTaps={'handled'}>
 				{restaurants !== [] &&
 					restaurants.map(restaurant => {
 						return (
-							<View key={restaurant.id} style={styles.restaurant}>
-								<Image 
-									style={styles.logo}
-									source={{uri: restaurant.image_url}} 
-								/>
-								<View style={{flex: 1, marginLeft: 5}}>
-									<Text style={styles.restaurantText}>{restaurant.name}</Text>
-									<Text style={styles.restaurantText}>
-										{starRating(restaurant.id, restaurant.rating)} {restaurant.rating}
-									</Text>
-									<Text style={{
-										fontSize: 17, 
-										flexShrink: 1, 
-										flexWrap: 'wrap', 
-										color: restaurant.is_closed.toString() ? '#26B702' : '#FF0000'
-									}}>
-										{restaurant.is_closed.toString() ? `Open` : `Closed`}
-									</Text>
-									<Text style={styles.restaurantText}>{restaurant.location.address1}</Text>
-									{/* {restaurant.coordinates.latitude} {restaurant.coordinates.longitude} */}
+							<TouchableOpacity 
+								key={restaurant.id} 
+								onPressIn={() => 
+									navigation.navigate('RestaurantProfile',{data: restaurant.alias})
+								}
+							>
+								<View style={styles.restaurant}>
+									<Image 
+										style={styles.logo}
+										source={{uri: restaurant.image_url}} 
+									/>
+									<View style={{flex: 1, marginLeft: 5}}>
+										<Text style={styles.restaurantText}>{restaurant.name}</Text>
+										<Text style={styles.restaurantText}>
+											{starRating(restaurant.id, restaurant.rating)} {restaurant.rating}
+										</Text>
+										<Text style={{
+											fontSize: 17, 
+											flexShrink: 1, 
+											flexWrap: 'wrap', 
+											color: restaurant.is_closed.toString() ? '#26B702' : '#FF0000'
+										}}>
+											{restaurant.is_closed.toString() ? `Open` : `Closed`}
+										</Text>
+										<Text style={styles.restaurantText}>{restaurant.location.address1}</Text>
+									</View>
 								</View>
-							</View>
+							</TouchableOpacity>
 						)
 					})
 				}
-			</View>
-			{restaurants.length !== 0 && 
-				<View style={styles.buttonContainer}>
-					<TouchableOpacity
-						onPress={handlePress}
-						style={styles.button}
-					>
-						<Text style={styles.buttonText}>See More Results</Text>
-					</TouchableOpacity>
-				</View>
-			}
-        </ScrollView>
+				{restaurants.length !== 0 && 
+					<View style={styles.buttonContainer}>
+						<TouchableOpacity
+							onPress={handlePress}
+							style={styles.button}
+						>
+							<Text style={styles.buttonText}>See More Results</Text>
+						</TouchableOpacity>
+					</View>
+				}
+			</ScrollView>
+        </View>
     )
 }
 
@@ -162,7 +184,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         alignItems: 'center',
         borderStyle: 'solid',
-        borderColor: '#4A9B6A',
+        borderColor: '#75d9fc',
         borderWidth: 2,
 		color: 'white'
     },
@@ -201,7 +223,7 @@ const styles = StyleSheet.create({
 		
 	},
 	button: {
-		backgroundColor: '#4A9B6A',
+		backgroundColor: '#75d9fc',
 		width: '100%',
 		padding: 15,
 		borderRadius: 50,
@@ -209,7 +231,7 @@ const styles = StyleSheet.create({
 		marginBottom: 35
 	},
 	buttonText: {
-		color: 'white',
+		color: 'black',
 		fontWeight: '700',
 		fontSize: 16
 	},
