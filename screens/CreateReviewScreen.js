@@ -31,7 +31,7 @@ export default function ReviewPage({route}) {
                                                         content: review,
                                                         datemade: String(new Date()),
                                                         image_urls: photos,
-                                                        resaurant_id: restaurantData.data.id,
+                                                        resaurant_alias: restaurantData.data.alias,
                                                         star_atmos: atmosphereDefaultRating,
                                                         star_foods: foodDefaultRating,
                                                         star_service: serviceDefaultRating
