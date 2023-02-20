@@ -7,6 +7,15 @@ import HomeScreen from './HomeScreen';
 import ProfileScreen from './UserProfileScreen';
 import SearchScreen from './SearchScreen';
 
+import LoginScreen from './LoginScreen';
+import ReviewsScreen from './ReviewsScreen';
+import MessagesScreen from './MessagesScreen';
+import FollowersScreen from './FollowersScreen';
+import FollowingScreen from './FollowingScreen';
+import RestaurantProfileScreen from './RestaurantProfileScreen';
+import OtherUserProfileScreen from './OtherUserProfileScreen';
+import CreateReviewScreen from './CreateReviewScreen';
+
 
 // Screen names
 const homeName = 'Home';
@@ -17,7 +26,8 @@ const Tab = createBottomTabNavigator();
 
 // Creates a bottom tab navigator with three buttons: home, search, and outline. Pressing each of the buttons will
 // take you to its corresponding screens.
-export default function NavBar() {
+export default function NavBar({A_Stack}) {
+    const AppStack = A_Stack;
     return(
             <Tab.Navigator
                 initialRouteName={homeName}
@@ -38,13 +48,52 @@ export default function NavBar() {
 
                         return <Ionicons name = {iconName} size = {size} color = {color}/>  // This can be put on the individual icons above for custom effects
                     }
-            })}>
+                })}
+            >
 
-            <Tab.Screen name={homeName} component={HomeScreen}/>
-            <Tab.Screen name={searchName} component={SearchScreen}/>   
-            <Tab.Screen name={profileName} component={ProfileScreen}/>
-
+                <Tab.Screen name={homeName} component={HomeScreens}/>
+                <Tab.Screen name={searchName} component={SearchScreen}/>   
+                <Tab.Screen name={profileName} component={ProfileScreens}/>
 
             </Tab.Navigator>
+    )
+}
+
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import auth from '@react-native-firebase/auth';
+const Stack = createNativeStackNavigator()
+
+function HomeScreens() {
+    return(
+        <Stack.Navigator initialRouteName={homeName}>
+				<Stack.Screen name="Home" component={HomeScreen} />
+				<Stack.Screen name="Your Profile" component={ProfileScreen} />
+				<Stack.Screen name="Reviews" component={ReviewsScreen} />
+				<Stack.Screen name="Messages" component={MessagesScreen} />
+				<Stack.Screen name="Followers" component={FollowersScreen} />
+				<Stack.Screen name="Following" component={FollowingScreen} />
+				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
+				<Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen}/>
+				<Stack.Screen name="Create Review" component={CreateReviewScreen} />
+				
+			</Stack.Navigator>
+    )
+}
+
+
+function ProfileScreens() {
+    return(
+        <Stack.Navigator initialRouteName="Your Profile">
+				<Stack.Screen name="Home" component={HomeScreen} />
+				<Stack.Screen name="Your Profile" component={ProfileScreen} />
+				<Stack.Screen name="Reviews" component={ReviewsScreen} />
+				<Stack.Screen name="Messages" component={MessagesScreen} />
+				<Stack.Screen name="Followers" component={FollowersScreen} />
+				<Stack.Screen name="Following" component={FollowingScreen} />
+				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
+				<Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen}/>
+				<Stack.Screen name="Create Review" component={CreateReviewScreen} />
+				
+			</Stack.Navigator>
     )
 }
