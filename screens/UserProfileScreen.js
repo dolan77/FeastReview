@@ -109,6 +109,10 @@ export default function UserProfileScreen(){
             followersNames: followersNames
         })
     }
+    // TESTING SENDING TO TOP NAVBAR
+    const seeFolloww = () => {
+        navigation.replace();
+    }
     React.useEffect(() => {
         getBio();
     },
@@ -179,6 +183,13 @@ export default function UserProfileScreen(){
         </TouchableOpacity>
         </View>
         
+        <TouchableOpacity onPress={seeFolloww}>
+            <Text>Test the Followers Tab</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={seeFolloww}>
+            <Text>Testing the new FollowBar</Text>
+        </TouchableOpacity>
     </View>
     );
 }
