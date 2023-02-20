@@ -12,9 +12,7 @@ export default function LoginScreen() {
 
 	useEffect(() => {
 		const unsubscribe = auth().onAuthStateChanged(user => {
-			if (user) {
-				navigation.replace("TabNavigator")
-			}
+			console.log(user)
 		});
 		return unsubscribe; // unsubscribe on unmount
 	}, []);
