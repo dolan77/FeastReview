@@ -4,6 +4,7 @@ import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import {Button} from 'react-native';
 import * as firebase from '../utils/firebase'
+import image from "../assets/macarons.jpg"
 
 export default function ReviewPage({route}) {
     const navigation = useNavigation();
@@ -13,7 +14,7 @@ export default function ReviewPage({route}) {
     const photos = []
 
     React.useLayoutEffect(() => {
-		navigation.setOptions({headerShown: true});
+		navigation.setOptions({headerShown: false});
 	  }, [navigation]);
 
     const [modalVisible, setModalVisible] = React.useState(false);
@@ -103,8 +104,6 @@ export default function ReviewPage({route}) {
             </View>
         )
     }
-
-    // Star review rating for category 'Price'
 
     // Star review rating contents for category 'Service'
     const [serviceDefaultRating, setserviceDefaultRating] = useState(3);
@@ -197,7 +196,7 @@ export default function ReviewPage({route}) {
                 </Modal>
 
                 {/* Text that shows user's review after they finish typing */}
-                <Text style = {[styles.whiteText]} placeholder="Your review">
+                <Text style = {styles.whiteText} placeholder="Your review">
                     {review}
                     <Text style = {styles.editButton} onPress={() => setModalVisible(true)}>{"\n\n"}Edit Review</Text>
                 </Text>
@@ -206,6 +205,11 @@ export default function ReviewPage({route}) {
 
             {/* Add Photos to Upload */}
             {/* todo */}
+            <ScrollView style={styles.photo_container}>
+                <Image style={styles.photo} source={image}>
+
+                </Image>
+            </ScrollView>
             
             {/* Button for 'Submit Review' */}
             <View style={styles.container}>
@@ -222,19 +226,11 @@ export default function ReviewPage({route}) {
                         }
                         } 
                     }
-                    
-                    
                     >
                     <Text style={styles.whiteText}> Submit Review </Text>
-                    
-                </TouchableOpacity>
-                    
-            </View>
-            
-            
-                
+                </TouchableOpacity>   
+            </View>      
         </View>
-        
       );
 
 
@@ -259,14 +255,13 @@ const styles = StyleSheet.create({
     restaurantName: {
         marginTop: 10, 
         marginLeft: 20,
-        fontSize: 18,
+        fontSize: 20,
         color: 'white', 
-        flex: .4,
+        flex: .45,
         alignSelf: 'flex-start'
     },
     locationIcon: {
 		color: 'white',
-        // flex: 2, 
 		fontSize: 30,
         alignItems: 'center',
         alignSelf: 'center', 
@@ -300,7 +295,6 @@ const styles = StyleSheet.create({
     },
     userReviewBox: {
         color: 'white',
-        // flexDirection: 'row',
         flexWrap: 'wrap',
         marginLeft: 5,
         marginRight: 5,
@@ -308,8 +302,8 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         maxWidth: 370,
         width: 370,
-        height: 280,
-        maxHeight: 280,
+        height: 200,
+        maxHeight: 200,
         borderRadius:10,
         borderWidth: 1,
         padding: 10,
@@ -350,5 +344,19 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		alignItems: 'center'
 	},
+    photo_container: {
+        flexDirection: 'row',
+        width: 380,
+        height: 50,
+    },
+    photo: {
+        width: 75,
+		height: 110,
+		flex: 1,
+		marginLeft: 5,
+		marginTop: 5,
+		borderWidth: 1,
+		borderColor: 'white',
+    }
 
 })

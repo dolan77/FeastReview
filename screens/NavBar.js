@@ -51,22 +51,21 @@ export default function NavBar({A_Stack}) {
                 })}
             >
 
-                <Tab.Screen name={homeName} component={HomeScreens}/>
-                <Tab.Screen name={searchName} component={SearchScreen}/>   
-                <Tab.Screen name={profileName} component={ProfileScreens}/>
+                <Tab.Screen options={{headerShown: false}} name={homeName} component={HomeScreens}/>
+                <Tab.Screen options={{headerShown: false}} name={searchName} component={SearchScreens}/>   
+                <Tab.Screen options={{headerShown: false}} name={profileName} component={ProfileScreens}/>
 
             </Tab.Navigator>
     )
 }
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import auth from '@react-native-firebase/auth';
 const Stack = createNativeStackNavigator()
 
 function HomeScreens() {
     return(
-        <Stack.Navigator initialRouteName={homeName}>
-				<Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Navigator  initialRouteName='Home Screen'>
+				<Stack.Screen name="Home Screen" component={HomeScreen} />
 				<Stack.Screen name="Your Profile" component={ProfileScreen} />
 				<Stack.Screen name="Reviews" component={ReviewsScreen} />
 				<Stack.Screen name="Messages" component={MessagesScreen} />
@@ -80,12 +79,29 @@ function HomeScreens() {
     )
 }
 
+function SearchScreens() {
+    return(
+        <Stack.Navigator  initialRouteName='Search Screen'>
+				<Stack.Screen name="Home" component={HomeScreen} />
+                <Stack.Screen name='Search Screen' component={SearchScreen} />
+				<Stack.Screen name="Your Profile" component={ProfileScreen} />
+				<Stack.Screen name="Reviews" component={ReviewsScreen} />
+				<Stack.Screen name="Messages" component={MessagesScreen} />
+				<Stack.Screen name="Followers" component={FollowersScreen} />
+				<Stack.Screen name="Following" component={FollowingScreen} />
+				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
+				<Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen}/>
+				<Stack.Screen name="Create Review" component={CreateReviewScreen} />
+				
+			</Stack.Navigator>
+    )
+}
 
 function ProfileScreens() {
     return(
-        <Stack.Navigator initialRouteName="Your Profile">
+        <Stack.Navigator initialRouteName="Your Profile Screen">
 				<Stack.Screen name="Home" component={HomeScreen} />
-				<Stack.Screen name="Your Profile" component={ProfileScreen} />
+				<Stack.Screen name="Your Profile Screen" component={ProfileScreen} />
 				<Stack.Screen name="Reviews" component={ReviewsScreen} />
 				<Stack.Screen name="Messages" component={MessagesScreen} />
 				<Stack.Screen name="Followers" component={FollowersScreen} />
