@@ -96,11 +96,11 @@ export default function UserProfileScreen(){
         
     }
 
-    const seeFollowing = async () => {
+    const seeFollowers = async () => {
         const currentUser = await firebase.dbGet('users', user.uid);
         let followersNames = [];
         for (let i = 0; i < currentUser.followers.length; i++){
-            otherUser = await firebase.dbGet('users', currentUser.following[i]);
+            otherUser = await firebase.dbGet('users', currentUser.followers[i]);
             followersNames.push(otherUser.name)
         }
         navigation.navigate('Followers',
@@ -170,7 +170,7 @@ export default function UserProfileScreen(){
         <Text style={styles.buttonText}>See Your Reviews</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Followers')}>
+        <TouchableOpacity style = {styles.button} onPress={seeFollowers}>
             <Text style={styles.buttonText}>Followers</Text>
         </TouchableOpacity>
 
