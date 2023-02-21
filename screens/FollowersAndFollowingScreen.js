@@ -19,7 +19,7 @@ export default function FollowersAndFollowing(){
     const populateFollowers = async () => {
         try{
             const currentUser = await firebase.dbGet('users', user.uid)
-            followers = currentUsers.followers
+            followers = currentUser.followers
             for (let i = 0; i < followers.length; i++){
             
                 // loop thru the UID's the user is following and add their name
@@ -27,6 +27,7 @@ export default function FollowersAndFollowing(){
                 // console.log(otherUser)
                 followersNames.push(otherUser.name)
             }
+            console.log('followers in FollowersAndFollowing: ' + followers)
         }catch(error){
             console.log(error)
         }
@@ -41,6 +42,7 @@ export default function FollowersAndFollowing(){
                 otherUser = await firebase.dbGet('users', currentUser.following[i]);
                 followingNames.push(otherUser.name)
             }
+            console.log('following in FollowersAndFollowing: ' + following)
         } catch (error) {
             console.log(error)
         }

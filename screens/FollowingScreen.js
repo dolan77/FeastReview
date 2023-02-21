@@ -13,8 +13,8 @@ export default function FollowingScreen(props){
     const passedInFollowingUID = props.followingUID
     const passedInFollowingNames = props.followingNames
     const navigation = useNavigation();
-    // console.log('passedInUID: ' + passedInFollowingUID)
-    // console.log('passedInNames: ' + passedInFollowingNames)
+     console.log('passedInUID: ' + passedInFollowingUID)
+     console.log('passedInNames: ' + passedInFollowingNames)
 
     /**
      * Method that will navigate the user to see another user's profile
