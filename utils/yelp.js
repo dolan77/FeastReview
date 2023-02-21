@@ -21,11 +21,12 @@ function auth(apiKey){
  * @param {*} apiKey the api key of yelp
  * @returns an array of businesses (default 20 i think)
  */
-async function searchBusinesses(searchTerm, locationData, apiKey) {
+async function searchBusinesses(searchTerm, locationData, limit, apiKey) {
     var apiString = 'https://api.yelp.com/v3/businesses/search?'+
         `term=${searchTerm}`+
         `&latitude=${locationData.lat}` +
-        `&longitude=${locationData.long}`
+        `&longitude=${locationData.long}` +
+		`&limit=${limit}`
     return axios.get(apiString, auth(apiKey)).then(response => response.data.businesses);
 }
 

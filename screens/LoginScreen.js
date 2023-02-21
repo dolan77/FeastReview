@@ -19,6 +19,7 @@ export default function LoginScreen() {
 		return unsubscribe; // unsubscribe on unmount
 	}, []);
 
+	// calls the Firebase api to sign in the user
 	login = () => {
 		if(email && password){
 			auth()
@@ -26,7 +27,7 @@ export default function LoginScreen() {
 			.then(userCreds => {
 				const user = userCreds.user
 				console.log(user.email, 'has logged in')
-				if (user) navigation.replace("Home");
+				if (user) navigation.replace("TabNavigator");
 			})
 			.catch(error => {
 				if (error.code === 'auth/invalid-email') {
@@ -41,6 +42,8 @@ export default function LoginScreen() {
 		}
 	}
 
+	// calls the Firebase api to send the email to the user for a 
+	// password reset
 	passwordReset = () => {
 		if(email){
 			auth()
@@ -57,6 +60,7 @@ export default function LoginScreen() {
 		}
 	}
 
+	// displays inputs for user to log in
 	return (
 		<KeyboardAvoidingView
 			style={styles.container}

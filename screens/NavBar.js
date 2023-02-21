@@ -1,15 +1,19 @@
 import * as React from 'react';
-
-
-import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import { Ionicons } from '@expo/vector-icons';
 
 // Screens
 import HomeScreen from './HomeScreen';
-// import SearchScreen from './screens/SearchScreen'
 import ProfileScreen from './UserProfileScreen';
+import SearchScreen from './SearchScreen';
+import ReviewsScreen from './ReviewsScreen';
+import MessagesScreen from './MessagesScreen';
+import FollowersScreen from './FollowersScreen';
+import FollowingScreen from './FollowingScreen';
+import RestaurantProfileScreen from './RestaurantProfileScreen';
+import OtherUserProfileScreen from './OtherUserProfileScreen';
+import CreateReviewScreen from './CreateReviewScreen';
+import FollowersAndFollowingScreen from './FollowersAndFollowingScreen';
 
 
 // Screen names
@@ -19,7 +23,15 @@ const profileName = 'Profile';
 
 const Tab = createBottomTabNavigator();
 
-export default function NavBar() {
+// Stack screens for each tab
+const HomeStack = () => <StackScreens initial_route='Home Screen'/>
+const SearchStack = () => <StackScreens initial_route='Search Screen'/>
+const ProfileStack = () => <StackScreens initial_route='Your Profile'/>
+
+// Creates a bottom tab navigator with three buttons: home, search, and outline. Pressing each of the buttons will
+// take you to its corresponding screens.
+export default function NavBar({A_Stack}) {
+    const AppStack = A_Stack;
     return(
             <Tab.Navigator
                 initialRouteName={homeName}
@@ -40,14 +52,34 @@ export default function NavBar() {
 
                         return <Ionicons name = {iconName} size = {size} color = {color}/>  // This can be put on the individual icons above for custom effects
                     }
-            })}>
+                })}
+            >
 
-            <Tab.Screen name={homeName} component={HomeScreen}/>
-            {/* todo: need to create the search screen */}
-            <Tab.Screen name={searchName} component={HomeScreen}/>   
-            <Tab.Screen name={profileName} component={ProfileScreen}/>
-
+                <Tab.Screen options={{headerShown: false}} name={homeName} component={HomeStack}/>
+                <Tab.Screen options={{headerShown: false}} name={searchName} component={SearchStack}/>   
+                <Tab.Screen options={{headerShown: false}} name={profileName} component={ProfileStack}/>
 
             </Tab.Navigator>
+    )
+}
+
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+const Stack = createNativeStackNavigator()
+
+function StackScreens(props) {
+    return(
+        <Stack.Navigator  initialRouteName={props.initial_route}>
+				<Stack.Screen name="Home Screen" component={HomeScreen} />
+                <Stack.Screen name='Search Screen' component={SearchScreen} />
+				<Stack.Screen name="Your Profile" component={ProfileScreen} />
+				<Stack.Screen name="Reviews" component={ReviewsScreen} />
+				<Stack.Screen name="Messages" component={MessagesScreen} />
+				<Stack.Screen name="Followers" component={FollowersScreen} />
+				<Stack.Screen name="Following" component={FollowingScreen} />
+				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
+				<Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen}/>
+				<Stack.Screen name="Create Review" component={CreateReviewScreen} />
+				<Stack.Screen name='FollowersAndFollowing' component={FollowersAndFollowingScreen}/>
+			</Stack.Navigator>
     )
 }
