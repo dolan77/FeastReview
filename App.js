@@ -14,6 +14,8 @@ import FollowingScreen from './screens/FollowingScreen';
 import RestaurantProfileScreen from './screens/RestaurantProfileScreen';
 import NavBar from './screens/NavBar';
 import OtherUserProfileScreen from './screens/OtherUserProfileScreen';
+import CreateReviewScreen from './screens/CreateReviewScreen';
+
 import RegisterScreen from './screens/RegisterScreen';
 import FollowersAndFollowing from './screens/FollowersAndFollowingScreen';
 
@@ -31,14 +33,6 @@ export default function App() {
 				<Stack.Screen name = "FollowersAndFollowing" component={FollowersAndFollowing} />
 				<Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
 		        <Stack.Screen options={{ headerShown: false }} name="Register" component={RegisterScreen} />
-				<Stack.Screen name="Home" component={HomeScreen} />
-				<Stack.Screen name="Your Profile" component={UserProfileScreen} />
-				<Stack.Screen name="Reviews" component={ReviewsScreen} />
-				<Stack.Screen name="Messages" component={MessagesScreen} />
-				<Stack.Screen name="Followers" component={FollowersScreen} />
-				<Stack.Screen name="Following" component={FollowingScreen} />
-				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
-				<Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen}/>
 				
 			</Stack.Navigator>
 		</NavigationContainer>

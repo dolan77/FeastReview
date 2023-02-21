@@ -97,6 +97,7 @@ export default function RestaurantProfileScreen({route}){
      */
     const addReview = (hoursData) => {
         // CODE FOR SOMEONE ELSE TO DO
+        nagivation.navigate('Create Review', {restaurantData})
     }
 
     // returns the screen of the restaurant that the current user is looking at. This contains information about the restaurant's
