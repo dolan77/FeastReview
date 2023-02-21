@@ -17,6 +17,7 @@ export default function SearchScreen() {
 	const [location, setLocation] = useState(defaultLocation)
 	const [restaurants, setRestaurants] = useState([])
 	const [pressed, setPressed] = useState(1)
+	const [displayMap, setDisplayMap] = useState(false)
     const navigation = useNavigation();
 
 	/**
@@ -99,14 +100,6 @@ export default function SearchScreen() {
 	}
 
 	/**
-	 * Increments the amount of times the 'See More Results' button is pressed
-	 * by Nathan Lai
-	 */
-	handlePress = () => {
-		setPressed(pressed + 1)
-	}
-
-	/**
 	 * displays a map with markers of the restaurants that the user searched
 	 * by Matthew Hirai
 	*/
@@ -122,8 +115,21 @@ export default function SearchScreen() {
 					onSubmitEditing={handleSearch}
 				/>
 			</View>
-			{restaurants.length !== 0 ? map(restaurants, location) : <></>}
+
+			{(restaurants.length !== 0 && displayMap) ? map(restaurants, location) : <></>}
+			{restaurants.length !== 0 &&
+				<View style={{marginBottom: -27, marginLeft: 100, marginRight: 100, margin: 10}}>
+					<TouchableOpacity
+						onPress={() => setDisplayMap(!displayMap)}
+						style={styles.button}
+					>
+						<Text style={styles.buttonText}>{displayMap ? 'Close Map' : `Display Map`}</Text>
+					</TouchableOpacity>
+				</View>
+			}
+
 			{restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20, padding: 10}}>Results</Text> : <></>}
+			
 			<ScrollView style={styles.restaurantContainer} keyboardShouldPersistTaps={'handled'}>
 				{restaurants !== [] &&
 					restaurants.map(restaurant => {
@@ -162,7 +168,7 @@ export default function SearchScreen() {
 				{restaurants.length !== 0 && 
 					<View style={styles.buttonContainer}>
 						<TouchableOpacity
-							onPress={handlePress}
+							onPress={() => setPressed(pressed + 1)}
 							style={styles.button}
 						>
 							<Text style={styles.buttonText}>See More Results</Text>
@@ -225,7 +231,6 @@ const styles = StyleSheet.create({
 		paddingRight: 100,
 		justifyContent: 'center',
 		alignItems: 'center',
-		
 	},
 	button: {
 		backgroundColor: '#75d9fc',
