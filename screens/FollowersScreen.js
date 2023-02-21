@@ -7,9 +7,9 @@ import { useNavigation } from '@react-navigation/core';
 
 import * as React from 'react';
 
-export default function FollowersScreen({route}){
-    const passedinUID = route.params.followersUID
-    const passedinFollowersName = route.params.followersNames
+export default function FollowersScreen(props){
+    const passedinUID = props.followersUID
+    const passedinFollowersName = props.followersNames
     const navigation = useNavigation();
 
     /**
