@@ -16,7 +16,7 @@ export default function HomeScreen() {
 
 	
 	React.useLayoutEffect(() => {
-		navigation.setOptions({headerShown: false});
+		navigation.setOptions({headerShown: true});
 	}, [navigation]);
 
 	useEffect(() => {

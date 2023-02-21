@@ -15,7 +15,7 @@ export default function UserProfileScreen(){
 
     
     React.useLayoutEffect(() => {
-		navigation.setOptions({headerShown: false});
+		navigation.setOptions({headerShown: true});
 	  }, [navigation]);
     
     
@@ -111,7 +111,7 @@ export default function UserProfileScreen(){
     }
     // TESTING SENDING TO TOP NAVBAR
     const seeFolloww = () => {
-        navigation.replace('FollowersAndFollowing');
+        navigation.navigate('FollowersAndFollowing');
     }
     React.useEffect(() => {
         getBio();
