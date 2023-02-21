@@ -348,6 +348,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: 380,
         height: 50,
+        borderWidth: 1,
+        borderColor: 'red'
     },
     photo: {
         width: 75,
