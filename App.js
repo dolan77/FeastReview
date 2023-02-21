@@ -30,7 +30,6 @@ export default function App() {
 		<NavigationContainer>
 			<Stack.Navigator initialRouteName='Login'>
 				<Stack.Screen options={{ headerShown: false }} name="TabNavigator" component={NavTabs} />
-				<Stack.Screen name = "FollowersAndFollowing" component={FollowersAndFollowing} />
 				<Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
 		        <Stack.Screen options={{ headerShown: false }} name="Register" component={RegisterScreen} />
 				

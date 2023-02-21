@@ -15,6 +15,8 @@ import FollowingScreen from './FollowingScreen';
 import RestaurantProfileScreen from './RestaurantProfileScreen';
 import OtherUserProfileScreen from './OtherUserProfileScreen';
 import CreateReviewScreen from './CreateReviewScreen';
+import FollowersAndFollowingScreen from './FollowersAndFollowingScreen';
+
 
 
 // Screen names
@@ -109,6 +111,7 @@ function ProfileScreens() {
 				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
 				<Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen}/>
 				<Stack.Screen name="Create Review" component={CreateReviewScreen} />
+                <Stack.Screen name='FollowersAndFollowing' component={FollowersAndFollowingScreen}/>
 				
 			</Stack.Navigator>
     )
