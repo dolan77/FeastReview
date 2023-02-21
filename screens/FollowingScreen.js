@@ -9,9 +9,9 @@ import * as firebase from '../utils/firebase'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 
-export default function FollowingScreen({route}){
-    const passedInFollowingUID = route.params.followingUID
-    const passedInFollowingNames = route.params.followingNames
+export default function FollowingScreen(props){
+    const passedInFollowingUID = props.followingUID
+    const passedInFollowingNames = props.followingNames
     const navigation = useNavigation();
     // console.log('passedInUID: ' + passedInFollowingUID)
     // console.log('passedInNames: ' + passedInFollowingNames)
