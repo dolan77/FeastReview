@@ -111,7 +111,7 @@ export default function UserProfileScreen(){
     }
     // TESTING SENDING TO TOP NAVBAR
     const seeFolloww = () => {
-        navigation.replace();
+        navigation.replace('FollowersAndFollowing');
     }
     React.useEffect(() => {
         getBio();
