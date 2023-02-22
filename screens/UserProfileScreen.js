@@ -70,46 +70,6 @@ export default function UserProfileScreen(){
     // console.log(user.email, 'has signed up')
     // console.log(bio, 'state')
     
-    const seeFollow = async () => {
-        try{
-            const currentUser = await firebase.dbGet('users', user.uid);
-            
-        let following_names = []
-        for (let i = 0; i < currentUser.following.length; i++){
-            
-            // loop thru the UID's the user is following and add their name
-            otherUser = await firebase.dbGet('users', currentUser.following[i]);
-            // console.log(otherUser)
-            following_names.push(otherUser.name)
-        }
-        // console.log('following_names' + following_names)
-        // console.log('currentuser following: ' + currentUser.following)
-        navigation.navigate('Following',
-        {
-            followingUID: currentUser.following,
-            followingNames: following_names
-        })
-        }
-        catch (error){
-            console.log(error)
-        }
-        
-    }
-
-    const seeFollowers = async () => {
-        const currentUser = await firebase.dbGet('users', user.uid);
-        let followersNames = [];
-        for (let i = 0; i < currentUser.followers.length; i++){
-            otherUser = await firebase.dbGet('users', currentUser.followers[i]);
-            followersNames.push(otherUser.name)
-        }
-        navigation.navigate('Followers',
-        {
-            followersUID: currentUser.followers,
-            followersNames: followersNames
-        })
-    }
-    // TESTING SENDING TO TOP NAVBAR
     const moveToFollow = () => {
         // uid : doc_data
         try {
@@ -118,39 +78,42 @@ export default function UserProfileScreen(){
             following = []
             following_names = []
 
-            console.log(user.uid)
+            // console.log(user.uid)
             // get the people who follow the current user
             firebase.dbGetFollowers(user.uid).then(result => {
-                // console.log(result)
                 result.forEach( (doc, key) => {
                     followers.push(key)
                     followers_names.push(doc.name)
                     // console.log(key + ":" + JSON.stringify(doc))
                 })
-                console.log(followers)
-                console.log(followers_names)
-            })
-            // get the user then get a map of who they are following
-            firebase.dbGet('users', user.uid).then(result => {
-                firebase.dbGetFollowed(result.following).then(result => {
-                    result.forEach( (doc, key) => {
-                        following.push(key)
-                        following_names.push(doc.name)
+                console.log('followers: ' + followers)
+                console.log('followerNames: ' + followers_names)
+            // after getting the followers, get the user and who they are following
+            }).then(result2 => {
+                firebase.dbGet('users', user.uid).then(result => {
+                    firebase.dbGetFollowed(result.following).then(result => {
+                        result.forEach( (doc, key) => {
+                            following.push(key)
+                            following_names.push(doc.name)
+                        })
+                    // wait to get who the user is following, then navigate to the Followers and Following Screen
+                    }).then(result3 => {
+                        navigation.navigate('FollowersAndFollowing', {
+                            followers : followers,
+                            followers_names : followers_names,
+                            following: following,
+                            following_names: following_names
+                        })
                     })
-                    console.log(following)
-                    console.log(following_names)
                 })
-            })
-            // finish this at home
-            navigation.navigate('FollowersAndFollowing', {
-                followers : followers
-            })
+            })            
+
             
         } catch (error) {
             console.log(error)
         }
-        // navigation.navigate('FollowersAndFollowing');
     }
+
     React.useEffect(() => {
         getBio();
     },
@@ -212,18 +175,12 @@ export default function UserProfileScreen(){
         <Text style={styles.buttonText}>See Your Reviews</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style = {styles.button} onPress={seeFollowers}>
-            <Text style={styles.buttonText}>Followers</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style = {styles.button} onPress={seeFollow}>
-            <Text style={styles.buttonText}>Following</Text>
+        <TouchableOpacity onPress={moveToFollow} style = {styles.button}>
+            <Text style={styles.buttonText}>Followers and Following</Text>
         </TouchableOpacity>
         </View>
         
-        <TouchableOpacity onPress={moveToFollow}>
-            <Text>Test the Followers Tab</Text>
-        </TouchableOpacity>
+
     </View>
     );
 }
