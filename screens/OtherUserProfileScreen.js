@@ -14,7 +14,7 @@ import * as React from 'react';
 export default function OtherUserProfileScreen({route}){
     // passed in data should be the (doc) in Firebase (unique user profile)
     // pull user from DB or have the user be passed into the DB
-    const otherID = route.params;
+    const otherID = route.params.otherID;
 
     const [follow, setFollow] = React.useState('');
     const [color, setColor] = React.useState('');
@@ -27,21 +27,20 @@ export default function OtherUserProfileScreen({route}){
      * method for when the user clicks on the follow button or not
      * https://firebase.google.com/docs/firestore/manage-data/add-data
      */
-    // this does not work, need to fix the firebase methods
     const clickFollow = async () => {
         try {
 
             const currentUser = await firebase.dbGet('users', user.uid);
 
             // if we are following the user, unfollow them
-            if (currentUser.following.includes(otherID.id)){
-                await firebase.dbUpdateArrayRemove('users', user.uid, 'following', [otherID.id])
+            if (currentUser.following.includes(otherID)){
+                await firebase.dbUpdateArrayRemove('users', user.uid, 'following', [otherID])
                 PopulateButton();
             }
 
             // we are not following the user, follow them
             else{
-                await firebase.dbUpdateArrayAdd('users', user.uid, 'following', [otherID.id]);
+                await firebase.dbUpdateArrayAdd('users', user.uid, 'following', [otherID]);
                 PopulateButton();
             }
                 
@@ -58,7 +57,7 @@ export default function OtherUserProfileScreen({route}){
         try {
             const currentUser = await firebase.dbGet('users', user.uid);
             // if we are following the user, prompt the unfollow button
-            if (currentUser.following.includes(otherID.id)){
+            if (currentUser.following.includes(otherID)){
                 
                 setFollow('Unfollow');
                 setColor('#636362');
@@ -80,8 +79,13 @@ export default function OtherUserProfileScreen({route}){
      * @returns Text to be shown on our application that involves the other user's display name
      */
     const ShowOtherUserName = async () => {
-        const otherUser = await firebase.dbGet('users', otherID.id); 
-        setName(otherUser.name);     
+        try{
+            const otherUser = await firebase.dbGet('users', otherID); 
+            setName(otherUser.name);    
+        }catch(error){
+            console.log(error)
+        }
+ 
     }
 
     // initiate the button and user name we create the view

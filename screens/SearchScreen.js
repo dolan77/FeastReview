@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/core';
 import Geolocation from 'react-native-geolocation-service';
 import { starRating } from '../methods/star.js';
 import { map } from '../methods/map.js';
-import { searchBusinesses } from '../utils/yelp.js';
+import { searchBusinesses, businessDetail} from '../utils/yelp.js';
 import { dbGet, dbSet } from '../utils/firebase.js';
 import { requestLocationPermission } from '../utils/locationPermission.js'
 import { SearchBar} from '../components/SearchBar.js';
@@ -136,9 +136,18 @@ export default function SearchScreen() {
 						return (
 							<TouchableOpacity 
 								key={restaurant.id} 
-								onPressIn={() => 
-									navigation.navigate('RestaurantProfile',{data: restaurant.alias})
-								}
+								onPressIn={() => {
+									// Dylan Huynh: allows the user to be redirected to the restaurant profile of the restaurant they selected.
+									try {
+										dbGet('api_keys', 'key').then(keys => {
+											businessDetail(restaurant.alias, keys.yelp).then(result => {navigation.navigate('RestaurantProfile', {data: result})})
+										})
+									} catch (error) {
+										console.log(error)
+									}
+
+									
+								}}
 							>
 								<View style={styles.restaurant}>
 									<Image 
