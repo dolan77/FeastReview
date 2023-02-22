@@ -110,8 +110,46 @@ export default function UserProfileScreen(){
         })
     }
     // TESTING SENDING TO TOP NAVBAR
-    const seeFolloww = () => {
-        navigation.navigate('FollowersAndFollowing');
+    const moveToFollow = () => {
+        // uid : doc_data
+        try {
+            followers = []
+            followers_names = []
+            following = []
+            following_names = []
+
+            console.log(user.uid)
+            // get the people who follow the current user
+            firebase.dbGetFollowers(user.uid).then(result => {
+                // console.log(result)
+                result.forEach( (doc, key) => {
+                    followers.push(key)
+                    followers_names.push(doc.name)
+                    // console.log(key + ":" + JSON.stringify(doc))
+                })
+                console.log(followers)
+                console.log(followers_names)
+            })
+            // get the user then get a map of who they are following
+            firebase.dbGet('users', user.uid).then(result => {
+                firebase.dbGetFollowed(result.following).then(result => {
+                    result.forEach( (doc, key) => {
+                        following.push(key)
+                        following_names.push(doc.name)
+                    })
+                    console.log(following)
+                    console.log(following_names)
+                })
+            })
+            // finish this at home
+            navigation.navigate('FollowersAndFollowing', {
+                followers : followers
+            })
+            
+        } catch (error) {
+            console.log(error)
+        }
+        // navigation.navigate('FollowersAndFollowing');
     }
     React.useEffect(() => {
         getBio();
@@ -183,12 +221,8 @@ export default function UserProfileScreen(){
         </TouchableOpacity>
         </View>
         
-        <TouchableOpacity onPress={seeFolloww}>
+        <TouchableOpacity onPress={moveToFollow}>
             <Text>Test the Followers Tab</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={seeFolloww}>
-            <Text>Testing the new FollowBar</Text>
         </TouchableOpacity>
     </View>
     );
