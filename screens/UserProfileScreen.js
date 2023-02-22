@@ -15,7 +15,7 @@ export default function UserProfileScreen(){
 
     
     React.useLayoutEffect(() => {
-		navigation.setOptions({headerShown: false});
+		navigation.setOptions({headerShown: true});
 	  }, [navigation]);
     
     
@@ -67,9 +67,52 @@ export default function UserProfileScreen(){
         })
     } 
 
-    console.log(user.email, 'has signed up')
-    console.log(bio, 'state')
+    // console.log(user.email, 'has signed up')
+    // console.log(bio, 'state')
     
+    const seeFollow = async () => {
+        try{
+            const currentUser = await firebase.dbGet('users', user.uid);
+            
+        let following_names = []
+        for (let i = 0; i < currentUser.following.length; i++){
+            
+            // loop thru the UID's the user is following and add their name
+            otherUser = await firebase.dbGet('users', currentUser.following[i]);
+            // console.log(otherUser)
+            following_names.push(otherUser.name)
+        }
+        // console.log('following_names' + following_names)
+        // console.log('currentuser following: ' + currentUser.following)
+        navigation.navigate('Following',
+        {
+            followingUID: currentUser.following,
+            followingNames: following_names
+        })
+        }
+        catch (error){
+            console.log(error)
+        }
+        
+    }
+
+    const seeFollowers = async () => {
+        const currentUser = await firebase.dbGet('users', user.uid);
+        let followersNames = [];
+        for (let i = 0; i < currentUser.followers.length; i++){
+            otherUser = await firebase.dbGet('users', currentUser.followers[i]);
+            followersNames.push(otherUser.name)
+        }
+        navigation.navigate('Followers',
+        {
+            followersUID: currentUser.followers,
+            followersNames: followersNames
+        })
+    }
+    // TESTING SENDING TO TOP NAVBAR
+    const seeFolloww = () => {
+        navigation.navigate('FollowersAndFollowing');
+    }
     React.useEffect(() => {
         getBio();
     },
@@ -131,15 +174,22 @@ export default function UserProfileScreen(){
         <Text style={styles.buttonText}>See Your Reviews</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Followers')}>
+        <TouchableOpacity style = {styles.button} onPress={seeFollowers}>
             <Text style={styles.buttonText}>Followers</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Following')}>
+        <TouchableOpacity style = {styles.button} onPress={seeFollow}>
             <Text style={styles.buttonText}>Following</Text>
         </TouchableOpacity>
         </View>
         
+        <TouchableOpacity onPress={seeFolloww}>
+            <Text>Test the Followers Tab</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={seeFolloww}>
+            <Text>Testing the new FollowBar</Text>
+        </TouchableOpacity>
     </View>
     );
 }
