@@ -8,7 +8,7 @@ import auth from '@react-native-firebase/auth';
 
 const Tab = createMaterialTopTabNavigator();
 
-export default function FollowersAndFollowing(){
+export default function FollowersAndFollowing({route}){
     // https://stackoverflow.com/questions/60439210/how-to-pass-props-to-screen-component-with-a-tab-navigator
     let followers = []
     let following = []
