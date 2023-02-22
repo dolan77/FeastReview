@@ -3,6 +3,7 @@ import { Button, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpa
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import * as firebase from '../utils/firebase'
+import Loader from '../methods/Loader';
 
 export default function RegisterScreen() {
 	const [userName, setUserName] = useState('')
@@ -14,6 +15,7 @@ export default function RegisterScreen() {
 	const navigation = useNavigation()
 
 	useEffect(() => {
+		setLoading(false)
 		const unsubscribe = auth().onAuthStateChanged((user) => {
 			console.log("register", user)
 		});
@@ -33,6 +35,7 @@ export default function RegisterScreen() {
 		}
 
 		else {
+			setLoading(true)
 			auth()
 				.createUserWithEmailAndPassword(email, password)
 				.then((userCreds) => {
@@ -42,7 +45,9 @@ export default function RegisterScreen() {
 							.currentUser.updateProfile({
 								displayName: userName,
 						  	})
-						  	.then(() => redirect(auth().currentUser))
+						  	.then(() => {
+								redirect(auth().currentUser)
+							})
 						  	.catch((error) => {
 								console.error(error);
 						  	});
@@ -65,10 +70,7 @@ export default function RegisterScreen() {
 
 	const redirect = (user) => {
 		addUserToDb(user).then(() => {
-			setTimeout(() => {
-				setLoading(true)
-				navigation.navigate("TabNavigator")
-			}, 1000);
+			navigation.navigate("TabNavigator")
 		})
 	}
 
@@ -94,6 +96,7 @@ export default function RegisterScreen() {
 			style={styles.container}
 			behavior="padding"
 		>
+			{loading && <Loader />}
 			<Image 
 				source={require('../assets/feast_blue.png')}  
 				style={styles.logo} 
