@@ -13,13 +13,6 @@ import * as firebase from '../utils/firebase'
 export default function UserProfileScreen(){
     const user = auth().currentUser;
 
-    
-    React.useLayoutEffect(() => {
-		navigation.setOptions({headerShown: true});
-	  }, [navigation]);
-    
-    
-
     const [modalVisible, setModalVisible] = React.useState(false);
     const [bio, setBio] = React.useState('');
     const navigation = useNavigation();
