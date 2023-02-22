@@ -2,14 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { Button, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
+import * as firebase from '../utils/firebase'
 
 export default function RegisterScreen() {
 	const [userName, setUserName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [passwordAgain, setPasswordAgain] = useState('')
+	const [loading, setLoading] = useState(false)
 
 	const navigation = useNavigation()
+
+	useEffect(() => {
+		const unsubscribe = auth().onAuthStateChanged((user) => {
+			console.log("register", user)
+		});
+
+		return unsubscribe;
+	}, []);
 
 	// calls the Firebase api with user input to create a user object and put it in the
 	// Firestore
@@ -32,7 +42,7 @@ export default function RegisterScreen() {
 							.currentUser.updateProfile({
 								displayName: userName,
 						  	})
-						  	.then(() => navigation.navigate("Loading"))
+						  	.then(() => redirect(auth().currentUser))
 						  	.catch((error) => {
 								console.error(error);
 						  	});
@@ -51,6 +61,31 @@ export default function RegisterScreen() {
 				});
 		}
 		
+	}
+
+	const redirect = (user) => {
+		addUserToDb(user).then(() => {
+			setTimeout(() => {
+				setLoading(true)
+				navigation.navigate("TabNavigator")
+			}, 1000);
+		})
+	}
+
+	const addUserToDb = async (user) => {
+		const res = await firebase.dbSet(
+			"users", 
+			user.uid, 
+			{
+				bio: "",
+				bookmarks: [],
+				expertise: {},
+				followers: [],
+				following: [],
+				username: user.displayName,
+				reviews: []
+			}
+		)
 	}
 	
 	// displays an input form for user to make an account for FeastReview
