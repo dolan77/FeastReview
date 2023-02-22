@@ -2,7 +2,7 @@ import firestore, { firebase } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 //import firebase from '@react-native-firebase/app';
 
-module.exports = {dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove};
+module.exports = {dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetFollowers, dbGetFollowed};
 
 
 /**
@@ -161,4 +161,39 @@ async function dbUpdateArrayAdd(collection, doc, field, values){
  */
 async function dbUpdateArrayRemove(collection, doc, field, values){
     return dbUpdateOnce(collection, doc, field, firestore.FieldValue.arrayRemove(...values));
+}
+
+
+/**
+ * acquires a map of all users that follow a specific user by id
+ * @param {*} uid user id we are getting followers of
+ * @returns 
+ */
+async function dbGetFollowers(uid){
+    let query = await db.collection("users").where("following", "array-contains", uid).get().then((user_query) => {
+        let followers = new Map();
+        user_query.docs.forEach((user_query) => {
+            followers.set(user_query.ref.id, user_query.data());
+        });
+        return followers;   
+    });
+    
+    return query? query: new Map();
+}
+
+/**
+ * acquires a map of all users given a list of users
+ * @param {*} followedList list the original user follows
+ * @returns 
+ */
+async function dbGetFollowed(followedList){
+    let query = await db.collection("users").where(firebase.firestore.FieldPath.documentId(), "in", followedList).get().then((user_query) => {
+        let followed = new Map();
+        user_query.docs.forEach((user_query) => {
+            followed.set(user_query.ref.id, user_query.data());
+        });
+        return followed;   
+    });
+    
+    return query? query: new Map();
 }
