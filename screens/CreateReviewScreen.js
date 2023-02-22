@@ -205,10 +205,15 @@ export default function ReviewPage({route}) {
 
             {/* Add Photos to Upload */}
             {/* todo */}
-            <ScrollView style={styles.photo_container}>
-                <Image style={styles.photo} source={image}>
+            <ScrollView horizontal={true} style={styles.photo_container}>
+                <Image style={styles.photo} source={image}/>
+                <Image style={styles.photo} source={image}/>
+                <Image style={styles.photo} source={image}/>
+                <Image style={styles.photo} source={image}/>
+                <Image style={styles.photo} source={image}/>
+                <Image style={styles.photo} source={image}/>
+                <Image style={styles.photo} source={image}/>
 
-                </Image>
             </ScrollView>
             
             {/* Button for 'Submit Review' */}
@@ -345,13 +350,16 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
     photo_container: {
-        flexDirection: 'row',
+        horizontal: 'true',
+        // flexDirection: 'row',
         width: 380,
         height: 50,
         borderWidth: 1,
         borderColor: 'red'
     },
     photo: {
+        horizontal: 'true',
+        // flexDirection: 'row',
         width: 75,
 		height: 110,
 		flex: 1,
