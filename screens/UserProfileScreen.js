@@ -153,7 +153,7 @@ export default function UserProfileScreen(){
 
             
             <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
-                <Image style = {[styles.tinyLogo, styles.topContent]} source ={image}/>
+                <Image style = {[styles.tinyLogo]} source ={image}/>
                 <Text style = {styles.globalFont}>{user.displayName}</Text>
                 <Text style = {styles.globalFont}>Dessert Expert</Text>
             </View> 
@@ -261,6 +261,7 @@ const styles = StyleSheet.create({
 
     globalFont:{
         color: 'white',
-        fontSize: 20
+        fontSize: 20,
+        fontWeight: '500',
     }
 })
