@@ -12,18 +12,17 @@ import * as firebase from '../utils/firebase'
 // function that returns the screen for the current user
 export default function UserProfileScreen(){
     const user = auth().currentUser;
-
+    const [modalVisible, setModalVisible] = React.useState(false);
+    const [bio, setBio] = React.useState('');
+    const navigation = useNavigation();
     
     React.useLayoutEffect(() => {
 		navigation.setOptions({headerShown: true});
 	  }, [navigation]);
     
-    
-
-    const [modalVisible, setModalVisible] = React.useState(false);
-    const [bio, setBio] = React.useState('');
-    const navigation = useNavigation();
-
+    React.useEffect(() => {
+        getBio();
+    }, [])
     
     /**
      * 
@@ -67,9 +66,9 @@ export default function UserProfileScreen(){
         })
     } 
 
-    // console.log(user.email, 'has signed up')
-    // console.log(bio, 'state')
-    
+    /**
+     * method that allows the user to trasnfer to the "FollowersAndFollowing" Screen.
+     */
     const moveToFollow = () => {
         // uid : doc_data
         try {
@@ -77,8 +76,6 @@ export default function UserProfileScreen(){
             followers_names = []
             following = []
             following_names = []
-
-            // console.log(user.uid)
             // get the people who follow the current user
             firebase.dbGetFollowers(user.uid).then(result => {
                 result.forEach( (doc, key) => {
@@ -86,10 +83,12 @@ export default function UserProfileScreen(){
                     followers_names.push(doc.name)
                     // console.log(key + ":" + JSON.stringify(doc))
                 })
-                console.log('followers: ' + followers)
-                console.log('followerNames: ' + followers_names)
+                // console.log('followers: ' + followers)
+                // console.log('followerNames: ' + followers_names)
+            
             // after getting the followers, get the user and who they are following
-            }).then(result2 => {
+            })
+            .then(result2 => {
                 firebase.dbGet('users', user.uid).then(result => {
                     firebase.dbGetFollowed(result.following).then(result => {
                         result.forEach( (doc, key) => {
@@ -97,7 +96,8 @@ export default function UserProfileScreen(){
                             following_names.push(doc.name)
                         })
                     // wait to get who the user is following, then navigate to the Followers and Following Screen
-                    }).then(result3 => {
+                    })
+                    .then(result3 => {
                         navigation.navigate('FollowersAndFollowing', {
                             followers : followers,
                             followers_names : followers_names,
@@ -107,18 +107,18 @@ export default function UserProfileScreen(){
                     })
                 })
             })            
-
             
         } catch (error) {
             console.log(error)
         }
     }
-
-    React.useEffect(() => {
-        getBio();
-    },
-    []
-    )
+    
+    /**
+     * method that will transition to the screen where the user can view their saved restaurants
+     */
+    const seeRestaurants = async() => {
+        // cache the restaurant's data within the RestaurantProfileScreen to show it as buttons similar to Search.
+    }
     
     // this returns the User Profile Screen onto the application on the mobile device. The screen consists of a picture, user name, biography, expertise, and three
     // buttons to navigate to another screen. The user is also able to edit their bio, which leads to a different screen and updates the bio on the database.
@@ -178,9 +178,12 @@ export default function UserProfileScreen(){
         <TouchableOpacity onPress={moveToFollow} style = {styles.button}>
             <Text style={styles.buttonText}>Followers and Following</Text>
         </TouchableOpacity>
-        </View>
-        
 
+        <TouchableOpacity onPress={seeRestaurants} style = {styles.button}>
+            <Text style={styles.buttonText}>Saved Restaurants</Text>
+        </TouchableOpacity>
+
+        </View>
     </View>
     );
 }
