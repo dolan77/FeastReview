@@ -49,14 +49,14 @@ export default function RestaurantProfileScreen({route}){
             // if we are following the user, prompt the unfollow button
             if (currentUser.saved_restaurants.includes(restaurantData.data.alias)){
                 
-                setSaved('Remove');
+                setSaved('Remove Restaurant');
                 setColor('#636362');
                 
             }
             // we are not following the user,prompt the follow button
             else{
                 
-                setSaved('Save');
+                setSaved('Save Restaurant');
                 setColor('#0782F9');
             }
         } catch (error) {
