@@ -13,7 +13,7 @@ module.exports = {dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate,
 const db = firestore();
 
 // allows for deleting
-// dbUpdate(someCollection, someDoc, {someValue: firebase.delete});
+// dbUpdate(someCollection, someDoc, {someValue: firebase.del});
 const del = FieldValue.delete();
 
 /**
