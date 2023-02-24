@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, Modal, ScrollView } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, Modal, ScrollView, Pressable } from 'react-native'
 import React, {useState} from 'react'
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
@@ -13,9 +13,7 @@ export default function ReviewPage({route}) {
     const user = auth().currentUser;
     const restaurantData = route.params.restaurantData;
     var userReview = 'Your Review';
-    const img_options = {mediaType:'image'};
     
-    const photos = []
 
     React.useLayoutEffect(() => {
 		navigation.setOptions({headerShown: false});
@@ -28,6 +26,7 @@ export default function ReviewPage({route}) {
     const starIconCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
     const starIconFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
 
+    // Uploads all review contents to the database's 'reviews' collection
     async function uploadReview(){
         try{
             console.log('In the upload review function')
@@ -44,6 +43,20 @@ export default function ReviewPage({route}) {
         }
         catch (error){
             console.log(error)
+        }
+    }
+
+
+    // Prompts user to select images to upload.
+    const [images, setImages] = useState([]);
+    const img_options = {mediaType:'image', selectedAssets:images};
+    async function GetPhotos(){
+        try{
+            const response = await MultipleImagePicker.openPicker(img_options)
+            setImages(response);
+        }
+        catch (error){
+            console.log(error.code, error.message)
         }
     }
 
@@ -210,8 +223,12 @@ export default function ReviewPage({route}) {
             {/* Add Photos to Upload */}
             {/* todo */}
             <ScrollView horizontal={true} style={styles.photo_container}>
-                <Ionicons name='images' size={80} onPress={async () => {console.log('Pressed image icon'); await MultipleImagePicker.openPicker(img_options)}}/>
-                <Image style={styles.photo} source={image}/>
+                <Ionicons name='images' size={80} 
+                    onPress={async () => {console.log('Pressed image icon'); GetPhotos()}}/>
+                <Pressable onPress={()=> console.log('selected images:', images)}>
+                    <Image style={styles.photo} source={image} />
+                </Pressable>
+                
                 <Image style={styles.photo} source={image}/>
                 <Image style={styles.photo} source={image}/>
                 <Image style={styles.photo} source={image}/>
