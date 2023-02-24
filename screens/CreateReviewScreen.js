@@ -4,6 +4,8 @@ import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import {Button} from 'react-native';
 import * as firebase from '../utils/firebase'
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import image from "../assets/macarons.jpg"
 
 export default function ReviewPage({route}) {
@@ -11,6 +13,8 @@ export default function ReviewPage({route}) {
     const user = auth().currentUser;
     const restaurantData = route.params.restaurantData;
     var userReview = 'Your Review';
+    const img_options = {mediaType:'image'};
+    
     const photos = []
 
     React.useLayoutEffect(() => {
@@ -206,6 +210,7 @@ export default function ReviewPage({route}) {
             {/* Add Photos to Upload */}
             {/* todo */}
             <ScrollView horizontal={true} style={styles.photo_container}>
+                <Ionicons name='images' size={80} onPress={async () => {console.log('Pressed image icon'); await MultipleImagePicker.openPicker(img_options)}}/>
                 <Image style={styles.photo} source={image}/>
                 <Image style={styles.photo} source={image}/>
                 <Image style={styles.photo} source={image}/>
