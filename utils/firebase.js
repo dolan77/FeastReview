@@ -206,6 +206,6 @@ async function dbGetFollowed(followedList){
  * @param {*} authorId map of the reviewids mapped to review data written by user
  * @returns 
  */
-async function dbGetReviews(authorId){
+async function dbGetReviewsByAuthor(authorId){
     return dbGetQuery("reviews", "authorid", "==", authorId);
 }

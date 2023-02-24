@@ -123,8 +123,11 @@ export default function OtherUserProfileScreen({route}){
                         <Text style={styles.globalText}>{name}</Text>
                         
                     </View>
+                    <View style={{flex:0}}>
                     <Text style={[styles.globalText, {alignSelf: 'center'}]}>Japanese Food Expert</Text>
 
+                    </View>
+                    
                     <View style={[{flex: 1, alignSelf: 'center'}]}>
                     <Text style={styles.globalText}>{bio}</Text>
                     </View>

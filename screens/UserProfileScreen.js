@@ -117,6 +117,9 @@ export default function UserProfileScreen(){
      * method that will transition to the screen where the user can view their saved restaurants
      */
     const seeRestaurants = async() => {
+        firebase.dbGet('users', user.uid).then(result => {
+            console.log(result.saved_restaurants[0].alias)
+        })
         // cache the restaurant's data within the RestaurantProfileScreen to show it as buttons similar to Search.
     }
     
@@ -211,7 +214,8 @@ const styles = StyleSheet.create({
     },
 
     bioSubscriptContent:{
-        paddingHorizontal: 15
+        paddingHorizontal: 15,
+        alignContent: 'center'
     },
 
     button: {
