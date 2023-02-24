@@ -27,22 +27,19 @@ export default function RestaurantProfileScreen({route}){
 
     )
     const clickSaved = async () => {
+        console.log(user.uid);
         try{
             const currentUser = await firebase.dbGet('users', user.uid);
             console.log(currentUser.saved_restaurants)
             
             if (Object.hasOwn(currentUser.saved_restaurants, restaurantData.data.alias)){
                 let toSave = {}
-                toSave[`saved_restaurants.${restaurantData.data.alias}`] = firebase.del;
-                
-                await firebase.dbUpdate('users', user.uid, toSave)
-                //await firebase.dbUpdateArrayRemove('users', user.uid, 'saved_restaurants', [restaurantData.data]);
+                toSave[`saved_restaurants.${restaurantData.data.alias}`] = 1;
+                await firebase.dbDelete('users', user.uid, toSave)
                 PopulateButton();
             }
             else{
-                // works somehow. fix at home later?
-                await firebase.dbUpdateOnce('user', user.uid, `saved_restaurants.${restaurantData.data.alias}`, restaurantData.data)
-                //await firebase.dbUpdateArrayAdd('users', user.uid, 'saved_restaurants', [restaurantData.data]);
+                await firebase.dbUpdateOnce('users', user.uid, `saved_restaurants.${restaurantData.data.alias}`, restaurantData.data)
                 PopulateButton();
             }
         } catch (error) {

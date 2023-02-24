@@ -2,7 +2,7 @@ import firestore, { firebase } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 //import firebase from '@react-native-firebase/app';
 
-module.exports = {del, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews};
+module.exports = {del, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbDelete, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews};
 
 
 /**
@@ -137,8 +137,19 @@ async function dbUpdateOnce(collection, doc, field, value){
     return docRef.update(updatedField);
 }
 
+
+/**
+ * makes deleting simple, use literally the same way as a normal update it overwrites the value to delete
+ * @param {*} collection 
+ * @param {*} doc 
+ * @param {*} fields field an object that has the fields you want to update in a document
+ *                example => {field:"literally anything, its gonna get overwritten"}
+ *            also works with dot notation
+ *                 example => {field.nestField: "literally anything, its gonna get overwritten"}
+ * @returns 
+ */
 async function dbDelete(collection, doc, fields){
-    fields.forEach((value, key) => {
+    Object.keys(fields).forEach((key) => {
         fields[key] = firestore.FieldValue.delete();
     });
     return dbUpdate(collection, doc, fields);
