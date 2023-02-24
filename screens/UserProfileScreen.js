@@ -118,7 +118,11 @@ export default function UserProfileScreen(){
      */
     const seeRestaurants = async() => {
         firebase.dbGet('users', user.uid).then(result => {
-            // .log(result.saved_restaurants[0].alias)
+            //console.log(result)
+            Object.keys(result.saved_restaurants).forEach((key) => {
+                console.log(result.saved_restaurants[key])
+            });
+            // console.log(result.saved_restaurants)
         })
         // cache the restaurant's data within the RestaurantProfileScreen to show it as buttons similar to Search.
     }
