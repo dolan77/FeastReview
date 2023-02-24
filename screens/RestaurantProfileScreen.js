@@ -32,6 +32,7 @@ export default function RestaurantProfileScreen({route}){
             console.log(currentUser.saved_restaurants)
             
             if (Object.hasOwn(currentUser.saved_restaurants, restaurantData.data.alias)){
+                
                 let toSave = {saved_restaurants:{}}
                 await firebase.dbUpdate('users', user.uid, toSave)
                 //await firebase.dbUpdateArrayRemove('users', user.uid, 'saved_restaurants', [restaurantData.data]);
