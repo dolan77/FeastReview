@@ -14,7 +14,7 @@ const db = firestore();
 
 // allows for deleting
 // dbUpdate(someCollection, someDoc, {someValue: firebase.del});
-const del = FieldValue.delete();
+const del = firestore.FieldValue.delete();
 
 /**
  * simple getter function
