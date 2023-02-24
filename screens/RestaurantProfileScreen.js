@@ -29,13 +29,20 @@ export default function RestaurantProfileScreen({route}){
     const clickSaved = async () => {
         try{
             const currentUser = await firebase.dbGet('users', user.uid);
-
-            if (currentUser.saved_restaurants.includes(restaurantData.data.alias)){
-                await firebase.dbUpdateArrayRemove('users', user.uid, 'saved_restaurants', [restaurantData.data.alias]);
+            console.log(currentUser.saved_restaurants)
+            
+            if (Object.hasOwn(currentUser.saved_restaurants, restaurantData.data.alias)){
+                let toSave = {saved_restaurants:{}}
+                await firebase.dbUpdate('users', user.uid, toSave)
+                //await firebase.dbUpdateArrayRemove('users', user.uid, 'saved_restaurants', [restaurantData.data]);
                 PopulateButton();
             }
             else{
-                await firebase.dbUpdateArrayAdd('users', user.uid, 'saved_restaurants', [restaurantData.data.alias]);
+                // works somehow. fix at home later?
+                let toSave = {saved_restaurants:{}}
+                toSave.saved_restaurants[restaurantData.data.alias] = restaurantData.data
+                await firebase.dbUpdate('users', user.uid, toSave)
+                //await firebase.dbUpdateArrayAdd('users', user.uid, 'saved_restaurants', [restaurantData.data]);
                 PopulateButton();
             }
         } catch (error) {
@@ -46,16 +53,15 @@ export default function RestaurantProfileScreen({route}){
     const PopulateButton = async () => {
         try {
             const currentUser = await firebase.dbGet('users', user.uid);
-            // if we are following the user, prompt the unfollow button
-            if (currentUser.saved_restaurants.includes(restaurantData.data.alias)){
+            // if we are following the restaurant, prompt the unfollow button
+            if (Object.hasOwn(currentUser.saved_restaurants, restaurantData.data.alias)){
                 
                 setSaved('Remove Restaurant');
                 setColor('#636362');
                 
             }
-            // we are not following the user,prompt the follow button
+            // we are not following the restaurant, prompt the follow button
             else{
-                
                 setSaved('Save Restaurant');
                 setColor('#0782F9');
             }
@@ -97,7 +103,7 @@ export default function RestaurantProfileScreen({route}){
      */
     const addReview = (hoursData) => {
         // CODE FOR SOMEONE ELSE TO DO
-        nagivation.navigate('Create Review', {restaurantData})
+        // nagivation.navigate('Create Review', {restaurantData})
     }
 
     // returns the screen of the restaurant that the current user is looking at. This contains information about the restaurant's
