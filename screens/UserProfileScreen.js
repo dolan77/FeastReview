@@ -118,7 +118,7 @@ export default function UserProfileScreen(){
      */
     const seeRestaurants = async() => {
         firebase.dbGet('users', user.uid).then(result => {
-            console.log(result.saved_restaurants[0].alias)
+            // .log(result.saved_restaurants[0].alias)
         })
         // cache the restaurant's data within the RestaurantProfileScreen to show it as buttons similar to Search.
     }
@@ -161,11 +161,10 @@ export default function UserProfileScreen(){
                 <Text style = {styles.globalFont}>Dessert Expert</Text>
             </View> 
 
-            <View style = {[{flex: 1}]}>
-                <Text style={[styles.globalFont, styles.bioSubscriptContent]}>
-                    {bio}
-                    <Text style = {styles.editButton} onPress={() => setModalVisible(true)}>{"\n\n"}Edit Bio</Text>
-                </Text>
+            <View style = {[{flex: 1}, styles.bioSubscriptContent]}>
+                <Text style={[styles.globalFont]}>{bio}</Text>
+                <Text style = {[styles.editButton, styles.globalFont]} onPress={() => setModalVisible(true)}>Edit Bio</Text>
+                
             </View>
 
         </View> 
@@ -214,8 +213,8 @@ const styles = StyleSheet.create({
     },
 
     bioSubscriptContent:{
-        paddingHorizontal: 15,
-        alignContent: 'center'
+        alignItems: 'center',
+        paddingHorizontal: 15
     },
 
     button: {
@@ -267,5 +266,6 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 20,
         fontWeight: '500',
+        
     }
 })
