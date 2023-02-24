@@ -12,9 +12,7 @@ module.exports = {del, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUp
 
 const db = firestore();
 
-// allows for deleting
-// dbUpdate(someCollection, someDoc, {someValue: firebase.delete});
-const del = FieldValue.delete();
+const del = firestore.FieldValue.delete();
 
 /**
  * simple getter function
@@ -137,6 +135,13 @@ async function dbUpdateOnce(collection, doc, field, value){
     const docRef = db.collection(collection).doc(doc);
     let updatedField = {[field]: value};
     return docRef.update(updatedField);
+}
+
+async function dbDelete(collection, doc, fields){
+    fields.forEach((value, key) => {
+        fields[key] = firestore.FieldValue.delete();
+    });
+    return dbUpdate(collection, doc, fields);
 }
 
 /**
