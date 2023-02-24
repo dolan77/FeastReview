@@ -2,7 +2,7 @@ import firestore, { firebase } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 //import firebase from '@react-native-firebase/app';
 
-module.exports = {dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetFollowers, dbGetFollowed};
+module.exports = {dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews};
 
 
 /**
@@ -163,6 +163,25 @@ async function dbUpdateArrayRemove(collection, doc, field, values){
     return dbUpdateOnce(collection, doc, field, firestore.FieldValue.arrayRemove(...values));
 }
 
+/**
+ * general query to get a map
+ * @param {} collection collection the documents are being queried from
+ * @param {*} targetValue the document value you are comparing to
+ * @param {*} operator the type of operation like == or in
+ * @param {*} fromValue the input value you wanna check
+ * @returns map of document id to its content
+ */
+async function dbGetQuery(collection, targetValue, operator, fromValue){
+    let query = await db.collection(collection).where(targetValue, operator, fromValue).get().then((user_query) => {
+        let results = new Map();
+        user_query.docs.forEach((user_query) => {
+            results.set(user_query.ref.id, user_query.data());
+        });
+        return results;   
+    });
+    
+    return query? query: new Map();
+}
 
 /**
  * acquires a map of all users that follow a specific user by id
@@ -170,15 +189,7 @@ async function dbUpdateArrayRemove(collection, doc, field, values){
  * @returns 
  */
 async function dbGetFollowers(uid){
-    let query = await db.collection("users").where("following", "array-contains", uid).get().then((user_query) => {
-        let followers = new Map();
-        user_query.docs.forEach((user_query) => {
-            followers.set(user_query.ref.id, user_query.data());
-        });
-        return followers;   
-    });
-    
-    return query? query: new Map();
+    return dbGetQuery("users", "following", "array-contains", uid);
 }
 
 /**
@@ -187,13 +198,14 @@ async function dbGetFollowers(uid){
  * @returns 
  */
 async function dbGetFollowed(followedList){
-    let query = await db.collection("users").where(firebase.firestore.FieldPath.documentId(), "in", followedList).get().then((user_query) => {
-        let followed = new Map();
-        user_query.docs.forEach((user_query) => {
-            followed.set(user_query.ref.id, user_query.data());
-        });
-        return followed;   
-    });
-    
-    return query? query: new Map();
+    return dbGetQuery("users", firebase.firestore.FieldPath.documentId(), "in", followedList);
+}
+
+/**
+ * acquires a map of all reviews written by a user
+ * @param {*} authorId map of the reviewids mapped to review data written by user
+ * @returns 
+ */
+async function dbGetReviews(authorId){
+    return dbGetQuery("reviews", "authorid", "==", authorId);
 }
