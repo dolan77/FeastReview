@@ -33,16 +33,15 @@ export default function RestaurantProfileScreen({route}){
             
             if (Object.hasOwn(currentUser.saved_restaurants, restaurantData.data.alias)){
                 
-                let toSave = {saved_restaurants:{}}
-                await firebase.dbUpdate('users', user.uid, toSave)
+                await firebase.dbUpdate('users', user.uid, 
+                    { "`saved_restaurants.${restaurantData.data.alias}`" : firebase.del})
                 //await firebase.dbUpdateArrayRemove('users', user.uid, 'saved_restaurants', [restaurantData.data]);
                 PopulateButton();
             }
             else{
                 // works somehow. fix at home later?
-                let toSave = {saved_restaurants:{}}
-                toSave.saved_restaurants[restaurantData.data.alias] = restaurantData.data
-                await firebase.dbUpdate('users', user.uid, toSave)
+                await firebase.dbUpdate('users', user.uid, 
+                    { "`saved_restaurants.${restaurantData.data.alias}`" : restaurantData.data})
                 //await firebase.dbUpdateArrayAdd('users', user.uid, 'saved_restaurants', [restaurantData.data]);
                 PopulateButton();
             }
