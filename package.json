@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@baronha/react-native-multiple-image-picker": "^0.4.13",
     "@expo/vector-icons": "^13.0.0",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-firebase/app": "^16.7.0",
