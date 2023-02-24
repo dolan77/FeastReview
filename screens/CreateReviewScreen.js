@@ -46,6 +46,9 @@ export default function ReviewPage({route}) {
         }
     }
 
+    // temp array
+    const photos = []
+
 
     // Prompts user to select images to upload.
     const [images, setImages] = useState([]);
