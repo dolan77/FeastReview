@@ -29,36 +29,46 @@ export default function ReviewPage({route}) {
     // Uploads all review contents to the database's 'reviews' collection
     async function uploadReview(){
         try{
-            console.log('In the upload review function')
-            var review_id = restaurantData.data.alias + '_' + user.uid + '_' + String(Date.now())
+            console.log('In the upload review function');
+            var review_id = restaurantData.data.alias + '_' + user.uid + '_' + String(Date.now());
             await firebase.dbSet('reviews', review_id, {authorid: user.uid,
                                                         content: review,
                                                         datemade: new Date(),
-                                                        image_urls: photos,
+                                                        image_urls: Get_Image_URLs(review_id),
                                                         restaurant_alias: restaurantData.data.alias,
                                                         star_atmos: atmosphereDefaultRating,
                                                         star_foods: foodDefaultRating,
                                                         star_service: serviceDefaultRating
-                                                        })
+                                                        });
+            uploadPhotos();
         }
         catch (error){
             console.log(error)
         }
     }
 
-    // temp array
-    const photos = []
+    // firebase.dbFileAdd(images[0].fileName, images[0].realPath)
+    var image_urls = []
+    
+    // Uploads user's review photos to the database storage.
+    async function uploadPhotos(){
+        images.map((image, index) => firebase.dbFileAdd(image_urls[index], image.realPath))
+    }
 
+    // Creates an array of the uploaded photos, replacing their names with the review_id and identifier.
+    function Get_Image_URLs(review_id){
+        image_urls = images.map((image, index) => review_id + '_' + index)
+        return image_urls
+    }
 
     // Prompts user to select images to upload.
     const [images, setImages] = useState([]);
     const img_options = {mediaType:'image', selectedAssets:images};
     async function GetPhotos(){
-        try{
+        try {
             const response = await MultipleImagePicker.openPicker(img_options)
             setImages(response);
-        }
-        catch (error){
+        } catch (error){
             console.log(error.code, error.message)
         }
     }
@@ -227,8 +237,8 @@ export default function ReviewPage({route}) {
             {/* todo */}
             <ScrollView horizontal={true} style={styles.photo_container}>
                 <Ionicons name='images' size={80} 
-                    onPress={async () => {console.log('Pressed image icon'); GetPhotos()}}/>
-                <Pressable onPress={()=> console.log('selected images:', images)}>
+                    onPress={async () => {console.log('Pressed add image icon'); GetPhotos()}}/>
+                <Pressable onPress={()=> {console.log('clicked first photo');  }}>
                     <Image style={styles.photo} source={image} />
                 </Pressable>
                 
