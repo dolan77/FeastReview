@@ -2,7 +2,7 @@ import firestore, { firebase } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 //import firebase from '@react-native-firebase/app';
 
-module.exports = {dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews};
+module.exports = {dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed};
 
 
 /**
@@ -99,15 +99,7 @@ async function dbFileAdd(filename, filePath){
  * @returns list of all objects matching query
  */
 async function dbGetReviews(keyword, field="restaurant_alias"){
-    let query = db.collection("reviews").where(field, "==", keyword).get().then((reviews_query) => {
-        let reviews = [];
-        reviews_query.docs.forEach((review_query) => {
-            reviews.push(review_query.data())
-        });
-        return reviews;   
-    });
-
-    return query? query: [];
+    return dbGetQuery("reviews", field, "==", keyword);
 }
 
 /**
@@ -203,13 +195,4 @@ async function dbGetFollowers(uid){
  */
 async function dbGetFollowed(followedList){
     return dbGetQuery("users", firebase.firestore.FieldPath.documentId(), "in", followedList);
-}
-
-/**
- * acquires a map of all reviews written by a user
- * @param {*} authorId map of the reviewids mapped to review data written by user
- * @returns 
- */
-async function dbGetReviews(authorId){
-    return dbGetQuery("reviews", "authorid", "==", authorId);
 }
