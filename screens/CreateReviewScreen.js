@@ -6,7 +6,7 @@ import {Button} from 'react-native';
 import * as firebase from '../utils/firebase'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
-import image from "../assets/macarons.jpg"
+import { FlatList } from 'react-native-gesture-handler';
 
 export default function ReviewPage({route}) {
     const navigation = useNavigation();
@@ -63,7 +63,7 @@ export default function ReviewPage({route}) {
 
     // Prompts user to select images to upload.
     const [images, setImages] = useState([]);
-    const img_options = {mediaType:'image', selectedAssets:images};
+    const img_options = {mediaType:'image', selectedAssets:images, usedCameraButton:false};
     async function GetPhotos(){
         try {
             const response = await MultipleImagePicker.openPicker(img_options)
@@ -71,6 +71,24 @@ export default function ReviewPage({route}) {
         } catch (error){
             console.log(error.code, error.message)
         }
+    }
+
+
+    // Display user-selected images
+    const RenderItem = ({image, index}) => {
+        console.log('img: ' , image);
+        var is_portrait = image.height > image.width
+        console.log('is_portrait: ', is_portrait)
+        return(
+            <Image
+              style={styles.photo}
+              width={is_portrait ? 110*(.75) : 110}
+              height={is_portrait ? 110 : 110*(.75)} 
+              source={{
+                uri: 'file://' + image.realPath
+          }}
+        />
+        )
     }
 
     // Star review rating contents for category 'Food'
@@ -229,26 +247,19 @@ export default function ReviewPage({route}) {
                 <Text style = {styles.whiteText} placeholder="Your review">
                     {review}
                     <Text style = {styles.editButton} onPress={() => setModalVisible(true)}>{"\n\n"}Edit Review</Text>
-                </Text>
-            
+                </Text>        
             </ScrollView>
 
-            {/* Add Photos to Upload */}
-            {/* todo */}
-            <ScrollView horizontal={true} style={styles.photo_container}>
-                <Ionicons name='images' size={80} 
+            {/* Container for image upload and previews. */}
+            <ScrollView horizontal={true} style={styles.photo_container} contentContainerStyle={styles.photo_content_container}>
+                <Ionicons name='duplicate-outline' size={80} color='#73C9E0' 
                     onPress={async () => {console.log('Pressed add image icon'); GetPhotos()}}/>
-                <Pressable onPress={()=> {console.log('clicked first photo');  }}>
-                    <Image style={styles.photo} source={image} />
-                </Pressable>
-                
-                <Image style={styles.photo} source={image}/>
-                <Image style={styles.photo} source={image}/>
-                <Image style={styles.photo} source={image}/>
-                <Image style={styles.photo} source={image}/>
-                <Image style={styles.photo} source={image}/>
-                <Image style={styles.photo} source={image}/>
-
+                <FlatList
+                  data={images}
+                  renderItem={({item}) => <RenderItem image={item}/>}
+                  keyExtractor={item => item.id}
+                  numColumns={5} >
+                </FlatList>
             </ScrollView>
             
             {/* Button for 'Submit Review' */}
@@ -272,11 +283,6 @@ export default function ReviewPage({route}) {
             </View>      
         </View>
       );
-
-
-
-
-
 }
 
 const styles = StyleSheet.create({
@@ -386,22 +392,21 @@ const styles = StyleSheet.create({
 	},
     photo_container: {
         horizontal: 'true',
-        // flexDirection: 'row',
         width: 380,
         height: 50,
         borderWidth: 1,
-        borderColor: 'red'
+        borderRadius: 10,
+        borderColor: 'white',
+    },
+    photo_content_container: {
+        alignItems:'center',
+        paddingHorizontal: 5
     },
     photo: {
-        horizontal: 'true',
-        // flexDirection: 'row',
-        width: 75,
-		height: 110,
-		flex: 1,
 		marginLeft: 5,
-		marginTop: 5,
 		borderWidth: 1,
-		borderColor: 'white',
+		borderColor: 'gray',
+        alignSelf: 'center'
     }
 
 })
