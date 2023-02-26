@@ -117,13 +117,26 @@ export default function UserProfileScreen(){
      * method that will transition to the screen where the user can view their saved restaurants
      */
     const seeRestaurants = async() => {
-        firebase.dbGet('users', user.uid).then(result => {
-            //console.log(result)
-            Object.keys(result.saved_restaurants).forEach((key) => {
-                console.log(result.saved_restaurants[key])
-            });
-            // console.log(result.saved_restaurants)
-        })
+        try {
+            firebase.dbGet('users', user.uid).then(result => {
+                //console.log(result)
+                let restaurant_data = []
+                Object.keys(result.saved_restaurants).forEach((key) => {
+                    // I can pass the saved restaurant data to the Screen to Populate later.
+                    restaurant_data.push(result.saved_restaurants[key])
+                    // console.log(result.saved_restaurants[key])
+                });
+                console.log(restaurant_data)
+                navigation.navigate('SavedRestaurants', {
+                    restaurants: restaurant_data
+                })
+                // console.log(result.saved_restaurants)
+            })
+    
+        } catch (error) {
+            console.log(error)
+        }
+        
         // cache the restaurant's data within the RestaurantProfileScreen to show it as buttons similar to Search.
     }
     
