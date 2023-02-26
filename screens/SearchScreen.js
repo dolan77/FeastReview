@@ -1,14 +1,17 @@
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, Button, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, Button, Image, ScrollView, Modal } from 'react-native'
 import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import Geolocation from 'react-native-geolocation-service';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 import { starRating } from '../methods/star.js';
 import { map } from '../methods/map.js';
+import { attributes, prices, sort_by } from '../methods/filters.js';
+
 import { searchBusinesses, businessDetail} from '../utils/yelp.js';
 import { dbGet, dbSet } from '../utils/firebase.js';
 import { requestLocationPermission } from '../utils/locationPermission.js'
-import { SearchBar} from '../components/SearchBar.js';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+
 
 export default function SearchScreen() {
 	const defaultLocation = {"coords": {"accuracy": 5, "altitude": 5, "altitudeAccuracy": 0.5, "heading": 0, "latitude": 33.78383050167186, "longitude": -118.11367992726652, "speed": 0}, "mocked": false, "provider": "fused", "timestamp": 1676767775647}
@@ -18,6 +21,8 @@ export default function SearchScreen() {
 	const [restaurants, setRestaurants] = useState([])
 	const [pressed, setPressed] = useState(1)
 	const [displayMap, setDisplayMap] = useState(false)
+	const [modalVisible, setModalVisible] = useState(false);
+
     const navigation = useNavigation();
 
 	/**
@@ -114,7 +119,55 @@ export default function SearchScreen() {
 					onChangeText={text => setSearchText(text)}
 					onSubmitEditing={handleSearch}
 				/>
+				{restaurants.length !== 0 && 
+					<Ionicons 
+						style={styles.filter} 
+						name="filter" 
+						onPress={() => setModalVisible(true)}
+					/>
+				}
 			</View>
+
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+					setModalVisible(!modalVisible);
+				}}
+			>
+				<View style = {styles.modalView}>
+					<View style={{flexWrap: 'wrap'}}>
+						<Text>Sort By</Text>
+						{sort_by.map((sorting) => {
+							return (
+								<Text style={{padding: 5}}>{sorting.replaceAll('_', ' ')}</Text>
+							)
+						})}
+					</View>
+					
+					<View style={{flexWrap: 'wrap'}}>
+						<Text>Price</Text>
+						{prices.map((p) => {
+							return (
+								<Text style={{padding: 5}}>{p.price}</Text>
+							)
+						})}
+					</View>
+					
+
+					<Text>Attributes</Text>
+					{attributes.map((attribute) => {
+						return (
+							<Text style={{padding: 5}}>{attribute.replaceAll('_', ' ')}</Text>
+						)
+					})}
+					<Button
+						title="go back"
+						onPress={() => setModalVisible(!modalVisible)}
+					/>
+				</View>
+			</Modal>
 
 			{(restaurants.length !== 0 && displayMap) ? map(restaurants, location) : <></>}
 			{restaurants.length !== 0 &&
@@ -197,10 +250,11 @@ const styles = StyleSheet.create({
 	},
 	searchContainer:{
         margin: 10,
+		flexDirection: 'row'
     },
     searchBar: {
         padding: 10,
-        flexDirection:'row',
+        flex: 1,
         borderRadius: 15,
         alignItems: 'center',
         borderStyle: 'solid',
@@ -208,6 +262,12 @@ const styles = StyleSheet.create({
         borderWidth: 2,
 		color: 'white'
     },
+	filter: {
+		fontSize: 25,
+		paddingTop: 11,
+		paddingLeft: 9,
+		color: '#75d9fc'
+	},
 	restaurantContainer: {
         flex: 1,
 		padding: 10,
@@ -254,4 +314,19 @@ const styles = StyleSheet.create({
 		fontWeight: '700',
 		fontSize: 16
 	},
+	modalView: {
+        margin: 20,
+        height: 500,
+        backgroundColor: '#a2bef0',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+		flexDirection: 'row',
+		flexWrap: 'wrap'
+    },
 })
