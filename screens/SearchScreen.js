@@ -31,6 +31,7 @@ export default function SearchScreen() {
 	 */
 	useEffect(() => {
 		setPressed(1)
+		setModalVisible(false)
 		setSearchText('')
 		getLocation()
 	}, [])
@@ -52,24 +53,16 @@ export default function SearchScreen() {
 	 * written by Matthew Hirai
 	 */
 	let getLocation = () => {
-		const result = requestLocationPermission();
-
-		result
-			.then(res => {
-				if (res) {
-					Geolocation.getCurrentPosition(
-					position => {
-						setLocation(position)
-					},
-					error => {
-						// See error code charts below.
-						console.log(error.code, error.message);
-					},
-					{enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-					);
-				}
-			})
-			.catch(() => console.log("Error, geolocation"));
+		Geolocation.getCurrentPosition(
+			position => {
+				setLocation(position)
+			},
+			error => {
+				// See error code charts below.
+				console.log(error.code, error.message);
+			},
+			{enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+		);
 	};
 	
 	/**
@@ -141,7 +134,7 @@ export default function SearchScreen() {
 						<Text>Sort By</Text>
 						{sort_by.map((sorting) => {
 							return (
-								<Text style={{padding: 5}}>{sorting.replaceAll('_', ' ')}</Text>
+								<Text key={sorting} style={{padding: 5}}>{sorting.replaceAll('_', ' ')}</Text>
 							)
 						})}
 					</View>
@@ -150,18 +143,19 @@ export default function SearchScreen() {
 						<Text>Price</Text>
 						{prices.map((p) => {
 							return (
-								<Text style={{padding: 5}}>{p.price}</Text>
+								<Text key={p.number} style={{padding: 5}}>{p.price}</Text>
 							)
 						})}
 					</View>
 					
-
-					<Text>Attributes</Text>
-					{attributes.map((attribute) => {
-						return (
-							<Text style={{padding: 5}}>{attribute.replaceAll('_', ' ')}</Text>
-						)
-					})}
+					<View style={{flexWrap: 'wrap'}}>
+						<Text>Attributes</Text>
+						{attributes.map((attribute) => {
+							return (
+								<Text key={attribute} style={{padding: 5}}>{attribute.replaceAll('_', ' ')}</Text>
+							)
+						})}
+					</View>
 					<Button
 						title="go back"
 						onPress={() => setModalVisible(!modalVisible)}

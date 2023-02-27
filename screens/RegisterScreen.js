@@ -3,6 +3,7 @@ import { Button, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpa
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import * as firebase from '../utils/firebase'
+import { requestLocationPermission } from '../utils/locationPermission.js'
 import Loader from '../methods/Loader';
 
 export default function RegisterScreen() {
@@ -68,9 +69,22 @@ export default function RegisterScreen() {
 		
 	}
 
+	/**
+	 * Adds user to databse and requests user's location then redirects to TabNavigator
+	 * @param {*} user user object
+	 */
 	const redirect = (user) => {
 		addUserToDb(user).then(() => {
-			navigation.navigate("TabNavigator")
+			const res = requestLocationPermission();
+			res.then(() => {
+				navigation.navigate("TabNavigator")
+			})
+			.catch(() => {
+				console.log("Failed to get location")
+			})
+		})
+		.catch(() => {
+			console.log("Failed to add user to database")
 		})
 	}
 
