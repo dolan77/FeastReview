@@ -50,9 +50,6 @@ export default function FollowersScreen(props){
                 <ScrollView contentContainerStyle = {styles.scrollOuter}>
                     <View>
                         <View>
-                            <Text style = {styles.FollowBoxText}>Followers...</Text>
-                        </View>
-                        <View>
                             {PopulateFollowers()}
                         </View>
                     </View>

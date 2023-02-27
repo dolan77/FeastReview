@@ -15,75 +15,97 @@ export default function SavedRestaurantsScreen({route}){
     const navigation = useNavigation();
     const user = auth().currentUser;
 
-    
+    // method to view the restaurant the user clicks on
     const seeRestaurant = (restaurant_data) => {
         navigation.navigate('RestaurantProfile', {
             data: restaurant_data
         })
     }
+    /**
+     * method that populates the screen
+     * @returns a list of Touchable Opacities that contain the user's saved restaurants
+     */
     const PopulateRestaurants = () => {
         let table = [];
-        // console.log('test')
-        // console.log(date.getDay())
-        // console.log(Number(hours_and_min))
-        //console.log(`${hours}${min}`)
-
+        // for every restaurant in the saved_restaurant list
         for (let i = 0; i < restaurant_data.length; i++){
 
-            // TODO: figure out how to check if a store is opened/closed with the boys later.
             var date = new Date(); //Current Date
             var hours = date.getHours(); //To get the Current Hours
             var min = date.getMinutes(); //Current Minutes
             
+            // help visualize time better
             var hours_and_min = `${hours}${min}`
             if (min < 10){
                 hours_and_min = `${hours}${min}0`
             }
-            //console.log('ttt')
-            //console.log(hours_and_min)
-            // console.log(Number(hours_and_min) < Number(restaurant_data[i].hours[0].open[date.getDay()].end))
-            //console.log(Number(restaurant_data[i].hours[0].open[date.getDay()].start) + ":" + Number(restaurant_data[i].hours[0].open[date.getDay()].end))
-            //console.log(Number(restaurant_data[i].hours[0].open[date.getDay()].start) < Number(hours_and_min) < Number(restaurant_data[i].hours[0].open[date.getDay()].end))
-            console.log(restaurant_data[i].hours[0].open[date.getDay()].start)
 
-            if((Number(restaurant_data[i].hours[0].open[date.getDay()].start) < Number(hours_and_min)) && 
-                (Number(hours_and_min) < Number(restaurant_data[i].hours[0].open[date.getDay()].end))){
-                table.push(<TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.FollowingBox, styles.FollowBoxItems]}>
-                    <Text style={styles.globalFont}>{restaurant_data[i].name} :
-                        <Text style={styles.openColor}>Open</Text>
-                    </Text>
-                    <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}</Text>
-                    <Text>{starRating(restaurant_data[i].id, restaurant_data[i].rating)}</Text>
-                </TouchableOpacity>)
+            // if we are working with an overnight restaurant, determining closing hours is start > curr_time > end
+            if (restaurant_data[i].hours[0].open[date.getDay()].is_overnight){
+                // if start > curr_hrs > end. we are within the range where the restaurant is closed
+                // example: end - 0100 start - 0900. if it is 0700. 0700 > 0100 and 0700 < 0900. so we are closed
+                if((Number(restaurant_data[i].hours[0].open[date.getDay()].end) < Number(hours_and_min)) && 
+                (Number(hours_and_min) < Number(restaurant_data[i].hours[0].open[date.getDay()].start))){
+
+                    table.push(<TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.RestaurantBox, styles.RestaurantBoxItems]}>
+                        <Text style={styles.globalFont}>{restaurant_data[i].name} :
+                            <Text style={styles.closedColor}>Closed</Text>
+                        </Text>
+                        <Text>{starRating(restaurant_data[i].id, restaurant_data[i].rating)}</Text>
+                        <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}
+                        </Text>
+                    </TouchableOpacity>)
+                }
+                // we are within the hours the restaurant is open
+                else{
+
+                    table.push(<TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.RestaurantBox, styles.RestaurantBoxItems]}>
+                        <Text style={styles.globalFont}>{restaurant_data[i].name} :
+                            <Text style={styles.openColor}> Open</Text>
+                        </Text>
+                        <Text>{starRating(restaurant_data[i].id, restaurant_data[i].rating)}</Text>
+                        <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}
+                        </Text>
+                    </TouchableOpacity>)
+                }
             }
+            // we are not working with an overnight restaurant. we can do start < curr time < end
             else{
-                table.push(<TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.FollowingBox, styles.FollowBoxItems]}>
-                    <Text style={styles.globalFont}>{restaurant_data[i].name} :
-                        <Text style={styles.closedColor}> Closed</Text>
-                    </Text>
-                    <Text>{starRating(restaurant_data[i].id, restaurant_data[i].rating)}</Text>
-                    <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}
-                    </Text>
-                    
-                </TouchableOpacity>)
-                
+                // if the current time is > start_time and < end_time. we are within the hours of openning
+                if((Number(restaurant_data[i].hours[0].open[date.getDay()].start) < Number(hours_and_min)) && 
+                (Number(hours_and_min) < Number(restaurant_data[i].hours[0].open[date.getDay()].end))){
+                    table.push(<TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.RestaurantBox, styles.RestaurantBoxItems]}>
+                        <Text style={styles.globalFont}>{restaurant_data[i].name} :
+                            <Text style={styles.openColor}>Open</Text>
+                        </Text>
+                        <Text>{starRating(restaurant_data[i].id, restaurant_data[i].rating)}</Text>
+                        <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}</Text>
+                    </TouchableOpacity>)
+                }
+                // current time is within closing time
+                else{
+                    table.push(<TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.RestaurantBox, styles.RestaurantBoxItems]}>
+                        <Text style={styles.globalFont}>{restaurant_data[i].name} :
+                            <Text style={styles.closedColor}> Closed</Text>
+                        </Text>
+                        <Text>{starRating(restaurant_data[i].id, restaurant_data[i].rating)}</Text>
+                        <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}
+                        </Text>
+                    </TouchableOpacity>)
+                }
             }
-                
-
-
-            
         }
         return table
     };
-    //console.log('test')
-    //console.log(restaurant_data)
+
     return(
         <SafeAreaView style={styles.container}>
+            <View>
+                <View style={styles.header}><Text style={styles.globalFont}>Saved Restaurants</Text></View>
+            </View>
             <ScrollView>
-                <View>
-                    <View><Text style={styles.globalFont}>Saved Restaurants</Text></View>
-                </View>
-                <View>
+
+                <View style={styles.restaurantContainer}>
                     {PopulateRestaurants()}
                 </View>
             </ScrollView>
@@ -92,6 +114,15 @@ export default function SavedRestaurantsScreen({route}){
 }
 
 const styles = StyleSheet.create({
+    header: {
+        backgroundColor: '#171414',
+        height: 50,
+        justifyContent: 'center',
+        paddingHorizontal: 10,
+        borderBottomRightRadius: 15,
+        borderBottomLeftRadius: 15,
+
+    },
     globalFont: {
         color: 'white',
         fontSize: 20,
@@ -101,17 +132,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#3d4051',
         flex:1
     },
-    FollowingBox: {
+    RestaurantBox: {
         backgroundColor: '#3f3a42',
-        height: 110,
-        marginTop: 10,
+        height: 120,
         bordercolor: 'black',
         borderWidth: 3,
         borderRadius: 10,
+        marginTop: 10,
         
     },
-    FollowBoxItems:{
-        
+    RestaurantBoxItems:{
         justifyContent: 'center',
         paddingLeft: 10
     },
@@ -124,5 +154,8 @@ const styles = StyleSheet.create({
         color:'#E80F13',
         fontSize: 20,
         fontWeight: '500',
+    },
+    restaurantContainer:{
+        padding: 10
     }
 })
