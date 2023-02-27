@@ -126,7 +126,7 @@ export default function UserProfileScreen(){
                     restaurant_data.push(result.saved_restaurants[key])
                     // console.log(result.saved_restaurants[key])
                 });
-                console.log(restaurant_data)
+                // console.log(restaurant_data)
                 navigation.navigate('SavedRestaurants', {
                     restaurants: restaurant_data
                 })

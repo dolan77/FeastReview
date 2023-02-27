@@ -53,9 +53,6 @@ export default function FollowingScreen(props){
             <ScrollView contentContainerStyle = {styles.scrollOuter}>
                 <View>
                     <View>
-                        <Text style = {styles.FollowBoxText}>You Are Following...</Text>
-                    </View>
-                    <View>
                         {following}
                     </View>
                 </View>
