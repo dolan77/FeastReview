@@ -118,11 +118,18 @@ export default function RestaurantProfileScreen({route}){
                     {restaurantData.data.hours[0].open.map(hoursData => (
                         <Text key={hoursData.day} style={style.daysText}>{dayOfTheWeek[hoursData.day]}</Text>
                     ))}
+
+                    <Text>
+
+                    </Text>
                 </View>
                 <View>
                     {restaurantData.data.hours[0].open.map(hoursData => (
                         <Text key={hoursData.day} style={style.hoursText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
                     ))}
+                    <Text>
+                        
+                    </Text>
                 </View>
 
             </View>
@@ -168,22 +175,20 @@ export default function RestaurantProfileScreen({route}){
                 
                 
                 <View style = {{backgroundColor: '#161414'}}>
+                
                 <View style = {style.container}>
                     <TouchableOpacity onPress={toggleHoursCollapsed} style={style.buttonContainer}>
-                        <View style={style.button}>
-                            <Text style={style.hoursButtonText}> Button Test </Text>
+                        <View style={style.hoursButton}>
+                            <Text style={restaurantData.data.is_closed ? style.openText: style.closedText}> {restaurantData.data.hours[0].is_open_now ? "Open" : "Closed"} </Text>
+                            <Text style={style.hoursButtonText}> until </Text>
+                            <Text style={style.hoursButtonText}> {restaurantData.data.hours[0].is_open_now ? restaurantData.data.hours[0].open[0].end : restaurantData.data.hours[0].open[0].start} </Text>
+                            <Ionicons style= {{paddingLeft: 25}} name={hoursCollapsed ? "add-circle-outline" : "remove-circle-outline"} size={40} color='white'/>
                         </View>
                     </TouchableOpacity>
                     <HoursExpandible expanded={hoursCollapsed} />
                 </View>
 
                 <View style={style.horizontalLine} />
-                    <View style={[style.scheduleContainer, {justifyContent: 'space-evenly', marginTop:5},]}>
-                            
-
-
-                    </View>
-
                 
                     <View style={[style.IconContainer]}>
                         <TouchableOpacity
@@ -279,10 +284,34 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         justifyContent:'space-between',
         marginHorizontal:10,
-        backgroundColor:'#444444'
+        backgroundColor:'#262833',
+        borderBottomLeftRadius:25,
+        borderBottomRightRadius:25
+    },
+    hoursButton:{
+        flexDirection: 'row',
+        backgroundColor: '#342B2B51',
+		width: '100%',
+		padding: 15,
+		alignItems: 'center',
+        justifyContent: 'center',
+        borderColor: '#000000',
+        borderWidth: 1,
+        height: 75,
+        marginTop: 20
     },
     hoursButtonText:{
         color: 'white',
+        textAlign:'center',
+        fontSize: 30
+    },
+    openText:{
+        color: 'green',
+        textAlign:'center',
+        fontSize: 30
+    },
+    closedText:{
+        color: 'red',
         textAlign:'center',
         fontSize: 30
     },
