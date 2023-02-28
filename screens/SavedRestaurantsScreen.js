@@ -9,6 +9,8 @@ import * as firebase from '../utils/firebase'
 import { starRating } from '../methods/star';
 import { timeConvert } from '../methods/time';
 
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 // if a user clicks on their saved restaurants. navigate them to the restaurant screen
 export default function SavedRestaurantsScreen({route}){
     restaurant_data = route.params.restaurants
@@ -37,9 +39,10 @@ export default function SavedRestaurantsScreen({route}){
             // help visualize time better
             var hours_and_min = `${hours}${min}`
             if (min < 10){
-                hours_and_min = `${hours}${min}0`
+                hours_and_min = `${hours}0${min}`
             }
-
+            //console.log(restaurant_data[i].hours[0].open)
+            //console.log(hours_and_min)
             // if we are working with an overnight restaurant, determining closing hours is start > curr_time > end
             if (restaurant_data[i].hours[0].open[date.getDay()].is_overnight){
                 // if start > curr_hrs > end. we are within the range where the restaurant is closed
@@ -100,9 +103,13 @@ export default function SavedRestaurantsScreen({route}){
 
     return(
         <SafeAreaView style={styles.container}>
-            <View>
-                <View style={styles.header}><Text style={styles.globalFont}>Saved Restaurants</Text></View>
+            <View style={styles.header}>
+                <Text style={[styles.globalFont]}>Saved Restaurants</Text>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons style={[styles.globalFont, styles.backArrow]} name='arrow-back-outline'/>
+                </TouchableOpacity>
             </View>
+
             <ScrollView>
 
                 <View style={styles.restaurantContainer}>
@@ -121,7 +128,15 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         borderBottomRightRadius: 15,
         borderBottomLeftRadius: 15,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+        
+        
 
+    },
+    backArrow: {
+        fontSize: 40
     },
     globalFont: {
         color: 'white',
