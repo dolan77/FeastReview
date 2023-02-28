@@ -13,9 +13,11 @@ export default function FollowingScreen(props){
     const passedInFollowingUID = props.followingUID
     const passedInFollowingNames = props.followingNames
     const navigation = useNavigation();
-     console.log('passedInUID: ' + passedInFollowingUID)
-     console.log('passedInNames: ' + passedInFollowingNames)
-
+    //.log('passedInUID: ' + passedInFollowingUID)
+    //console.log('passedInNames: ' + passedInFollowingNames)
+    React.useEffect(() =>{
+        PopulateFollowing();
+    }, [])
     /**
      * Method that will navigate the user to see another user's profile
      */
@@ -42,23 +44,10 @@ export default function FollowingScreen(props){
         return table
     }
 
-    // the user is not following anyone
-    if (passedInFollowingUID.length <= 0){
-        return(
-            <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
-                <View>
-                    <Text style = {styles.globalText}>You are not following anyone</Text>
-                </View>
-            </View>
-        )
-    }
-
+    
     // the user is following at least one person
-    else{
-        // React.useEffect(() =>{
-        //     populateFollowing();
-        // }, [])
-
+    if (passedInFollowingUID.length > 0){
+        const following = PopulateFollowing();
         return(
         <SafeAreaView style = {styles.container}>
             <ScrollView contentContainerStyle = {styles.scrollOuter}>
@@ -67,13 +56,22 @@ export default function FollowingScreen(props){
                         <Text style = {styles.FollowBoxText}>You Are Following...</Text>
                     </View>
                     <View>
-                        {PopulateFollowing()}
+                        {following}
                     </View>
                 </View>
             </ScrollView>
         </SafeAreaView>
-            
+        );
+    }
 
+    // the user is not following anyone
+    else{
+        return(
+            <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
+                <View>
+                    <Text style = {styles.globalText}>You are not following anyone</Text>
+                </View>
+            </View>
         );
     }
 

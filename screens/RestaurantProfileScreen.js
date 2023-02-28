@@ -17,7 +17,7 @@ export default function RestaurantProfileScreen({route}){
     const [saved, setSaved] = React.useState('')
     const [color, setColor] = React.useState('')
     // console.log(restaurantData)
-    // console.log(restaurantData.data.hours[0])
+    // console.log(restaurantDafta.data.hours[0])
     const user = auth().currentUser;
     // console.log(restaurantData.data.hours[0].open[0])
 
