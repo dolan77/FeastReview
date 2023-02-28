@@ -162,7 +162,7 @@ export default function SearchScreen() {
 					}}
 				>
 					<View style = {styles.modalView}>
-						<View style={{flexWrap: 'wrap'}}>
+						<View style={styles.filterComponent}>
 							<Text>Sort By</Text>
 							{sort_by.map((sorting) => {
 								return (
@@ -175,7 +175,7 @@ export default function SearchScreen() {
 							})}
 						</View>
 						
-						<View style={{flexWrap: 'wrap'}}>
+						<View style={styles.filterComponent}>
 							<Text>Price</Text>
 							{prices.map((p) => {
 								return (
@@ -188,7 +188,7 @@ export default function SearchScreen() {
 							})}
 						</View>
 						
-						<View style={{flexWrap: 'wrap'}}>
+						<View style={styles.filterComponent}>
 							<Text>Attributes</Text>
 							{attributes.map((attribute) => {
 								return (
@@ -200,14 +200,22 @@ export default function SearchScreen() {
 								)
 							})}
 						</View>
-						<Button
-							title="Back"
+						
+						<TouchableOpacity
 							onPress={() => setModalVisible(!modalVisible)}
-						/>
-						<Button
-							title="Save"
+							style={styles.button}
+							options={padding=5}
+						>
+							<Text style={styles.buttonText}>{"Back"}</Text>
+						</TouchableOpacity>
+						
+						<TouchableOpacity
 							onPress={saveFilters}
-						/>
+							style={styles.button}
+						>
+							<Text style={styles.buttonText}>{"Save"}</Text>
+						</TouchableOpacity>
+
 					</View>
 				</Modal>
 			}
@@ -372,4 +380,12 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		flexWrap: 'wrap'
     },
+	filterComponent: {
+		flexDirection: 'column',
+		// flex: 1,
+		flexWrap: 'wrap',
+		borderWidth: 1,
+		borderRadius: 5,
+		alignItems: 'center'
+	}
 })
