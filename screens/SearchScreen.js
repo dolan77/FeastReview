@@ -70,14 +70,16 @@ export default function SearchScreen() {
 	 * @param {*} limit amount of results that will be displayed (default value of 10)
 	 * by Nathan Lai
 	 */
-	handleSearch = ({limit = 10}) => {
+	handleSearch = ({limit = 10}, filter = "") => {
+		console.log(limit, filter)
 		dbGet('api_keys','key')
 			.then(keys => {
 				searchBusinesses(
 					searchText, 
 					{lat: location.coords.latitude, long: location.coords.longitude},
 					limit, 
-					keys.yelp
+					keys.yelp,
+					filter
 				)
 				.then(result => {
 					setRestaurants([...result])
@@ -95,6 +97,21 @@ export default function SearchScreen() {
 	autoComplete = (text) => {
 		setSearchText(text);
 		handleSearch(10);
+	}
+
+	filtering = (filter) => {
+		let filterString = '?'
+		if (attributes.includes(filter)) {
+			filterString += `attributes=${filter}`
+		}
+
+		else if (sort_by.includes(filter)) {
+			filterString += `sort_by=${filter}`
+		}
+
+		else if (prices.some(p => p.number === filter)) {
+			filterString += `price=${filter}`
+		}
 	}
 
 	/**
@@ -121,47 +138,61 @@ export default function SearchScreen() {
 				}
 			</View>
 
-			<Modal
-				animationType="slide"
-				transparent={true}
-				visible={modalVisible}
-				onRequestClose={() => {
-					setModalVisible(!modalVisible);
-				}}
-			>
-				<View style = {styles.modalView}>
-					<View style={{flexWrap: 'wrap'}}>
-						<Text>Sort By</Text>
-						{sort_by.map((sorting) => {
-							return (
-								<Text key={sorting} style={{padding: 5}}>{sorting.replaceAll('_', ' ')}</Text>
-							)
-						})}
+			{modalVisible && 
+				<Modal
+					animationType="slide"
+					transparent={true}
+					visible={modalVisible}
+					onRequestClose={() => {
+						setModalVisible(!modalVisible);
+					}}
+				>
+					<View style = {styles.modalView}>
+						<View style={{flexWrap: 'wrap'}}>
+							<Text>Sort By</Text>
+							{sort_by.map((sorting) => {
+								return (
+									<View style={{padding: 5}} key={sorting}>
+										<TouchableOpacity onPress={() => filtering(sorting)}>
+											<Text>{sorting.replaceAll('_', ' ')}</Text>
+										</TouchableOpacity>
+									</View>
+								)
+							})}
+						</View>
+						
+						<View style={{flexWrap: 'wrap'}}>
+							<Text>Price</Text>
+							{prices.map((p) => {
+								return (
+									<View style={{padding: 5}} key={p.number} >
+										<TouchableOpacity onPress={() => filtering(p.number)}>
+											<Text>{p.price}</Text>
+										</TouchableOpacity>
+									</View>
+								)
+							})}
+						</View>
+						
+						<View style={{flexWrap: 'wrap'}}>
+							<Text>Attributes</Text>
+							{attributes.map((attribute) => {
+								return (
+									<View style={{padding: 5}} key={attribute} >
+										<TouchableOpacity onPress={() => filtering(attribute)}>
+											<Text>{attribute.replaceAll('_', ' ')}</Text>
+										</TouchableOpacity>
+									</View>
+								)
+							})}
+						</View>
+						<Button
+							title="go back"
+							onPress={() => setModalVisible(!modalVisible)}
+						/>
 					</View>
-					
-					<View style={{flexWrap: 'wrap'}}>
-						<Text>Price</Text>
-						{prices.map((p) => {
-							return (
-								<Text key={p.number} style={{padding: 5}}>{p.price}</Text>
-							)
-						})}
-					</View>
-					
-					<View style={{flexWrap: 'wrap'}}>
-						<Text>Attributes</Text>
-						{attributes.map((attribute) => {
-							return (
-								<Text key={attribute} style={{padding: 5}}>{attribute.replaceAll('_', ' ')}</Text>
-							)
-						})}
-					</View>
-					<Button
-						title="go back"
-						onPress={() => setModalVisible(!modalVisible)}
-					/>
-				</View>
-			</Modal>
+				</Modal>
+			}
 
 			{(restaurants.length !== 0 && displayMap) ? map(restaurants, location) : <></>}
 			{restaurants.length !== 0 &&
