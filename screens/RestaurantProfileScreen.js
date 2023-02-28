@@ -1,6 +1,6 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, Modal, ScrollView, SafeAreaView, FlatList, Linking} from 'react-native'
+import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, Modal, ScrollView, SafeAreaView, FlatList, Linking, Animated} from 'react-native'
 import { useNavigation } from '@react-navigation/core';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {timeConvert} from "../methods/time"
 import { starRating } from '../methods/star';
@@ -12,10 +12,11 @@ import auth from '@react-native-firebase/auth';
 // function that returns the screen for a Restaurant's profile
 export default function RestaurantProfileScreen({route}){
     const nagivation = useNavigation();
-    const dayOfTheWeek = ["mon", "tues", "wed", "thurs", "fri", "sat", "sun"]
+    const dayOfTheWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
     const restaurantData = route.params;
     const [saved, setSaved] = React.useState('')
     const [color, setColor] = React.useState('')
+    const [hoursCollapsed, setHoursCollapsed] = React.useState('')
     // console.log(restaurantData)
     // console.log(restaurantDafta.data.hours[0])
     const user = auth().currentUser;
@@ -96,6 +97,50 @@ export default function RestaurantProfileScreen({route}){
     }
 
     /**
+     * Expands the hours button
+     * Made by Nathan Lai
+     */
+    const toggleHoursCollapsed = () => setHoursCollapsed(!hoursCollapsed);
+    const HoursExpandible = ({ expanded = false }) => {
+        const [height] = useState(new Animated.Value(0));
+      
+        useEffect(() => {
+          Animated.timing(height, {
+            toValue: !expanded ? 250 : 0,
+            duration: 300,
+            useNativeDriver: false
+          }).start();
+        }, [expanded, height]);
+      
+        // console.log('rerendered');
+      
+        return (
+          <Animated.View style={{height}}>
+            <View style={style.scheduleContainer}>   
+                <View>
+                    {restaurantData.data.hours[0].open.map(hoursData => (
+                        <Text key={hoursData.day} style={style.daysText}>{dayOfTheWeek[hoursData.day]}</Text>
+                    ))}
+
+                    <Text>
+
+                    </Text>
+                </View>
+                <View>
+                    {restaurantData.data.hours[0].open.map(hoursData => (
+                        <Text key={hoursData.day} style={style.hoursText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
+                    ))}
+                    <Text>
+                        
+                    </Text>
+                </View>
+
+            </View>
+          </Animated.View>
+        );
+    };
+
+    /**
      * method to add a review to the current restaurant
      */
     const addReview = (hoursData) => {
@@ -134,31 +179,20 @@ export default function RestaurantProfileScreen({route}){
                 
                 
                 <View style = {{backgroundColor: '#161414'}}>
-                <View style={style.horizontalLine} />
-                    <Text style={[style.scheduleText, {fontSize: 20, fontWeight: 'bold', alignSelf: 'center', paddingTop: 20}]}>Hours</Text>
-
-                    <View style={[style.scheduleContainer, {justifyContent: 'space-evenly', marginTop:5},]}>
-                            
-                        <View style={style.scheduleContainer}>
-
-                        
-                            <View>
-                                {restaurantData.data.hours[0].open.map(hoursData => (
-                                    <Text key={hoursData.day} style={style.scheduleText}>{dayOfTheWeek[hoursData.day]}:</Text>
-                                ))}
-                            </View>
-
-                        
-                            <View>
-                                {restaurantData.data.hours[0].open.map(hoursData => (
-                                    <Text key={hoursData.day} style={style.scheduleText}>{"\t"}{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
-                                ))}
-                            </View>
-
+                
+                <View style = {style.container}>
+                    <TouchableOpacity onPress={toggleHoursCollapsed} style={style.buttonContainer}>
+                        <View style={style.hoursButton}>
+                            <Text style={restaurantData.data.is_closed ? style.openText: style.closedText}> {restaurantData.data.hours[0].is_open_now ? "Open" : "Closed"} </Text>
+                            <Text style={style.hoursButtonText}> until </Text>
+                            <Text style={style.hoursButtonText}> {restaurantData.data.hours[0].is_open_now ? restaurantData.data.hours[0].open[0].end : restaurantData.data.hours[0].open[0].start} </Text>
+                            <Ionicons style= {{paddingLeft: 25}} name={hoursCollapsed ? "add-circle-outline" : "remove-circle-outline"} size={40} color='white'/>
                         </View>
+                    </TouchableOpacity>
+                    <HoursExpandible expanded={hoursCollapsed} />
+                </View>
 
-                    </View>
-
+                <View style={style.horizontalLine} />
                 
                     <View style={[style.IconContainer]}>
                         <TouchableOpacity
@@ -250,15 +284,57 @@ const style = StyleSheet.create({
         color: 'white',
         fontSize: 20
     },
-
-    scheduleText:{
-        color: 'white',
-        fontSize: 20,
-        textTransform: 'capitalize'
-        
-    },
     scheduleContainer:{
         flexDirection: 'row',
+        justifyContent:'space-between',
+        marginHorizontal:10,
+        backgroundColor:'#262833',
+        borderBottomLeftRadius:25,
+        borderBottomRightRadius:25
+    },
+    hoursButton:{
+        flexDirection: 'row',
+        backgroundColor: '#342B2B51',
+		width: '100%',
+		padding: 15,
+		alignItems: 'center',
+        justifyContent: 'center',
+        borderColor: '#000000',
+        borderWidth: 1,
+        height: 75,
+        marginTop: 20
+    },
+    hoursButtonText:{
+        color: 'white',
+        textAlign:'center',
+        fontSize: 30
+    },
+    openText:{
+        color: 'green',
+        textAlign:'center',
+        fontSize: 30
+    },
+    closedText:{
+        color: 'red',
+        textAlign:'center',
+        fontSize: 30
+    },
+    daysText:{
+        color: 'white',
+        fontSize: 20,
+        textTransform: 'capitalize',
+        textAlign: 'left',
+        marginHorizontal:15,
+        lineHeight:30
+        
+    },
+    hoursText:{
+        color: 'white',
+        fontSize: 20,
+        textTransform: 'capitalize',
+        textAlign: 'right',
+        marginHorizontal:15,
+        lineHeight:30
     },
 
     buttonContainer: {
