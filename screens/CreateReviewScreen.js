@@ -1,17 +1,19 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, Modal, ScrollView } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, Modal, ScrollView, Pressable } from 'react-native'
 import React, {useState} from 'react'
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import {Button} from 'react-native';
 import * as firebase from '../utils/firebase'
-import image from "../assets/macarons.jpg"
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
+import { FlatList } from 'react-native-gesture-handler';
 
 export default function ReviewPage({route}) {
     const navigation = useNavigation();
     const user = auth().currentUser;
     const restaurantData = route.params.restaurantData;
     var userReview = 'Your Review';
-    const photos = []
+    
 
     React.useLayoutEffect(() => {
 		navigation.setOptions({headerShown: false});
@@ -24,23 +26,69 @@ export default function ReviewPage({route}) {
     const starIconCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
     const starIconFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
 
+    // Uploads all review contents to the database's 'reviews' collection
     async function uploadReview(){
         try{
-            console.log('In the upload review function')
-            var review_id = restaurantData.data.alias + '_' + user.uid + '_' + String(Date.now())
+            console.log('In the upload review function');
+            var review_id = restaurantData.data.alias + '_' + user.uid + '_' + String(Date.now());
             await firebase.dbSet('reviews', review_id, {authorid: user.uid,
                                                         content: review,
                                                         datemade: new Date(),
-                                                        image_urls: photos,
+                                                        image_urls: Get_Image_URLs(review_id),
                                                         restaurant_alias: restaurantData.data.alias,
                                                         star_atmos: atmosphereDefaultRating,
                                                         star_foods: foodDefaultRating,
                                                         star_service: serviceDefaultRating
-                                                        })
+                                                        });
+            uploadPhotos();
         }
         catch (error){
             console.log(error)
         }
+    }
+
+    // firebase.dbFileAdd(images[0].fileName, images[0].realPath)
+    var image_urls = []
+    
+    // Uploads user's review photos to the database storage.
+    async function uploadPhotos(){
+        images.map((image, index) => firebase.dbFileAdd(image_urls[index], image.realPath))
+    }
+
+    // Creates an array of the uploaded photos, replacing their names with the review_id and identifier.
+    function Get_Image_URLs(review_id){
+        image_urls = images.map((image, index) => review_id + '_' + index)
+        return image_urls
+    }
+
+    // Prompts user to select images to upload.
+    const [images, setImages] = useState([]);
+    const img_options = {mediaType:'image', selectedAssets:images, usedCameraButton:false};
+    async function GetPhotos(){
+        try {
+            const response = await MultipleImagePicker.openPicker(img_options)
+            setImages(response);
+        } catch (error){
+            console.log(error.code, error.message)
+        }
+    }
+
+
+    // Display user-selected images
+    const RenderItem = ({image, index}) => {
+        console.log('img: ' , image);
+        var is_portrait = image.height > image.width
+        console.log('is_portrait: ', is_portrait)
+        return(
+            <Image
+              style={styles.photo}
+              width={is_portrait ? 110*(.75) : 110}
+              height={is_portrait ? 110 : 110*(.75)} 
+              source={{
+                uri: 'file://' + image.realPath
+          }}
+        />
+        )
     }
 
     // Star review rating contents for category 'Food'
@@ -199,16 +247,19 @@ export default function ReviewPage({route}) {
                 <Text style = {styles.whiteText} placeholder="Your review">
                     {review}
                     <Text style = {styles.editButton} onPress={() => setModalVisible(true)}>{"\n\n"}Edit Review</Text>
-                </Text>
-            
+                </Text>        
             </ScrollView>
 
-            {/* Add Photos to Upload */}
-            {/* todo */}
-            <ScrollView style={styles.photo_container}>
-                <Image style={styles.photo} source={image}>
-
-                </Image>
+            {/* Container for image upload and previews. */}
+            <ScrollView horizontal={true} style={styles.photo_container} contentContainerStyle={styles.photo_content_container}>
+                <Ionicons name='duplicate-outline' size={80} color='#73C9E0' 
+                    onPress={async () => {console.log('Pressed add image icon'); GetPhotos()}}/>
+                <FlatList
+                  data={images}
+                  renderItem={({item}) => <RenderItem image={item}/>}
+                  keyExtractor={item => item.id}
+                  numColumns={5} >
+                </FlatList>
             </ScrollView>
             
             {/* Button for 'Submit Review' */}
@@ -232,11 +283,6 @@ export default function ReviewPage({route}) {
             </View>      
         </View>
       );
-
-
-
-
-
 }
 
 const styles = StyleSheet.create({
@@ -345,18 +391,22 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
     photo_container: {
-        flexDirection: 'row',
+        horizontal: 'true',
         width: 380,
         height: 50,
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: 'white',
+    },
+    photo_content_container: {
+        alignItems:'center',
+        paddingHorizontal: 5
     },
     photo: {
-        width: 75,
-		height: 110,
-		flex: 1,
 		marginLeft: 5,
-		marginTop: 5,
 		borderWidth: 1,
-		borderColor: 'white',
+		borderColor: 'gray',
+        alignSelf: 'center'
     }
 
 })
