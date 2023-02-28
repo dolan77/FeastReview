@@ -19,19 +19,20 @@ function auth(apiKey){
  * @param {*} searchTerm text user is using to search
  * @param {*} locationData location object with lat (latitude) and long (longitude) key-values
  * @param {*} apiKey the api key of yelp
+ * @param {*} filters filter for user to use
  * @returns an array of businesses (default 20 i think)
  */
 async function searchBusinesses(searchTerm, locationData, limit, apiKey, filters) {
     var apiString = 'https://api.yelp.com/v3/businesses/search?'+
         `term=${searchTerm}`+
         `&latitude=${locationData.lat}` +
-        `&longitude=${locationData.long}` +
-		`&limit=${limit}`
+        `&longitude=${locationData.long}`
 	
 	if (filters) {
 		apiString += filters 
 	}
-	console.log(apiString)
+
+	apiString += `&limit=${limit}`
     return axios.get(apiString, auth(apiKey)).then(response => response.data.businesses);
 }
 

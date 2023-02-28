@@ -22,6 +22,7 @@ export default function SearchScreen() {
 	const [pressed, setPressed] = useState(1)
 	const [displayMap, setDisplayMap] = useState(false)
 	const [modalVisible, setModalVisible] = useState(false);
+	const [filterString, setFilterString] = useState('&')
 
     const navigation = useNavigation();
 
@@ -31,8 +32,6 @@ export default function SearchScreen() {
 	 */
 	useEffect(() => {
 		setPressed(1)
-		setModalVisible(false)
-		setSearchText('')
 		getLocation()
 	}, [])
 
@@ -71,7 +70,6 @@ export default function SearchScreen() {
 	 * by Nathan Lai
 	 */
 	handleSearch = ({limit = 10}, filter = "") => {
-		console.log(limit, filter)
 		dbGet('api_keys','key')
 			.then(keys => {
 				searchBusinesses(
@@ -83,6 +81,7 @@ export default function SearchScreen() {
 				)
 				.then(result => {
 					setRestaurants([...result])
+					setFilterString('&')
 				})
 				.catch(() => console.log("Error, searching YELP businesses"));
 		})
@@ -99,19 +98,34 @@ export default function SearchScreen() {
 		handleSearch(10);
 	}
 
+	/**
+	 * adds a query param to the filterString state
+	 * @param {*} filter string that user presses from the filter modal
+	 */
 	filtering = (filter) => {
-		let filterString = '?'
+		if (filterString.length != 1) {
+			setFilterString((prev) => prev + '&')
+		}
 		if (attributes.includes(filter)) {
-			filterString += `attributes=${filter}`
+			setFilterString((prev) => prev + `attributes=${filter}`)
 		}
 
 		else if (sort_by.includes(filter)) {
-			filterString += `sort_by=${filter}`
+			setFilterString((prev) => prev + `sort_by=${filter}`)
 		}
 
 		else if (prices.some(p => p.number === filter)) {
-			filterString += `price=${filter}`
+			setFilterString((prev) => prev + `price=${filter}`)
 		}
+	}
+
+	/**
+	 * calls the handleSearch function with filters
+	 */
+	saveFilters = () => {
+		handleSearch(10, filterString)
+		setFilterString('&')
+		setModalVisible(false)
 	}
 
 	/**
@@ -187,8 +201,12 @@ export default function SearchScreen() {
 							})}
 						</View>
 						<Button
-							title="go back"
+							title="Back"
 							onPress={() => setModalVisible(!modalVisible)}
+						/>
+						<Button
+							title="Save"
+							onPress={saveFilters}
 						/>
 					</View>
 				</Modal>
