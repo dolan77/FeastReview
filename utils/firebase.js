@@ -2,7 +2,7 @@ import firestore, { firebase } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 //import firebase from '@react-native-firebase/app';
 
-module.exports = {dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed};
+module.exports = {del, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbDelete, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews};
 
 
 /**
@@ -131,6 +131,24 @@ async function dbUpdateOnce(collection, doc, field, value){
     return docRef.update(updatedField);
 }
 
+
+/**
+ * makes deleting simple, use literally the same way as a normal update it overwrites the value to delete
+ * @param {*} collection 
+ * @param {*} doc 
+ * @param {*} fields field an object that has the fields you want to update in a document
+ *                example => {field:"literally anything, its gonna get overwritten"}
+ *            also works with dot notation
+ *                 example => {field.nestField: "literally anything, its gonna get overwritten"}
+ * @returns 
+ */
+async function dbDelete(collection, doc, fields){
+    Object.keys(fields).forEach((key) => {
+        fields[key] = firestore.FieldValue.delete();
+    });
+    return dbUpdate(collection, doc, fields);
+}
+
 /**
  * simple adder that uses dbUpdate for array changes
  * @param {*} collection 
@@ -195,4 +213,13 @@ async function dbGetFollowers(uid){
  */
 async function dbGetFollowed(followedList){
     return dbGetQuery("users", firebase.firestore.FieldPath.documentId(), "in", followedList);
+}
+
+/**
+ * acquires a map of all reviews written by a user
+ * @param {*} authorId map of the reviewids mapped to review data written by user
+ * @returns 
+ */
+async function dbGetReviewsByAuthor(authorId){
+    return dbGetQuery("reviews", "authorid", "==", authorId);
 }
