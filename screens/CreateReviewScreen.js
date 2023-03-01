@@ -76,9 +76,8 @@ export default function ReviewPage({route}) {
 
     // Display user-selected images
     const RenderItem = ({image, index}) => {
-        console.log('img: ' , image);
+        // console.log('img: ' , image);
         var is_portrait = image.height > image.width
-        console.log('is_portrait: ', is_portrait)
         return(
             <Image
               style={styles.photo}
@@ -273,7 +272,7 @@ export default function ReviewPage({route}) {
                             navigation.goBack(null);
                             }
                         else {
-                            console.error('Review length too short: ', review.length)
+                            console.warn('Review length too short: ', review.length)
                         }
                         } 
                     }

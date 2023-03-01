@@ -144,8 +144,7 @@ export default function RestaurantProfileScreen({route}){
      * method to add a review to the current restaurant
      */
     const addReview = (hoursData) => {
-        // CODE FOR SOMEONE ELSE TO DO
-        // nagivation.navigate('Create Review', {restaurantData})
+        nagivation.navigate('Create Review', {restaurantData})
     }
 
     // returns the screen of the restaurant that the current user is looking at. This contains information about the restaurant's
