@@ -12,15 +12,18 @@ import auth from '@react-native-firebase/auth';
 // function that returns the screen for a Restaurant's profile
 export default function RestaurantProfileScreen({route}){
     const nagivation = useNavigation();
-    const dayOfTheWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    const dayOfTheWeek = [ "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
     const restaurantData = route.params;
     const [saved, setSaved] = React.useState('')
     const [color, setColor] = React.useState('')
     const [hoursCollapsed, setHoursCollapsed] = React.useState('')
-    // console.log(restaurantData)
-    // console.log(restaurantData.data.hours[0])
+
+    const today = new Date().getDay()
+    const todayStart = timeConvert(restaurantData.data.hours[0].open[today].start)
+    const todayEnd = timeConvert(restaurantData.data.hours[0].open[today].end)
+
     const user = auth().currentUser;
-    // console.log(restaurantData.data.hours[0].open[0])
+
 
     React.useEffect( () => {
         PopulateButton();
@@ -116,7 +119,7 @@ export default function RestaurantProfileScreen({route}){
             <View style={style.scheduleContainer}>   
                 <View>
                     {restaurantData.data.hours[0].open.map(hoursData => (
-                        <Text key={hoursData.day} style={style.daysText}>{dayOfTheWeek[hoursData.day]}</Text>
+                        <Text key={hoursData.day} style={hoursData.day == today ? style.todayDaysText : style.daysText}>{dayOfTheWeek[hoursData.day]}</Text>
                     ))}
 
                     <Text>
@@ -125,7 +128,7 @@ export default function RestaurantProfileScreen({route}){
                 </View>
                 <View>
                     {restaurantData.data.hours[0].open.map(hoursData => (
-                        <Text key={hoursData.day} style={style.hoursText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
+                        <Text key={hoursData.day} style={hoursData.day == today ? style.todayHoursText : style.hoursText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
                     ))}
                     <Text>
                         
@@ -181,7 +184,7 @@ export default function RestaurantProfileScreen({route}){
                         <View style={style.hoursButton}>
                             <Text style={restaurantData.data.hours[0].is_open_now ? style.openText: style.closedText}> {restaurantData.data.hours[0].is_open_now ? "Open" : "Closed"} </Text>
                             <Text style={style.hoursButtonText}> until </Text>
-                            <Text style={style.hoursButtonText}> {restaurantData.data.hours[0].is_open_now ? restaurantData.data.hours[0].open[0].end : restaurantData.data.hours[0].open[0].start} </Text>
+                            <Text style={style.hoursButtonText}> {restaurantData.data.hours[0].is_open_now ? todayEnd : todayStart} </Text>
                             <Ionicons style= {{paddingLeft: 25}} name={hoursCollapsed ? "add-circle-outline" : "remove-circle-outline"} size={40} color='white'/>
                         </View>
                     </TouchableOpacity>
@@ -324,10 +327,25 @@ const style = StyleSheet.create({
         lineHeight:30
         
     },
+    todayDaysText:{
+        color: 'cornflowerblue',
+        fontSize: 20,
+        textTransform: 'capitalize',
+        textAlign: 'left',
+        marginHorizontal:15,
+        lineHeight:30
+        
+    },
     hoursText:{
         color: 'white',
         fontSize: 20,
-        textTransform: 'capitalize',
+        textAlign: 'right',
+        marginHorizontal:15,
+        lineHeight:30
+    },
+    todayHoursText:{
+        color: 'cornflowerblue',
+        fontSize: 20,
         textAlign: 'right',
         marginHorizontal:15,
         lineHeight:30
