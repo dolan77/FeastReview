@@ -179,7 +179,7 @@ export default function RestaurantProfileScreen({route}){
                 <View style = {style.container}>
                     <TouchableOpacity onPress={toggleHoursCollapsed} style={style.buttonContainer}>
                         <View style={style.hoursButton}>
-                            <Text style={restaurantData.data.is_closed ? style.openText: style.closedText}> {restaurantData.data.hours[0].is_open_now ? "Open" : "Closed"} </Text>
+                            <Text style={restaurantData.data.hours[0].is_open_now ? style.openText: style.closedText}> {restaurantData.data.hours[0].is_open_now ? "Open" : "Closed"} </Text>
                             <Text style={style.hoursButtonText}> until </Text>
                             <Text style={style.hoursButtonText}> {restaurantData.data.hours[0].is_open_now ? restaurantData.data.hours[0].open[0].end : restaurantData.data.hours[0].open[0].start} </Text>
                             <Ionicons style= {{paddingLeft: 25}} name={hoursCollapsed ? "add-circle-outline" : "remove-circle-outline"} size={40} color='white'/>
