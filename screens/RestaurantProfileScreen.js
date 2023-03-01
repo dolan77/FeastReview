@@ -34,7 +34,7 @@ export default function RestaurantProfileScreen({route}){
         try{
             const currentUser = await firebase.dbGet('users', user.uid);
 
-            if (currentUser.saved_restaurants.includes(restaurantData.data.alias)){
+            if (Object.hasOwn(currentUser.saved_restaurants,restaurantData.data.alias)){
                 await firebase.dbUpdateArrayRemove('users', user.uid, 'saved_restaurants', [restaurantData.data.alias]);
                 PopulateButton();
             }
@@ -51,7 +51,7 @@ export default function RestaurantProfileScreen({route}){
         try {
             const currentUser = await firebase.dbGet('users', user.uid);
             // if we are following the user, prompt the unfollow button
-            if (currentUser.saved_restaurants.includes(restaurantData.data.alias)){
+            if (Object.hasOwn(currentUser.saved_restaurants,restaurantData.data.alias)){
                 
                 setSaved('Remove');
                 setColor('#636362');
