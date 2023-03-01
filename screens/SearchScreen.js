@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, Button, Image, ScrollView, Modal } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, Button, Image, ScrollView, Modal, Pressable } from 'react-native'
 import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import Geolocation from 'react-native-geolocation-service';
@@ -228,11 +228,11 @@ export default function SearchScreen() {
 			
 			<ScrollView style={styles.restaurantContainer} keyboardShouldPersistTaps={'handled'}>
 				{restaurants !== [] &&
-					restaurants.map(restaurant => {
+					restaurants.map((restaurant, index) => {
 						return (
-							<TouchableOpacity 
+							<Pressable 
 								key={restaurant.id} 
-								onPressIn={() => {
+								onPress={() => {
 									// Dylan Huynh: allows the user to be redirected to the restaurant profile of the restaurant they selected.
 									try {
 										dbGet('api_keys', 'key').then(keys => {
@@ -251,7 +251,7 @@ export default function SearchScreen() {
 										source={{uri: restaurant.image_url}} 
 									/>
 									<View style={{flex: 1, marginLeft: 5}}>
-										<Text style={styles.restaurantText}>{restaurant.name}</Text>
+										<Text style={styles.restaurantText}>{index + 1}. {restaurant.name}</Text>
 										<Text style={styles.restaurantText}>
 											{starRating(restaurant.id, restaurant.rating)} {restaurant.rating}
 										</Text>
@@ -266,7 +266,7 @@ export default function SearchScreen() {
 										<Text style={styles.restaurantText}>{restaurant.location.address1}</Text>
 									</View>
 								</View>
-							</TouchableOpacity>
+							</Pressable>
 						)
 					})
 				}
