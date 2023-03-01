@@ -12,18 +12,17 @@ import * as firebase from '../utils/firebase'
 // function that returns the screen for the current user
 export default function UserProfileScreen(){
     const user = auth().currentUser;
-
+    const [modalVisible, setModalVisible] = React.useState(false);
+    const [bio, setBio] = React.useState('');
+    const navigation = useNavigation();
     
     React.useLayoutEffect(() => {
 		navigation.setOptions({headerShown: true});
 	  }, [navigation]);
     
-    
-
-    const [modalVisible, setModalVisible] = React.useState(false);
-    const [bio, setBio] = React.useState('');
-    const navigation = useNavigation();
-
+    React.useEffect(() => {
+        getBio();
+    }, [])
     
     /**
      * 
@@ -67,57 +66,79 @@ export default function UserProfileScreen(){
         })
     } 
 
-    // console.log(user.email, 'has signed up')
-    // console.log(bio, 'state')
+    /**
+     * method that allows the user to trasnfer to the "FollowersAndFollowing" Screen.
+     */
+    const moveToFollow = () => {
+        // uid : doc_data
+        try {
+            followers = []
+            followers_names = []
+            following = []
+            following_names = []
+            // get the people who follow the current user
+            firebase.dbGetFollowers(user.uid).then(result => {
+                result.forEach( (doc, key) => {
+                    followers.push(key)
+                    followers_names.push(doc.name)
+                    // console.log(key + ":" + JSON.stringify(doc))
+                })
+                // console.log('followers: ' + followers)
+                // console.log('followerNames: ' + followers_names)
+            
+            // after getting the followers, get the user and who they are following
+            })
+            .then(result2 => {
+                firebase.dbGet('users', user.uid).then(result => {
+                    firebase.dbGetFollowed(result.following).then(result => {
+                        result.forEach( (doc, key) => {
+                            following.push(key)
+                            following_names.push(doc.name)
+                        })
+                    // wait to get who the user is following, then navigate to the Followers and Following Screen
+                    })
+                    .then(result3 => {
+                        navigation.navigate('FollowersAndFollowing', {
+                            followers : followers,
+                            followers_names : followers_names,
+                            following: following,
+                            following_names: following_names
+                        })
+                    })
+                })
+            })            
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
     
-    const seeFollow = async () => {
-        try{
-            const currentUser = await firebase.dbGet('users', user.uid);
-            
-        let following_names = []
-        for (let i = 0; i < currentUser.following.length; i++){
-            
-            // loop thru the UID's the user is following and add their name
-            otherUser = await firebase.dbGet('users', currentUser.following[i]);
-            // console.log(otherUser)
-            following_names.push(otherUser.name)
-        }
-        // console.log('following_names' + following_names)
-        // console.log('currentuser following: ' + currentUser.following)
-        navigation.navigate('Following',
-        {
-            followingUID: currentUser.following,
-            followingNames: following_names
-        })
-        }
-        catch (error){
+    /**
+     * method that will transition to the screen where the user can view their saved restaurants
+     */
+    const seeRestaurants = async() => {
+        try {
+            firebase.dbGet('users', user.uid).then(result => {
+                //console.log(result)
+                let restaurant_data = []
+                Object.keys(result.saved_restaurants).forEach((key) => {
+                    // I can pass the saved restaurant data to the Screen to Populate later.
+                    restaurant_data.push(result.saved_restaurants[key])
+                    // console.log(result.saved_restaurants[key])
+                });
+                // console.log(restaurant_data)
+                navigation.navigate('SavedRestaurants', {
+                    restaurants: restaurant_data
+                })
+                // console.log(result.saved_restaurants)
+            })
+    
+        } catch (error) {
             console.log(error)
         }
         
+        // cache the restaurant's data within the RestaurantProfileScreen to show it as buttons similar to Search.
     }
-
-    const seeFollowers = async () => {
-        const currentUser = await firebase.dbGet('users', user.uid);
-        let followersNames = [];
-        for (let i = 0; i < currentUser.followers.length; i++){
-            otherUser = await firebase.dbGet('users', currentUser.followers[i]);
-            followersNames.push(otherUser.name)
-        }
-        navigation.navigate('Followers',
-        {
-            followersUID: currentUser.followers,
-            followersNames: followersNames
-        })
-    }
-    // TESTING SENDING TO TOP NAVBAR
-    const seeFolloww = () => {
-        navigation.navigate('FollowersAndFollowing');
-    }
-    React.useEffect(() => {
-        getBio();
-    },
-    []
-    )
     
     // this returns the User Profile Screen onto the application on the mobile device. The screen consists of a picture, user name, biography, expertise, and three
     // buttons to navigate to another screen. The user is also able to edit their bio, which leads to a different screen and updates the bio on the database.
@@ -152,16 +173,15 @@ export default function UserProfileScreen(){
 
             
             <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
-                <Image style = {[styles.tinyLogo, styles.topContent]} source ={image}/>
+                <Image style = {[styles.tinyLogo]} source ={image}/>
                 <Text style = {styles.globalFont}>{user.displayName}</Text>
                 <Text style = {styles.globalFont}>Dessert Expert</Text>
             </View> 
 
-            <View style = {[{flex: 1}]}>
-                <Text style={[styles.globalFont, styles.bioSubscriptContent]}>
-                    {bio}
-                    <Text style = {styles.editButton} onPress={() => setModalVisible(true)}>{"\n\n"}Edit Bio</Text>
-                </Text>
+            <View style = {[{flex: 1}, styles.bioSubscriptContent]}>
+                <Text style={[styles.globalFont]}>{bio}</Text>
+                <Text style = {[styles.editButton, styles.globalFont]} onPress={() => setModalVisible(true)}>Edit Bio</Text>
+                
             </View>
 
         </View> 
@@ -174,22 +194,15 @@ export default function UserProfileScreen(){
         <Text style={styles.buttonText}>See Your Reviews</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style = {styles.button} onPress={seeFollowers}>
-            <Text style={styles.buttonText}>Followers</Text>
+        <TouchableOpacity onPress={moveToFollow} style = {styles.button}>
+            <Text style={styles.buttonText}>Followers and Following</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style = {styles.button} onPress={seeFollow}>
-            <Text style={styles.buttonText}>Following</Text>
+        <TouchableOpacity onPress={seeRestaurants} style = {styles.button}>
+            <Text style={styles.buttonText}>Saved Restaurants</Text>
         </TouchableOpacity>
+
         </View>
-        
-        <TouchableOpacity onPress={seeFolloww}>
-            <Text>Test the Followers Tab</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={seeFolloww}>
-            <Text>Testing the new FollowBar</Text>
-        </TouchableOpacity>
     </View>
     );
 }
@@ -217,6 +230,7 @@ const styles = StyleSheet.create({
     },
 
     bioSubscriptContent:{
+        alignItems: 'center',
         paddingHorizontal: 15
     },
 
@@ -267,6 +281,8 @@ const styles = StyleSheet.create({
 
     globalFont:{
         color: 'white',
-        fontSize: 20
+        fontSize: 20,
+        fontWeight: '500',
+        
     }
 })

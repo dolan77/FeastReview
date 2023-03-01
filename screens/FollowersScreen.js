@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image} from 'react-native'
+import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, SafeAreaView, ScrollView} from 'react-native'
 import auth, { firebase } from '@react-native-firebase/auth';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -11,6 +11,9 @@ export default function FollowersScreen(props){
     const passedinUID = props.followersUID
     const passedinFollowersName = props.followersNames
     const navigation = useNavigation();
+    React.useEffect(() =>{
+        PopulateFollowers();
+    }, [])
 
     /**
      * Method that will navigate the user to see another user's profile
@@ -25,6 +28,10 @@ export default function FollowersScreen(props){
 
     }
 
+    /**
+     * Method that will populate the screen of Feasters that follow the user
+     * @returns TouchableOpacity of another user
+     */
     const PopulateFollowers = () => {
         let table = []
 
@@ -36,8 +43,25 @@ export default function FollowersScreen(props){
         return table
     }
     
+    // the user is followed by at least one person
+    if (passedinUID.length > 0){
+        return(
+            <SafeAreaView style = {styles.container}>
+                <ScrollView contentContainerStyle = {styles.scrollOuter}>
+                    <View>
+                        <View>
+                            {PopulateFollowers()}
+                        </View>
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
+            );
+
+
+    }
+
     // the user has no followers
-    if (passedinUID.length <= 0){
+    else{
         return(
             <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
                 <View>
@@ -45,30 +69,6 @@ export default function FollowersScreen(props){
                 </View>
             </View>
         )
-    }
-
-    // the user is followed by at least one person
-    else{
-        // React.useEffect(() =>{
-        //     populateFollowing();
-        // }, [])
-
-        return(
-        <SafeAreaView style = {styles.container}>
-            <ScrollView contentContainerStyle = {styles.scrollOuter}>
-                <View>
-                    <View>
-                        <Text style = {styles.FollowBoxText}>Followers...</Text>
-                    </View>
-                    <View>
-                        {PopulateFollowers()}
-                    </View>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
-            
-
-        );
     }
 }
 

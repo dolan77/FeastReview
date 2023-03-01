@@ -1635,6 +1635,11 @@
   "resolved" "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-16.7.0.tgz"
   "version" "16.7.0"
 
+"@react-native-firebase/storage@16.7":
+  "integrity" "sha512-IvGBmo/caNwJiqRA3bsypfiCOJdb6hqF5qBVyKHIPJ/v2XAgASCcCH/OF8oJ+mFNpQioVRLJ+PRCfiSD5jVJXw=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/storage/-/storage-16.7.0.tgz"
+  "version" "16.7.0"
+
 "@react-native/assets@1.0.0":
   "integrity" "sha512-KrwSpS1tKI70wuKl68DwJZYEvXktDHdZMG0k2AXD/rJVSlB23/X2CB2cutVR0HwNMJIal9HOUOBB2rVfa6UGtQ=="
   "resolved" "https://registry.npmjs.org/@react-native/assets/-/assets-1.0.0.tgz"
@@ -6236,6 +6241,11 @@
   "integrity" "sha512-oOanj84fJEXUg9FoEAQomA8ISG+DVIrTZ3qF7m69VQUJyOGYyDZmPqKcjvRku4KXlEH6hWO9i4ACLzNBh8gC0A=="
   "resolved" "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.3.tgz"
   "version" "0.70.3"
+
+"react-native-image-picker@^5.0.2":
+  "integrity" "sha512-p506trG3PDSrdm+Yd0QolsnR3FtSe37gkP7OVsMa9UYwn1teaLGzhmx3QMZ4ZBwdV1AKBUFA5HF1ECAVSDTdQQ=="
+  "resolved" "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-5.1.0.tgz"
+  "version" "5.1.0"
 
 "react-native-maps@^1.4.0":
   "integrity" "sha512-asP6oVx9uF4E9U22j40q0AcSJ4v3hPBPCg1kPdlbckGXGj+z8dwwdPkQi3hUpl94odlR//v60Sw6PAEYv8zSxw=="

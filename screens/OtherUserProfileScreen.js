@@ -19,6 +19,8 @@ export default function OtherUserProfileScreen({route}){
     const [follow, setFollow] = React.useState('');
     const [color, setColor] = React.useState('');
     const [name, setName] = React.useState('');
+    const [bio, setBio] = React.useState('');
+    const [otherUser, setOtherUser] = React.useState(null);
     const navigation = useNavigation();
     
     const user = auth().currentUser;
@@ -78,53 +80,72 @@ export default function OtherUserProfileScreen({route}){
      * method to show the other user's display name when you click on their profile
      * @returns Text to be shown on our application that involves the other user's display name
      */
-    const ShowOtherUserName = async () => {
+    const PopulateScreen = async () => {
         try{
             const otherUser = await firebase.dbGet('users', otherID); 
-            setName(otherUser.name);    
+            setName(otherUser.name);
+            setBio(otherUser.bio);
+            setOtherUser(otherUser);
         }catch(error){
             console.log(error)
         }
  
     }
+    // try to navigate to the reviews screen.
+    const seeReview = async () => {
+        
+        navigation.navigate('Reviews', {
+            dbID: otherID,
+            type: 'user'
+        })
+    }
 
     // initiate the button and user name we create the view
     React.useEffect(() => {
-        ShowOtherUserName();
+        PopulateScreen();
         PopulateButton();
     },
     []
     )
     
+    const checkUser = () => {
+        console.log(otherUser)
+    }
     
     
     
     return (
-        <View>
-            <View style = {styles.display}>
-                <Image style = {[styles.tinyLogo]} source ={image}/>
+        <View style = {styles.container}>
+                <View style = {styles.UserBackground}>
 
+                    <View style = {[{alignItems: 'center', flex: 3, justifyContent: 'space-evenly'}]}>
+                        <Image style = {[styles.tinyLogo]} source ={image}/>
+                        <Text style={styles.globalText}>{name}</Text>
+                        
+                    </View>
+                    <View style={{flex:0}}>
+                    <Text style={[styles.globalText, {alignSelf: 'center'}]}>Japanese Food Expert</Text>
 
-                <View>
-                <Text style={{borderRadius: 1, borderColor: 'black'}}>{name}</Text>
-
+                    </View>
+                    
+                    <View style={[{flex: 1, alignSelf: 'center'}]}>
+                    <Text style={styles.globalText}>{bio}</Text>
+                    </View>
                 </View>
-                
-                <View>
-                <TouchableOpacity style={[styles.button, {backgroundColor: color}]} onPress={clickFollow}>
-                    <Text style={styles.buttonText}>{follow}</Text>
-                </TouchableOpacity>
-                </View>
+
 
                 <View style={styles.space}></View>
 
-                <View>
-                <TouchableOpacity style={[styles.button]}>
-                    <Text style={styles.buttonText}>See Reviews</Text>
-                </TouchableOpacity>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={[styles.button, {backgroundColor: color}]} onPress={clickFollow}>
+                        <Text style={styles.buttonText}>{follow}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.button]} onPress={checkUser}>
+                        <Text style={styles.buttonText}>See Reviews</Text>
+                    </TouchableOpacity>
                 </View>
 
-            </View>
         </View>
     )
 }
@@ -132,17 +153,24 @@ export default function OtherUserProfileScreen({route}){
 
 
 const styles = StyleSheet.create({
-    display:{
-        alignItems: "center"
+    container:{
+        backgroundColor: '#3d4051',
+        flex: 1
+    },
+    UserBackground: {
+        backgroundColor:'#171414',
+        flex: 3
     },
     tinyLogo: {
-        width: 100,
-        height: 100,
+        width: 120,
+        height: 120,
         borderRadius: 150,
         
         overflow: 'hidden',
-        borderWidth: 2,
-        borderColor: 'white'
+        borderWidth: 5,
+        borderColor: '#EECACA',
+        alignSelf: 'center',
+        marginTop: 20
     },
     button: {
         backgroundColor: '#0782F9',
@@ -157,9 +185,19 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         fontSize: 16
     },
+    buttonContainer: {
+        flex: 2,
+        alignItems: 'center',
+        justifyContent: 'space-evenly'
+    },
     space:{
         width: 10,
         height: 10
     },
+    globalText:{
+        color: 'white',
+        fontWeight: '500',
+		fontSize: 20,
+    }
 
 })
