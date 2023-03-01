@@ -3,6 +3,17 @@ import { StyleSheet, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
 export const map = (restaurants, location) => {
+	makeMarker = (restaurant, index) => {
+		const title = (index + 1) + '. ' + restaurant.name
+		return (
+			<Marker
+				key={index}
+				coordinate={{latitude: restaurant.coordinates.latitude,
+				longitude: restaurant.coordinates.longitude}}
+				title={title}
+			/>
+		)
+	}
 	return (
 		<View style={styles.container}>
 			<MapView
@@ -15,12 +26,7 @@ export const map = (restaurants, location) => {
 				}}
 			>
 				{restaurants.map((restaurant, index) => (
-					<Marker
-						key={index}
-						coordinate={{latitude: restaurant.coordinates.latitude,
-							longitude: restaurant.coordinates.longitude}}
-						title={restaurant.name}
-					/>
+					makeMarker(restaurant, index)
 				))}
 			</MapView>
 		</View>
