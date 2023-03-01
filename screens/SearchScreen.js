@@ -162,44 +162,55 @@ export default function SearchScreen() {
 					}}
 				>
 					<View style = {styles.modalView}>
-						<View style={styles.filterComponent}>
-							<Text>Sort By</Text>
-							{sort_by.map((sorting) => {
-								return (
-									<View style={{padding: 5}} key={sorting}>
-										<TouchableOpacity onPress={() => filtering(sorting)}>
-											<Text>{sorting.replaceAll('_', ' ')}</Text>
-										</TouchableOpacity>
-									</View>
-								)
-							})}
+						<Text>Filter</Text>
+
+						{/* Container for all filter components */}
+						<View style = {styles.sortPriceView}>
+
+							{/* View for the 'Sort By' filter */}
+							<View style={styles.filterComponent1}>
+								<Text style={{fontSize:'5'}}>Sort By</Text>
+								{sort_by.map((sorting) => {
+									return (
+										<View style={{padding: 5}} key={sorting}>
+											<TouchableOpacity onPress={() => filtering(sorting)}>
+												<Text>{sorting.replaceAll('_', ' ')}</Text>
+											</TouchableOpacity>
+										</View>
+									)
+								})}
+							</View>
+							
+							{/* View for the 'Price' filter */}
+							<View style={styles.filterComponent1}>
+								<Text>Price</Text>
+								{prices.map((p) => {
+									return (
+										<View style={[{alignSelf: 'center'}, {borderWidth:1}]} key={p.number} >
+											<TouchableOpacity onPress={() => filtering(p.number)}>
+												<Text>{p.price}</Text>
+											</TouchableOpacity>
+										</View>
+									)
+								})}
+							</View>
 						</View>
+							
+							{/* View for the 'Attributes' filter */}
+							<View style={styles.filterComponent}>
+								<Text>Attributes</Text>
+								{attributes.map((attribute) => {
+									return (
+										<View style={{padding: 5}} key={attribute} >
+											<TouchableOpacity onPress={() => filtering(attribute)}>
+												<Text>{attribute.replaceAll('_', ' ')}</Text>
+											</TouchableOpacity>
+										</View>
+									)
+								})}
+						</View>
+
 						
-						<View style={styles.filterComponent}>
-							<Text>Price</Text>
-							{prices.map((p) => {
-								return (
-									<View style={{padding: 5}} key={p.number} >
-										<TouchableOpacity onPress={() => filtering(p.number)}>
-											<Text>{p.price}</Text>
-										</TouchableOpacity>
-									</View>
-								)
-							})}
-						</View>
-						
-						<View style={styles.filterComponent}>
-							<Text>Attributes</Text>
-							{attributes.map((attribute) => {
-								return (
-									<View style={{padding: 5}} key={attribute} >
-										<TouchableOpacity onPress={() => filtering(attribute)}>
-											<Text>{attribute.replaceAll('_', ' ')}</Text>
-										</TouchableOpacity>
-									</View>
-								)
-							})}
-						</View>
 						
 						<TouchableOpacity
 							onPress={() => setModalVisible(!modalVisible)}
@@ -377,15 +388,29 @@ const styles = StyleSheet.create({
           width: 0,
           height: 2,
         },
-		flexDirection: 'row',
-		flexWrap: 'wrap'
+		borderWidth:.1,
+		borderBottomColor: 'red'
     },
-	filterComponent: {
+	filterComponent1: {
 		flexDirection: 'column',
-		// flex: 1,
 		flexWrap: 'wrap',
 		borderWidth: 1,
 		borderRadius: 5,
+		borderColor: 'red',
+		alignItems: 'center',
+		alignSelf: 'center',
+		// width:100.5,
+		height: 220,
+		padding: 40,
+		// justifyContent: 'space-evenly'
+	},
+	sortPriceView: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		borderWidth:1,
+		borderColor: 'green'
+	},
+	centerText:{
 		alignItems: 'center'
 	}
 })
