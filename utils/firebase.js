@@ -2,7 +2,7 @@ import firestore, { firebase } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 //import firebase from '@react-native-firebase/app';
 
-module.exports = {dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetFollowers, dbGetFollowed};
+module.exports = {dbCreateBlank, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetFollowers, dbGetFollowed, dbIncrement};
 
 
 /**
@@ -11,6 +11,16 @@ module.exports = {dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate,
 
 
 const db = firestore();
+
+/**
+ * creates a blank document, doesnt do anything to existing documents
+ * @param {*} collection 
+ * @param {*} doc 
+ * @returns 
+ */
+async function dbCreateBlank(collection, doc){
+    return db.collection(collection).doc(doc).set({}, {merge:true});
+}
 
 /**
  * simple getter function
@@ -196,4 +206,18 @@ async function dbGetFollowed(followedList){
     });
     
     return query? query: new Map();
+}
+
+/**
+ * increments values by 1
+ * @param {*} collection 
+ * @param {*} doc 
+ * @param {*} fields 
+ * @returns 
+ */
+async function dbIncrement(collection, doc, fields){
+    Object.keys(fields).forEach((key) => {
+        fields[key] = firestore.FieldValue.increment(1);
+    });
+    return dbUpdate(collection, doc, fields);
 }
