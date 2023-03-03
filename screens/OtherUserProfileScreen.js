@@ -112,14 +112,15 @@ export default function OtherUserProfileScreen({route}){
         console.log(otherUser)
     }
     
-    
+    // get the other user's profile picture
+    const [avatar, setAvatar] = React.useState();
     
     return (
         <View style = {styles.container}>
                 <View style = {styles.UserBackground}>
 
                     <View style = {[{alignItems: 'center', flex: 3, justifyContent: 'space-evenly'}]}>
-                        <Image style = {[styles.tinyLogo]} source ={image}/>
+                        <Image style = {[styles.tinyLogo]} source ={avatar? {uri:avatar} : image}/>
                         <Text style={styles.globalText}>{name}</Text>
                         
                     </View>

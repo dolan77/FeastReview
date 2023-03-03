@@ -52,7 +52,12 @@ export default function ReviewPage({route}) {
     
     // Uploads user's review photos to the database storage.
     async function uploadPhotos(){
-        images.map((image, index) => firebase.dbFileAdd(image_urls[index], image.path))
+        try{
+            images.map((image, index) => firebase.dbFileAdd(image_urls[index], image.path))
+        }
+        catch (error){
+            console.log(error)
+        }
     }
 
     // Creates an array of the uploaded photos, replacing their names with the review_id and identifier.
@@ -65,12 +70,12 @@ export default function ReviewPage({route}) {
     const [images, setImages] = useState([]);
     async function GetPhotos(){
         try {
-            const response = await MultipleImagePicker.openPicker({
+            await MultipleImagePicker.openPicker({
                 mediaType:'image',
                 multiple:true
-            })
-            setImages(response)
-            console.log('images[] = ', images)
+            }).then(response => {setImages(response); console.log(response)})
+            // setImages(response)
+            // console.log('images[] = ', images)
         } catch (error){
             console.log(error.code, error.message)
         }

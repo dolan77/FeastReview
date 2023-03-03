@@ -143,21 +143,48 @@ export default function UserProfileScreen(){
     }
 
     // Saves properties of selected image
-    const [avatar, setAvatar] = React.useState();
+    const [avatarPath, setAvatarPath] = React.useState();
+
+    // Get user's previously uploaded profile picture from the database
+    // const getAvatarDB = async() => {
+    //     try{
+    //         await firebase.dbFileGetUrl('ProfilePictures/' + user.uid).then(
+    //             url => {
+    //                 const dbImage = [{path: url}]
+    //                 // setAvatar(dbImage)
+    //                 console.log('dbImage: ', dbImage)
+    //                 console.log('avatar: ', avatar)
+    //                 }
+    //         )
+    //     }
+    //     catch (error){
+    //         console.log(error)
+    //     }
+    // }
+
+    
+    // firebase.dbFileGetUrl(user.uid).then(url => {setAvatar(url); console.log(url)}) 
     /**
      * method that handle the user's ability to change their profile picture
      */
-    const changePicture = () => {
-        ImagePicker.openPicker({
-            width: 120,
-            height: 120,
-            // cropping: true,
-            // includeBase64: true,
-            cropperCircleOverlay: true
-          }).then(image => {
-            setAvatar(image)
-            console.log('image: ', image)
-          });
+    const changePicture = async() => {
+        try{
+            await ImagePicker.openPicker({
+                        width: 120,
+                        height: 120,
+                        cropping: true,
+                        // includeBase64: true,
+                        cropperCircleOverlay: true
+                    }).then(image? image => {
+                        setAvatarPath(image.path);
+                        console.log('image: ', image);
+                        firebase.dbFileAdd('ProfilePictures/' + user.uid, image.path)
+                    }: console.log('cancelled'));
+        }
+        catch (error){
+            console.log(error)
+        }
+        
     }
     
     // this returns the User Profile Screen onto the application on the mobile device. The screen consists of a picture, user name, biography, expertise, and three
@@ -193,7 +220,7 @@ export default function UserProfileScreen(){
 
             
             <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
-                <Image style = {[styles.tinyLogo]} source ={avatar? avatar.path : image}/>
+                <Image style = {[styles.tinyLogo]} source ={avatarPath? {uri:avatarPath} : image}/>
                 <Text style = {[styles.globalFont, {fontSize: 15}, {color: '#75d9fc'}, {paddingTop: 3}]}
                     onPress = {() => {console.log('Pressed edit photo'); changePicture()}}>
                     Edit Photo</Text>
