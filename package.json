@@ -10,7 +10,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@baronha/react-native-multiple-image-picker": "^0.4.13",
     "@expo/vector-icons": "^13.0.0",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-firebase/app": "^16.7.0",
@@ -28,6 +27,7 @@
     "react-native": "0.70.6",
     "react-native-geolocation-service": "^5.3.1",
     "react-native-gesture-handler": "^2.9.0",
+    "react-native-image-crop-picker": "^0.38.1",
     "react-native-image-picker": "^5.0.2",
     "react-native-maps": "^1.4.0",
     "react-native-open-maps": "^0.4.0",
