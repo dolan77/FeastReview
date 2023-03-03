@@ -12,8 +12,10 @@ export default function ReviewsScreen({route}){
     const dbID = route.params.dbID;
     const reviewType = route.params.type
 
-    const PopulateReviews = async (reviewType) => {
-        
+    const PopulateReviews = () => {
+        return(
+            <Text>{dbID}</Text>
+        )
     }
     // if the reviewType is a user. we get all reviews by the user
     if (reviewType === 'user'){
