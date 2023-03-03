@@ -8,6 +8,7 @@ import openMap, { createMapLink, createOpenLink } from 'react-native-open-maps';
 import image from "../assets/maps-icon.png"
 import * as firebase from '../utils/firebase'
 import auth from '@react-native-firebase/auth';
+import { Timestamp } from 'react-native-reanimated/lib/types/lib/reanimated2/commonTypes';
 
 // function that returns the screen for a Restaurant's profile
 export default function RestaurantProfileScreen({route}){
@@ -17,16 +18,41 @@ export default function RestaurantProfileScreen({route}){
     const [saved, setSaved] = React.useState('')
     const [color, setColor] = React.useState('')
     const [hoursCollapsed, setHoursCollapsed] = React.useState('')
+    const [reviews, setReviews] = React.useState('')
+    const [limit, setLimit] = React.useState(1);
+    const [pressed, setPressed] = useState(1)
     // console.log(restaurantData)
     // console.log(restaurantDafta.data.hours[0])
     const user = auth().currentUser;
     // console.log(restaurantData.data.hours[0].open[0])
 
+    React.useEffect(() => {
+		if (pressed !== 1) {
+            if (10 * limit > reviews.length){
+                setLimit(reviews.length)
+            }
+            else{
+                setLimit(10 * limit)
+            }
+			
+			
+		}
+	}, [pressed])
+
     React.useEffect( () => {
         PopulateButton();
-    }
+        GetReviews();
+        PopulateReviews();
+    }, 
+    [])
 
-    )
+
+
+
+
+    // PopulateReviews()
+
+
     const clickSaved = async () => {
         console.log(user.uid);
         try{
@@ -147,6 +173,46 @@ export default function RestaurantProfileScreen({route}){
         nagivation.navigate('Create Review', {restaurantData})
     }
 
+    const handlePress = () => {
+        setPressed(pressed + 1)
+    }
+
+
+    const GetReviews = () => {
+        try {
+            firebase.dbGetReviews(restaurantData.data.alias).then(result => {
+                setReviews([...result])
+            })
+           
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const PopulateReviews = () => {
+        console.log('in populatereviews: ' + limit)
+        console.log('pressed: ' + pressed)
+        let table = []
+        if (reviews.length != 0){
+            for(let i = 0;  i < limit; i++){
+                table.push(
+                <TouchableOpacity key={i} style={[style.ReviewBox, {marginHorizontal: 10}]}>
+                    <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].authorid}</Text>
+                    <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].datemade.toDate().toDateString()}</Text>
+                    <Text style={[style.ReviewBoxItems, style.ReviewText]}>{reviews[i][1].content}</Text>
+                </TouchableOpacity>)
+
+                // console.log(reviews[i][1].authorid)
+            }  
+        }
+
+        else{
+            table.push(<Text key={0}>There are no reviews on the restaurant</Text>)
+        }
+        return(table)
+    }
+
     // returns the screen of the restaurant that the current user is looking at. This contains information about the restaurant's
     // hours, name, rating, reviews, directions, phone number, and website to the restaurant
     return(
@@ -240,6 +306,22 @@ export default function RestaurantProfileScreen({route}){
                     </TouchableOpacity>
 
                 </View>
+
+                {/* {This part will render the reviews} */}
+                <View>
+                   {PopulateReviews()}
+                </View>
+                
+                {reviews.length !== 0 && 
+					<View style={style.buttonContainer}>
+						<TouchableOpacity
+							onPress={handlePress}
+							style={style.button}
+						>
+							<Text style={style.buttonText}>See More Results</Text>
+						</TouchableOpacity>
+					</View>
+				}
 
             </ScrollView>
         </SafeAreaView>
@@ -337,7 +419,9 @@ const style = StyleSheet.create({
     },
 
     buttonContainer: {
-       
+        flex: 1,
+        justifyContent: 'center',
+		alignItems: 'center',
 
     },
 
@@ -375,5 +459,27 @@ const style = StyleSheet.create({
         color: '#0782F9',
         fontWeight: '700',
         fontSize: 16
+    },
+    ReviewBox: {
+        backgroundColor: '#3f3a42',
+        
+        bordercolor: 'black',
+        borderWidth: 3,
+        borderRadius: 10,
+        marginTop: 10,
+        justifyContent: 'center',
+        
+    },
+    ReviewBoxItems:{
+        justifyContent: 'center',
+        paddingHorizontal: 15
+    },
+    ReviewText: {
+        color: 'white',
+        fontsize: 12,
+        fontWeight: '650'
+    },
+    ReviewHeader: {
+        paddingHorizontal: 10
     }
 })
