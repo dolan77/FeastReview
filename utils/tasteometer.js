@@ -17,9 +17,8 @@ function incrementAdjectives(review, restaurantAlias){
     let adjectives = getAdjectives(review);
     let toUpdate = {};
     adjectives.forEach(adjective => {
-        toUpdate["adjectives."+adjective] = firebase.inc;
+        toUpdate["adjectives."+adjective] = 1;
     });
-    console.log(toUpdate)
     return firebase.dbCreateBlank("restaurants", restaurantAlias).then(() => {
         firebase.dbIncrement("restaurants", restaurantAlias, toUpdate);
     })
