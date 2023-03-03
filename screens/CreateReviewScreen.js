@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/core';
 import {Button} from 'react-native';
 import * as firebase from '../utils/firebase'
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
+import MultipleImagePicker from 'react-native-image-crop-picker';
 import { FlatList } from 'react-native-gesture-handler';
 
 export default function ReviewPage({route}) {
@@ -52,7 +52,7 @@ export default function ReviewPage({route}) {
     
     // Uploads user's review photos to the database storage.
     async function uploadPhotos(){
-        images.map((image, index) => firebase.dbFileAdd(image_urls[index], image.realPath))
+        images.map((image, index) => firebase.dbFileAdd(image_urls[index], image.path))
     }
 
     // Creates an array of the uploaded photos, replacing their names with the review_id and identifier.
@@ -63,11 +63,15 @@ export default function ReviewPage({route}) {
 
     // Prompts user to select images to upload.
     const [images, setImages] = useState([]);
-    const img_options = {mediaType:'image', selectedAssets:images, usedCameraButton:false};
+    const img_options = {mediaType:'image', multiple:true};
     async function GetPhotos(){
         try {
-            const response = await MultipleImagePicker.openPicker(img_options)
-            setImages(response);
+            const response = await MultipleImagePicker.openPicker({
+                mediaType:'image',
+                multiple:true
+            })
+            setImages(response)
+            console.log('images[] = ', images)
         } catch (error){
             console.log(error.code, error.message)
         }
@@ -84,7 +88,7 @@ export default function ReviewPage({route}) {
               width={is_portrait ? 110*(.75) : 110}
               height={is_portrait ? 110 : 110*(.75)} 
               source={{
-                uri: 'file://' + image.realPath
+                uri: image.path
           }}
         />
         )
