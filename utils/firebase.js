@@ -214,12 +214,3 @@ async function dbGetFollowers(uid){
 async function dbGetFollowed(followedList){
     return dbGetQuery("users", firebase.firestore.FieldPath.documentId(), "in", followedList);
 }
-
-/**
- * acquires a map of all reviews written by a user
- * @param {*} authorId map of the reviewids mapped to review data written by user
- * @returns 
- */
-async function dbGetReviewsByAuthor(authorId){
-    return dbGetQuery("reviews", "authorid", "==", authorId);
-}

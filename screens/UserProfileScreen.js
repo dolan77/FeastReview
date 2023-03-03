@@ -61,7 +61,7 @@ export default function UserProfileScreen(){
     function seeReview () {
         navigation.navigate('Reviews', 
         {
-            details: user.uid,
+            dbID: user.uid,
             type: 'user'
         })
     } 
