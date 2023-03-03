@@ -301,12 +301,17 @@ export default function RestaurantProfileScreen({route}){
 
 
 
-                    <TouchableOpacity style={[style.button, {backgroundColor: color}]} onPress={clickSaved}>
+                    <TouchableOpacity style={[style.button, {backgroundColor: color, marginBottom: 20}]} onPress={clickSaved}>
                         <Text style={style.buttonText}>{saved}</Text>
                     </TouchableOpacity>
 
                 </View>
 
+                <View style={{backgroundColor: '#161414'}}>
+                    <View style={style.horizontalLine} />
+                    <Text style={style.ReviewTop}>Restaurant Reviews</Text>
+                    <View style={style.horizontalLine} />
+                </View>
                 {/* {This part will render the reviews} */}
                 <View>
                    {PopulateReviews()}
@@ -337,6 +342,13 @@ const style = StyleSheet.create({
         height: 130,
         width: 130,
         borderRadius: 130
+    },
+    ReviewTop: {
+        color: 'white',
+        fontWeight: '700',
+        fontSize: 25,
+        marginVertical: 10,
+        alignSelf: 'center'
     },
     horizontalLine:{
         height: 2, 
@@ -468,6 +480,7 @@ const style = StyleSheet.create({
         borderRadius: 10,
         marginTop: 10,
         justifyContent: 'center',
+        paddingVertical: 10
         
     },
     ReviewBoxItems:{
