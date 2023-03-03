@@ -7,6 +7,8 @@ import image from "../assets/feast_blue.png"
 import * as React from 'react';
 import * as firebase from '../utils/firebase'
 
+import ImagePicker from 'react-native-image-crop-picker';
+
 // background color: #3d4051 change for View, bioSubscript, flexbio, flexbutton
 
 // function that returns the screen for the current user
@@ -112,7 +114,7 @@ export default function UserProfileScreen(){
             console.log(error)
         }
     }
-    
+
     /**
      * method that will transition to the screen where the user can view their saved restaurants
      */
@@ -138,6 +140,24 @@ export default function UserProfileScreen(){
         }
         
         // cache the restaurant's data within the RestaurantProfileScreen to show it as buttons similar to Search.
+    }
+
+    // Saves properties of selected image
+    const [avatar, setAvatar] = React.useState();
+    /**
+     * method that handle the user's ability to change their profile picture
+     */
+    const changePicture = () => {
+        ImagePicker.openPicker({
+            width: 120,
+            height: 120,
+            // cropping: true,
+            // includeBase64: true,
+            cropperCircleOverlay: true
+          }).then(image => {
+            setAvatar(image)
+            console.log('image: ', image)
+          });
     }
     
     // this returns the User Profile Screen onto the application on the mobile device. The screen consists of a picture, user name, biography, expertise, and three
@@ -173,7 +193,10 @@ export default function UserProfileScreen(){
 
             
             <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
-                <Image style = {[styles.tinyLogo]} source ={image}/>
+                <Image style = {[styles.tinyLogo]} source ={avatar? avatar.path : image}/>
+                <Text style = {[styles.globalFont, {fontSize: 15}, {color: '#75d9fc'}, {paddingTop: 3}]}
+                    onPress = {() => {console.log('Pressed edit photo'); changePicture()}}>
+                    Edit Photo</Text>
                 <Text style = {styles.globalFont}>{user.displayName}</Text>
                 <Text style = {styles.globalFont}>Dessert Expert</Text>
             </View> 
