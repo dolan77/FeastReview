@@ -142,6 +142,7 @@ export default function UserProfileScreen(){
         // cache the restaurant's data within the RestaurantProfileScreen to show it as buttons similar to Search.
     }
 
+    const testURI = 'https://firebasestorage.googleapis.com/v0/b/feast-review.appspot.com/o/ProfilePictures%2FlxzNHne51XWIk3dKSfyyybCGOF82?alt=media&token=c3e4009e-976c-46f3-bc84-7a249d26d660'
     // Saves properties of selected image
     const [avatarPath, setAvatarPath] = React.useState();
 
@@ -220,7 +221,7 @@ export default function UserProfileScreen(){
 
             
             <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
-                <Image style = {[styles.tinyLogo]} source ={avatarPath? {uri:avatarPath} : image}/>
+                <Image style = {[styles.tinyLogo]} source ={uri= testURI}/>
                 <Text style = {[styles.globalFont, {fontSize: 15}, {color: '#75d9fc'}, {paddingTop: 3}]}
                     onPress = {() => {console.log('Pressed edit photo'); changePicture()}}>
                     Edit Photo</Text>
@@ -230,7 +231,7 @@ export default function UserProfileScreen(){
 
             <View style = {[{flex: 1}, styles.bioSubscriptContent]}>
                 <Text style={[styles.globalFont]}>{bio}</Text>
-                <Text style = {[styles.editButton, styles.globalFont]} onPress={() => setModalVisible(true)}>Edit Bio</Text>
+                <Text style = {[styles.editButton, styles.globalFont, {fontSize: 15}, {color: '#75d9fc'}]} onPress={() => setModalVisible(true)}>Edit Bio</Text>
                 
             </View>
 
