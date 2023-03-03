@@ -63,7 +63,6 @@ export default function ReviewPage({route}) {
 
     // Prompts user to select images to upload.
     const [images, setImages] = useState([]);
-    const img_options = {mediaType:'image', multiple:true};
     async function GetPhotos(){
         try {
             const response = await MultipleImagePicker.openPicker({
