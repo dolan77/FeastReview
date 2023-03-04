@@ -218,7 +218,7 @@ export default function RestaurantProfileScreen({route}){
                             </Text>
                             <View>
                                 <Text>{starRating(restaurantData.data.id, restaurantData.data.rating)}</Text>
-                                <Text style={[style.text]}>{restaurantData.data.review_count} reviews</Text>
+                                <Text style={[style.text]}>{reviews.length} reviews</Text>
                                 
                             </View>
                             
