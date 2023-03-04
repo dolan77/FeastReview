@@ -191,8 +191,8 @@ export default function RestaurantProfileScreen({route}){
     }
 
     const PopulateReviews = () => {
-        console.log('in populatereviews: ' + limit)
-        console.log('pressed: ' + pressed)
+        //console.log('in populatereviews: ' + limit)
+        //console.log('pressed: ' + pressed)
         let table = []
         if (reviews.length != 0){
             for(let i = 0;  i < limit; i++){
@@ -208,7 +208,7 @@ export default function RestaurantProfileScreen({route}){
         }
 
         else{
-            table.push(<Text key={0}>There are no reviews on the restaurant</Text>)
+            table.push(<Text key={0} style={[style.buttonText, style.ReviewHeader, {alignSelf: 'center', marginVertical: 10}]}>There are no reviews on the restaurant</Text>)
         }
         return(table)
     }
