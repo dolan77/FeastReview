@@ -142,27 +142,24 @@ export default function UserProfileScreen(){
         // cache the restaurant's data within the RestaurantProfileScreen to show it as buttons similar to Search.
     }
 
-    const testURI = 'https://firebasestorage.googleapis.com/v0/b/feast-review.appspot.com/o/ProfilePictures%2FlxzNHne51XWIk3dKSfyyybCGOF82?alt=media&token=c3e4009e-976c-46f3-bc84-7a249d26d660'
     // Saves properties of selected image
     const [avatarPath, setAvatarPath] = React.useState();
 
     // Get user's previously uploaded profile picture from the database
-    // const getAvatarDB = async() => {
-    //     try{
-    //         await firebase.dbFileGetUrl('ProfilePictures/' + user.uid).then(
-    //             url => {
-    //                 const dbImage = [{path: url}]
-    //                 // setAvatar(dbImage)
-    //                 console.log('dbImage: ', dbImage)
-    //                 console.log('avatar: ', avatar)
-    //                 }
-    //         )
-    //     }
-    //     catch (error){
-    //         console.log(error)
-    //     }
-    // }
+    const getAvatarDB = async() => {
+        try{
+            await firebase.dbFileGetUrl('ProfilePictures/' + user.uid).then(
+                url => {
+                    setAvatarPath(url)
+                    }
+            )
+        }
+        catch (error){
+            console.log(user.displayName, 'does not have a profile picture on db')
+        }
+    }
 
+    getAvatarDB();
     
     // firebase.dbFileGetUrl(user.uid).then(url => {setAvatar(url); console.log(url)}) 
     /**
@@ -221,12 +218,12 @@ export default function UserProfileScreen(){
 
             
             <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
-                <Image style = {[styles.tinyLogo]} source ={uri= testURI}/>
+                <Image style = {[styles.tinyLogo]} source ={avatarPath != undefined? {uri:avatarPath} : image}/>
                 <Text style = {[styles.globalFont, {fontSize: 15}, {color: '#75d9fc'}, {paddingTop: 3}]}
                     onPress = {() => {console.log('Pressed edit photo'); changePicture()}}>
                     Edit Photo</Text>
                 <Text style = {styles.globalFont}>{user.displayName}</Text>
-                <Text style = {styles.globalFont}>Dessert Expert</Text>
+                <Text style = {styles.globalFont} onPress={() => {console.log('avatar: ', avatarPath)}}>Dessert Expert</Text>
             </View> 
 
             <View style = {[{flex: 1}, styles.bioSubscriptContent]}>
