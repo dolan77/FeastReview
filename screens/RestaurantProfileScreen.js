@@ -109,20 +109,6 @@ export default function RestaurantProfileScreen({route}){
     }
 
     /**
-     * method to navigate to the Reviews Tab
-     */
-    const navigateReview = () => {
-
-        // navigate to the reviews tab and send in the hash and the type of review we want to see
-        // pass in alias and type of review we want to ReviewsScreen
-        nagivation.navigate('Reviews', 
-        {
-            dbID: restaurantData.data.alias,
-            type: 'restaurant'
-        })
-    }
-
-    /**
      * Expands the hours button
      * Made by Nathan Lai
      */
@@ -285,12 +271,6 @@ export default function RestaurantProfileScreen({route}){
                 </View>
 
                 <View style={[style.buttonContainer]}>
-                   <TouchableOpacity
-                   onPress={navigateReview}
-                   style={style.button}
-                >
-                    <Text style={style.buttonText}>See Reviews</Text>
-                   </TouchableOpacity>
 
                    <TouchableOpacity
                    onPress={addReview}
