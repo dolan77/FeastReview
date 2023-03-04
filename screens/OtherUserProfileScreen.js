@@ -113,14 +113,30 @@ export default function OtherUserProfileScreen({route}){
     }
     
     // get the other user's profile picture
-    const [avatar, setAvatar] = React.useState();
+    const [avatarPath, setAvatarPath] = React.useState();
+
+    // Get user's previously uploaded profile picture from the database
+    const getAvatarDB = async() => {
+        try{
+            await firebase.dbFileGetUrl('ProfilePictures/' + otherID).then(
+                url => {
+                    setAvatarPath(url)
+                    }
+            )
+        }
+        catch (error){
+            console.log('Other user does not have a profile picture on db')
+        }
+    }
+
+    getAvatarDB();
     
     return (
         <View style = {styles.container}>
                 <View style = {styles.UserBackground}>
 
                     <View style = {[{alignItems: 'center', flex: 3, justifyContent: 'space-evenly'}]}>
-                        <Image style = {[styles.tinyLogo]} source ={avatar? {uri:avatar} : image}/>
+                        <Image style = {[styles.tinyLogo]} source ={avatarPath? {uri:avatarPath} : image}/>
                         <Text style={styles.globalText}>{name}</Text>
                         
                     </View>
