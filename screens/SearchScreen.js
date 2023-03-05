@@ -67,7 +67,7 @@ export default function SearchScreen() {
 	/**
 	 * Calls the yelp api function then sets the results to restaurant state
 	 * @param {*} limit amount of results that will be displayed (default value of 10)
-	 * by Nathan Lai
+	 * written by Nathan Lai
 	 */
 	handleSearch = ({limit = 10}, filter = "") => {
 		dbGet('api_keys','key')
@@ -91,7 +91,7 @@ export default function SearchScreen() {
 	/**
 	 * Allows live complete by putting searchtext together with handleSearch
 	 * @param {*} text the string that the user types
-	 * by Nathan Lai
+	 * written by Nathan Lai
 	 */
 	autoComplete = (text) => {
 		setSearchText(text);
@@ -101,6 +101,7 @@ export default function SearchScreen() {
 	/**
 	 * adds a query param to the filterString state
 	 * @param {*} filter string that user presses from the filter modal
+	 * written by Matthew Hirai
 	 */
 	filtering = (filter) => {
 		if (filterString.length != 1) {
@@ -121,6 +122,7 @@ export default function SearchScreen() {
 
 	/**
 	 * calls the handleSearch function with filters
+	 * written by Matthew Hirai
 	 */
 	saveFilters = () => {
 		handleSearch(10, filterString)
@@ -130,7 +132,7 @@ export default function SearchScreen() {
 
 	/**
 	 * displays a map with markers of the restaurants that the user searched
-	 * by Matthew Hirai
+	 * written by Matthew Hirai
 	*/
     return (
         <View style={styles.container}>
@@ -167,7 +169,7 @@ export default function SearchScreen() {
 						{/* Container for all filter components */}
 						<View style = {styles.sortPriceView}>
 
-							{/* View for the 'Sort By' filter */}
+							{/* View for the 'Sort By' filter by Kenny Du */}
 							<View style={styles.filterComponent1}>
 								<Text style={{fontSize:'5'}}>Sort By</Text>
 								{sort_by.map((sorting) => {
@@ -181,7 +183,7 @@ export default function SearchScreen() {
 								})}
 							</View>
 							
-							{/* View for the 'Price' filter */}
+							{/* View for the 'Price' filter by Kenny Du */}
 							<View style={styles.filterComponent1}>
 								<Text>Price</Text>
 								{prices.map((p) => {
@@ -196,7 +198,7 @@ export default function SearchScreen() {
 							</View>
 						</View>
 							
-							{/* View for the 'Attributes' filter */}
+							{/* View for the 'Attributes' filter by Kenny Du */}
 							<View style={styles.filterComponent}>
 								<Text>Attributes</Text>
 								{attributes.map((attribute) => {
