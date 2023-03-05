@@ -104,6 +104,7 @@ export default function OtherUserProfileScreen({route}){
     React.useEffect(() => {
         PopulateScreen();
         PopulateButton();
+        getAvatarDB();
     },
     []
     )
@@ -127,11 +128,9 @@ export default function OtherUserProfileScreen({route}){
             )
         }
         catch (error){
-            console.log('Other user does not have a profile picture on db')
+            console.log(name, 'does not have a profile picture on db')
         }
     }
-
-    getAvatarDB();
     
     return (
         <View style = {styles.container}>
