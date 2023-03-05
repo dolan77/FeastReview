@@ -234,17 +234,3 @@ async function dbIncrement(collection, doc, fields){
     });
     return dbUpdate(collection, doc, fields);
 }
-
-/**
- * increments values by 1
- * @param {*} collection 
- * @param {*} doc 
- * @param {*} fields 
- * @returns 
- */
-async function dbIncrement(collection, doc, fields){
-    Object.keys(fields).forEach((key) => {
-        fields[key] = firestore.FieldValue.increment(1);
-    });
-    return dbUpdate(collection, doc, fields);
-}

@@ -57,7 +57,6 @@ export default function RestaurantProfileScreen({route}){
 
 
     // PopulateReviews()
-, []);
 
 
     const clickSaved = async () => {
