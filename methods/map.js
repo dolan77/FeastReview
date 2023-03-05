@@ -3,6 +3,13 @@ import { StyleSheet, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
 export const map = (restaurants, location) => {
+
+	/**
+	 * Creates a marker for the map
+	 * @param {*} restaurant restaurant object
+	 * @param {*} index number of restaurant in the list
+	 * @return returns a marker of that restaurant
+	 */
 	makeMarker = (restaurant, index) => {
 		const title = (index + 1) + '. ' + restaurant.name
 		return (

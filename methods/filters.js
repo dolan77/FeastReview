@@ -1,3 +1,6 @@
+/**
+ * List of all attributes
+ */
 const attributes = [
 	'hot_and_new',
 	'request_a_quote',
@@ -9,6 +12,9 @@ const attributes = [
 	'wheelchair_accessible',
 ]
 
+/**
+ * List of all prices
+ */
 const prices = [
 	{number: 1, price: '$'},
 	{number: 2, price: '$$'},
@@ -16,6 +22,9 @@ const prices = [
 	{number: 4, price: '$$$$'},
 ]
 
+/**
+ * List of all sort by attributes
+ */
 const sort_by = [
 	"best_match",
 	'rating', 
