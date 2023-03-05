@@ -112,10 +112,12 @@ export default function OtherUserProfileScreen({route}){
         console.log(otherUser)
     }
     
-    // get the other user's profile picture
+    // Saves properties of selected image
+    // Written by Kenny Du
     const [avatarPath, setAvatarPath] = React.useState();
 
     // Get user's previously uploaded profile picture from the database
+    // Written by Kenny Du
     const getAvatarDB = async() => {
         try{
             await firebase.dbFileGetUrl('ProfilePictures/' + otherID).then(
