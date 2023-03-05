@@ -2,7 +2,7 @@ import firestore, { firebase } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 //import firebase from '@react-native-firebase/app';
 
-module.exports = {del, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbDelete, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews};
+module.exports = {dbCreateBlank, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetFollowers, dbGetFollowed, dbIncrement};
 
 
 /**
@@ -12,9 +12,15 @@ module.exports = {del, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUp
 
 const db = firestore();
 
-// allows for deleting
-// dbUpdate(someCollection, someDoc, {someValue: firebase.del});
-const del = firestore.FieldValue.delete();
+/**
+ * creates a blank document, doesnt do anything to existing documents
+ * @param {*} collection 
+ * @param {*} doc 
+ * @returns 
+ */
+async function dbCreateBlank(collection, doc){
+    return db.collection(collection).doc(doc).set({}, {merge:true});
+}
 
 /**
  * simple getter function
@@ -213,4 +219,32 @@ async function dbGetFollowers(uid){
  */
 async function dbGetFollowed(followedList){
     return dbGetQuery("users", firebase.firestore.FieldPath.documentId(), "in", followedList);
+}
+
+/**
+ * increments values by 1
+ * @param {*} collection 
+ * @param {*} doc 
+ * @param {*} fields 
+ * @returns 
+ */
+async function dbIncrement(collection, doc, fields){
+    Object.keys(fields).forEach((key) => {
+        fields[key] = firestore.FieldValue.increment(1);
+    });
+    return dbUpdate(collection, doc, fields);
+}
+
+/**
+ * increments values by 1
+ * @param {*} collection 
+ * @param {*} doc 
+ * @param {*} fields 
+ * @returns 
+ */
+async function dbIncrement(collection, doc, fields){
+    Object.keys(fields).forEach((key) => {
+        fields[key] = firestore.FieldValue.increment(1);
+    });
+    return dbUpdate(collection, doc, fields);
 }

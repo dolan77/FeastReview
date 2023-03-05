@@ -9,11 +9,12 @@ import image from "../assets/maps-icon.png"
 import * as firebase from '../utils/firebase'
 import auth from '@react-native-firebase/auth';
 import { Timestamp } from 'react-native-reanimated/lib/types/lib/reanimated2/commonTypes';
+import {getMostUsedAdjectives} from '../utils/tasteometer'
 
 // function that returns the screen for a Restaurant's profile
 export default function RestaurantProfileScreen({route}){
     const nagivation = useNavigation();
-    const dayOfTheWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    const dayOfTheWeek = [ "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
     const restaurantData = route.params;
     const [saved, setSaved] = React.useState('')
     const [color, setColor] = React.useState('')
@@ -21,8 +22,12 @@ export default function RestaurantProfileScreen({route}){
     const [reviews, setReviews] = React.useState('')
     const [limit, setLimit] = React.useState(1);
     const [pressed, setPressed] = useState(1)
-    // console.log(restaurantData)
-    // console.log(restaurantDafta.data.hours[0])
+    const [adjectives, setAdjectives] = React.useState('')
+
+    const today = new Date().getDay()
+    const todayStart = timeConvert(restaurantData.data.hours[0].open[today].start)
+    const todayEnd = timeConvert(restaurantData.data.hours[0].open[today].end)
+
     const user = auth().currentUser;
     // console.log(restaurantData.data.hours[0].open[0])
 
@@ -43,6 +48,7 @@ export default function RestaurantProfileScreen({route}){
         PopulateButton();
         GetReviews();
         PopulateReviews();
+        loadMostUsedAdjectives();
     }, 
     [])
 
@@ -51,6 +57,7 @@ export default function RestaurantProfileScreen({route}){
 
 
     // PopulateReviews()
+, []);
 
 
     const clickSaved = async () => {
@@ -145,7 +152,7 @@ export default function RestaurantProfileScreen({route}){
             <View style={style.scheduleContainer}>   
                 <View>
                     {restaurantData.data.hours[0].open.map(hoursData => (
-                        <Text key={hoursData.day} style={style.daysText}>{dayOfTheWeek[hoursData.day]}</Text>
+                        <Text key={hoursData.day} style={hoursData.day == today ? style.todayLeftText : style.leftText}>{dayOfTheWeek[hoursData.day]}</Text>
                     ))}
 
                     <Text>
@@ -154,7 +161,7 @@ export default function RestaurantProfileScreen({route}){
                 </View>
                 <View>
                     {restaurantData.data.hours[0].open.map(hoursData => (
-                        <Text key={hoursData.day} style={style.hoursText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
+                        <Text key={hoursData.day} style={hoursData.day == today ? style.todayRightText : style.rightText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
                     ))}
                     <Text>
                         
@@ -164,6 +171,24 @@ export default function RestaurantProfileScreen({route}){
             </View>
           </Animated.View>
         );
+    };
+
+    /**
+     * Load the most used adjectives from database and split into two columns for rendering
+     * by Nathan Lai
+     */
+    const loadMostUsedAdjectives = () => {
+        getMostUsedAdjectives(restaurantData.data.alias).then((result) => {
+            adjectiveColumns = [];
+            console.log(result);
+            result.forEach(adjective => {
+                adjectiveColumn = [adjective[0], adjective[1].total, 0, 0];
+                adjectiveColumn[2] = adjective[1].positive ? adjective[1].positive : 0;
+                adjectiveColumn[3] = adjective[1].negative ? adjective[1].negative : 0;
+                adjectiveColumns.unshift(adjectiveColumn);
+            })
+            setAdjectives(adjectiveColumns);
+        });
     };
 
     /**
@@ -248,9 +273,9 @@ export default function RestaurantProfileScreen({route}){
                 <View style = {style.container}>
                     <TouchableOpacity onPress={toggleHoursCollapsed} style={style.buttonContainer}>
                         <View style={style.hoursButton}>
-                            <Text style={restaurantData.data.is_closed ? style.openText: style.closedText}> {restaurantData.data.hours[0].is_open_now ? "Open" : "Closed"} </Text>
+                            <Text style={restaurantData.data.hours[0].is_open_now ? style.openText: style.closedText}> {restaurantData.data.hours[0].is_open_now ? "Open" : "Closed"} </Text>
                             <Text style={style.hoursButtonText}> until </Text>
-                            <Text style={style.hoursButtonText}> {restaurantData.data.hours[0].is_open_now ? restaurantData.data.hours[0].open[0].end : restaurantData.data.hours[0].open[0].start} </Text>
+                            <Text style={style.hoursButtonText}> {restaurantData.data.hours[0].is_open_now ? todayEnd : todayStart} </Text>
                             <Ionicons style= {{paddingLeft: 25}} name={hoursCollapsed ? "add-circle-outline" : "remove-circle-outline"} size={40} color='white'/>
                         </View>
                     </TouchableOpacity>
@@ -279,9 +304,35 @@ export default function RestaurantProfileScreen({route}){
                     </View>
                     <View style={style.horizontalLine} />
 
+                    </View>
                 </View>
 
-
+                <View>
+                    <View style={style.button}>
+                        <Text style={style.buttonText}>Most Review Mentions</Text>
+                    </View>
+                    <View style={style.adjectivesContainer}>   
+                        <View>
+                            {adjectives ? adjectives.map(adjective => (
+                                <View key={adjective} style={{flexDirection:'row', alignContent: 'center'}}>
+                                    <Text style={style.centerText}>{adjective[0]}</Text>
+                                    <View style={{flexDirection:'row'}}>
+                                        <Text style={style.rightText}>{adjective[1]}</Text>
+                                        <Ionicons name="chatbubbles" color='white' size = {20}></Ionicons>
+                                    </View>
+                                    <View style={{flexDirection:'row'}}>
+                                        <Text style={style.rightText}>{adjective[2]}</Text>
+                                        <Ionicons name="thumbs-up" color='green' size = {20}></Ionicons>
+                                    </View>
+                                    <View style={{flexDirection:'row'}}>
+                                        <Text style={style.rightText}>{adjective[3]}</Text>
+                                        <Ionicons name="thumbs-down" color='red' size = {20}></Ionicons>
+                                    </View>
+                                </View>
+                            )) : ""}
+                            <Text></Text>
+                        </View>
+                    </View>
                 </View>
 
                 <View style={[style.buttonContainer]}>
@@ -400,7 +451,7 @@ const style = StyleSheet.create({
         textAlign:'center',
         fontSize: 30
     },
-    daysText:{
+    leftText:{
         color: 'white',
         fontSize: 20,
         textTransform: 'capitalize',
@@ -409,15 +460,45 @@ const style = StyleSheet.create({
         lineHeight:30
         
     },
-    hoursText:{
-        color: 'white',
+    todayLeftText:{
+        color: 'cornflowerblue',
         fontSize: 20,
         textTransform: 'capitalize',
+        textAlign: 'left',
+        marginHorizontal:15,
+        lineHeight:30
+        
+    },
+    rightText:{
+        color: 'white',
+        fontSize: 20,
         textAlign: 'right',
         marginHorizontal:15,
         lineHeight:30
     },
-
+    todayRightText:{
+        color: 'cornflowerblue',
+        fontSize: 20,
+        textAlign: 'right',
+        marginHorizontal:15,
+        lineHeight:30
+    },
+    centerText:{
+        color: 'white',
+        fontSize: 20,
+        textTransform: 'capitalize',
+        textAlign: 'center',
+        marginHorizontal:15,
+        lineHeight:30
+    },
+    adjectivesContainer:{
+        flexDirection: 'row',
+        marginHorizontal:10,
+        justifyContent:'space-evenly',
+        backgroundColor:'#262833',
+        borderBottomLeftRadius:25,
+        borderBottomRightRadius:25
+    },
     buttonContainer: {
         flex: 1,
         justifyContent: 'center',
