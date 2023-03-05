@@ -24,6 +24,7 @@ export default function UserProfileScreen(){
     
     React.useEffect(() => {
         getBio();
+        getAvatarDB();
     }, [])
     
     /**
@@ -152,7 +153,6 @@ export default function UserProfileScreen(){
         try{
             await firebase.dbFileGetUrl('ProfilePictures/' + user.uid).then(
                 url => {
-                    console.log(url)
                     setAvatarPath(url)
                     }
             )
@@ -162,7 +162,7 @@ export default function UserProfileScreen(){
         }
     }
 
-    getAvatarDB();
+    
     
     /**
      * Method that handle the user's ability to change their profile picture
