@@ -143,13 +143,16 @@ export default function UserProfileScreen(){
     }
 
     // Saves properties of selected image
+    // Written by Kenny Du
     const [avatarPath, setAvatarPath] = React.useState();
 
     // Get user's previously uploaded profile picture from the database
+    // Written by Kenny Du
     const getAvatarDB = async() => {
         try{
             await firebase.dbFileGetUrl('ProfilePictures/' + user.uid).then(
                 url => {
+                    console.log(url)
                     setAvatarPath(url)
                     }
             )
@@ -161,9 +164,9 @@ export default function UserProfileScreen(){
 
     getAvatarDB();
     
-    // firebase.dbFileGetUrl(user.uid).then(url => {setAvatar(url); console.log(url)}) 
     /**
-     * method that handle the user's ability to change their profile picture
+     * Method that handle the user's ability to change their profile picture
+     * Written by Kenny Du
      */
     const changePicture = async() => {
         try{
