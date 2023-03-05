@@ -109,8 +109,20 @@ function getMostUsedAdjectives(restaurantAlias, limit=10){
         Object.keys(adjectives).forEach(key => {
             sortedAdjectives.push([key, adjectives[key]]);
         })
-        sortedAdjectives.sort((a,b) => a[1] - b[1]);
+        sortedAdjectives.sort((a,b) => adjectiveSortWeight(a[1]) - adjectiveSortWeight(b[1]));
         return sortedAdjectives.slice(0,limit);
     })
     .catch(error => []);
+}
+
+/**
+ * Helper function to aid sorting
+ * @param {*} adjective object
+ * @returns 
+ */
+function adjectiveSortWeight(adjective){
+    let sum = adjective.total;
+    sum += adjective.positive ? adjective.positive : 0;
+    sum += adjective.negative ? adjective.negative : 0;
+    return sum;
 }
