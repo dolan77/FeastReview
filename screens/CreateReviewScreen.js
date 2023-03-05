@@ -7,6 +7,7 @@ import * as firebase from '../utils/firebase'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import { FlatList } from 'react-native-gesture-handler';
+import {incrementAdjectives, adjectivesSentimentIncrement} from '../utils/tasteometer'
 
 export default function ReviewPage({route}) {
     const navigation = useNavigation();
@@ -31,6 +32,10 @@ export default function ReviewPage({route}) {
         try{
             console.log('In the upload review function');
             var review_id = restaurantData.data.alias + '_' + user.uid + '_' + String(Date.now());
+            //incrementAdjectives(review, restaurantData.data.alias);
+            adjectivesSentimentIncrement(review,restaurantData.data.alias);
+            //adjectivesSentimentIncrement(review,restaurantData.data.alias).forEach(result => console.log(result));
+
             await firebase.dbSet('reviews', review_id, {authorid: user.uid,
                                                         content: review,
                                                         datemade: new Date(),
