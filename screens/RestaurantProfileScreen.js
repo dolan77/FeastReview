@@ -8,6 +8,7 @@ import openMap, { createMapLink, createOpenLink } from 'react-native-open-maps';
 import image from "../assets/maps-icon.png"
 import * as firebase from '../utils/firebase'
 import auth from '@react-native-firebase/auth';
+import {getMostUsedAdjectives} from '../utils/tasteometer'
 
 // function that returns the screen for a Restaurant's profile
 export default function RestaurantProfileScreen({route}){
@@ -17,6 +18,7 @@ export default function RestaurantProfileScreen({route}){
     const [saved, setSaved] = React.useState('')
     const [color, setColor] = React.useState('')
     const [hoursCollapsed, setHoursCollapsed] = React.useState('')
+    const [adjectives, setAdjectives] = React.useState('')
 
     const today = new Date().getDay()
     const todayStart = timeConvert(restaurantData.data.hours[0].open[today].start)
@@ -25,11 +27,13 @@ export default function RestaurantProfileScreen({route}){
     const user = auth().currentUser;
 
 
+
     React.useEffect( () => {
         PopulateButton();
-    }
+        loadMostUsedAdjectives();
+    }, []);
 
-    )
+
     const clickSaved = async () => {
         try{
             const currentUser = await firebase.dbGet('users', user.uid);
@@ -119,7 +123,7 @@ export default function RestaurantProfileScreen({route}){
             <View style={style.scheduleContainer}>   
                 <View>
                     {restaurantData.data.hours[0].open.map(hoursData => (
-                        <Text key={hoursData.day} style={hoursData.day == today ? style.todayDaysText : style.daysText}>{dayOfTheWeek[hoursData.day]}</Text>
+                        <Text key={hoursData.day} style={hoursData.day == today ? style.todayLeftText : style.leftText}>{dayOfTheWeek[hoursData.day]}</Text>
                     ))}
 
                     <Text>
@@ -128,7 +132,7 @@ export default function RestaurantProfileScreen({route}){
                 </View>
                 <View>
                     {restaurantData.data.hours[0].open.map(hoursData => (
-                        <Text key={hoursData.day} style={hoursData.day == today ? style.todayHoursText : style.hoursText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
+                        <Text key={hoursData.day} style={hoursData.day == today ? style.todayRightText : style.rightText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
                     ))}
                     <Text>
                         
@@ -138,6 +142,24 @@ export default function RestaurantProfileScreen({route}){
             </View>
           </Animated.View>
         );
+    };
+
+    /**
+     * Load the most used adjectives from database and split into two columns for rendering
+     * by Nathan Lai
+     */
+    const loadMostUsedAdjectives = () => {
+        getMostUsedAdjectives(restaurantData.data.alias).then((result) => {
+            adjectiveColumns = [];
+            console.log(result);
+            result.forEach(adjective => {
+                adjectiveColumn = [adjective[0], adjective[1].total, 0, 0];
+                adjectiveColumn[2] = adjective[1].positive ? adjective[1].positive : 0;
+                adjectiveColumn[3] = adjective[1].negative ? adjective[1].negative : 0;
+                adjectiveColumns.unshift(adjectiveColumn);
+            })
+            setAdjectives(adjectiveColumns);
+        });
     };
 
     /**
@@ -214,9 +236,35 @@ export default function RestaurantProfileScreen({route}){
                     </View>
                     <View style={style.horizontalLine} />
 
+                    </View>
                 </View>
 
-
+                <View>
+                    <View style={style.button}>
+                        <Text style={style.buttonText}>Most Review Mentions</Text>
+                    </View>
+                    <View style={style.adjectivesContainer}>   
+                        <View>
+                            {adjectives ? adjectives.map(adjective => (
+                                <View key={adjective} style={{flexDirection:'row', alignContent: 'center'}}>
+                                    <Text style={style.centerText}>{adjective[0]}</Text>
+                                    <View style={{flexDirection:'row'}}>
+                                        <Text style={style.rightText}>{adjective[1]}</Text>
+                                        <Ionicons name="chatbubbles" color='white' size = {20}></Ionicons>
+                                    </View>
+                                    <View style={{flexDirection:'row'}}>
+                                        <Text style={style.rightText}>{adjective[2]}</Text>
+                                        <Ionicons name="thumbs-up" color='green' size = {20}></Ionicons>
+                                    </View>
+                                    <View style={{flexDirection:'row'}}>
+                                        <Text style={style.rightText}>{adjective[3]}</Text>
+                                        <Ionicons name="thumbs-down" color='red' size = {20}></Ionicons>
+                                    </View>
+                                </View>
+                            )) : ""}
+                            <Text></Text>
+                        </View>
+                    </View>
                 </View>
 
                 <View style={[style.buttonContainer]}>
@@ -319,7 +367,7 @@ const style = StyleSheet.create({
         textAlign:'center',
         fontSize: 30
     },
-    daysText:{
+    leftText:{
         color: 'white',
         fontSize: 20,
         textTransform: 'capitalize',
@@ -328,7 +376,7 @@ const style = StyleSheet.create({
         lineHeight:30
         
     },
-    todayDaysText:{
+    todayLeftText:{
         color: 'cornflowerblue',
         fontSize: 20,
         textTransform: 'capitalize',
@@ -337,21 +385,36 @@ const style = StyleSheet.create({
         lineHeight:30
         
     },
-    hoursText:{
+    rightText:{
         color: 'white',
         fontSize: 20,
         textAlign: 'right',
         marginHorizontal:15,
         lineHeight:30
     },
-    todayHoursText:{
+    todayRightText:{
         color: 'cornflowerblue',
         fontSize: 20,
         textAlign: 'right',
         marginHorizontal:15,
         lineHeight:30
     },
-
+    centerText:{
+        color: 'white',
+        fontSize: 20,
+        textTransform: 'capitalize',
+        textAlign: 'center',
+        marginHorizontal:15,
+        lineHeight:30
+    },
+    adjectivesContainer:{
+        flexDirection: 'row',
+        marginHorizontal:10,
+        justifyContent:'space-evenly',
+        backgroundColor:'#262833',
+        borderBottomLeftRadius:25,
+        borderBottomRightRadius:25
+    },
     buttonContainer: {
        
 
