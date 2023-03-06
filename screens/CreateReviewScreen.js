@@ -15,10 +15,6 @@ export default function ReviewPage({route}) {
     var userReview = 'Your Review';
     
 
-    React.useLayoutEffect(() => {
-		navigation.setOptions({headerShown: false});
-	  }, [navigation]);
-
     const [modalVisible, setModalVisible] = React.useState(false);
     const [review, setReview] = React.useState(userReview);
 

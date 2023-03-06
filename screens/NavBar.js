@@ -69,18 +69,17 @@ const Stack = createNativeStackNavigator()
 function StackScreens(props) {
     return(
         <Stack.Navigator  initialRouteName={props.initial_route}>
-				<Stack.Screen name="Home Screen" component={HomeScreen} />
-                <Stack.Screen name='Search Screen' component={SearchScreen} />
-				<Stack.Screen name="Your Profile" component={ProfileScreen} />
-				<Stack.Screen options={{headerShown: false}}name="Reviews" component={ReviewsScreen} />
-				<Stack.Screen name="Messages" component={MessagesScreen} />
-				<Stack.Screen name="Followers" component={FollowersScreen} />
-				<Stack.Screen name="Following" component={FollowingScreen} />
-				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
-				<Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen}/>
-				<Stack.Screen name="Create Review" component={CreateReviewScreen} />
-				<Stack.Screen name='FollowersAndFollowing' component={FollowersAndFollowingScreen}/>
-                <Stack.Screen options={{headerShown: false}}name='SavedRestaurants' component = {SavedRestaurantsScreen} />
+				<Stack.Screen options={{ headerShown: false }} name="Home Screen" component={HomeScreen} />
+                <Stack.Screen options={{ headerShown: false }} name='Search Screen' component={SearchScreen} />
+				<Stack.Screen options={{ headerShown: false }} name="Your Profile" component={ProfileScreen} />
+				<Stack.Screen options={{ headerShown: false }} name="Reviews" component={ReviewsScreen} />
+				<Stack.Screen options={{ headerShown: false }} name="Messages" component={MessagesScreen} />
+				<Stack.Screen options={{ headerShown: false }} name="Followers" component={FollowersScreen} />
+				<Stack.Screen options={{ headerShown: false }} name="Following" component={FollowingScreen} />
+				<Stack.Screen options={{ headerShown: false }} name="RestaurantProfile" component={RestaurantProfileScreen} />
+				<Stack.Screen options={{ headerShown: false }} name="OtherUserProfile" component={OtherUserProfileScreen}/>
+				<Stack.Screen options={{ headerShown: false }} name="Create Review" component={CreateReviewScreen} />
+				<Stack.Screen options={{ headerShown: false }}name='FollowersAndFollowing' component={FollowersAndFollowingScreen}/>
 			</Stack.Navigator>
     )
 }

@@ -2,14 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { Button, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
+import * as firebase from '../utils/firebase'
+import { requestLocationPermission } from '../utils/locationPermission.js'
+import Loader from '../methods/Loader';
 
 export default function RegisterScreen() {
 	const [userName, setUserName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [passwordAgain, setPasswordAgain] = useState('')
+	const [loading, setLoading] = useState(false)
 
 	const navigation = useNavigation()
+
+	useEffect(() => {
+		setLoading(false)
+		const unsubscribe = auth().onAuthStateChanged((user) => {
+			console.log("register", user)
+		});
+
+		return unsubscribe;
+	}, []);
 
 	// calls the Firebase api with user input to create a user object and put it in the
 	// Firestore
@@ -23,6 +36,7 @@ export default function RegisterScreen() {
 		}
 
 		else {
+			setLoading(true)
 			auth()
 				.createUserWithEmailAndPassword(email, password)
 				.then((userCreds) => {
@@ -32,7 +46,9 @@ export default function RegisterScreen() {
 							.currentUser.updateProfile({
 								displayName: userName,
 						  	})
-						  	.then(() => navigation.replace("TabNavigator"))
+						  	.then(() => {
+								redirect(auth().currentUser)
+							})
 						  	.catch((error) => {
 								console.error(error);
 						  	});
@@ -52,6 +68,35 @@ export default function RegisterScreen() {
 		}
 		
 	}
+
+	/**
+	 * Adds user to databse and requests user's location then redirects to TabNavigator
+	 * @param {*} user user object
+	 */
+	const redirect = (user) => {
+		addUserToDb(user).then(() => {
+			navigation.navigate("TabNavigator")
+		})
+		.catch(() => {
+			console.log("Failed to add user to database")
+		})
+	}
+
+	const addUserToDb = async (user) => {
+		const res = await firebase.dbSet(
+			"users", 
+			user.uid, 
+			{
+				bio: "",
+				bookmarks: [],
+				expertise: {},
+				followers: [],
+				following: [],
+				username: user.displayName,
+				reviews: []
+			}
+		)
+	}
 	
 	// displays an input form for user to make an account for FeastReview
   	return (
@@ -59,6 +104,7 @@ export default function RegisterScreen() {
 			style={styles.container}
 			behavior="padding"
 		>
+			{loading && <Loader />}
 			<Image 
 				source={require('../assets/feast_blue.png')}  
 				style={styles.logo} 

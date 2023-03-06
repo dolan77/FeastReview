@@ -7,6 +7,7 @@ import * as firebase from '../utils/firebase'
 import * as yelp from '../utils/yelp'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+import { requestLocationPermission } from '../utils/locationPermission.js'
 import image from "../assets/feast_blue.png"
 
 export default function HomeScreen() {
@@ -14,25 +15,21 @@ export default function HomeScreen() {
 
 	const navigation = useNavigation()
 
-	
-	React.useLayoutEffect(() => {
-		navigation.setOptions({headerShown: true});
-	}, [navigation]);
-
 	useEffect(() => {
-		const subscriber = auth().onAuthStateChanged((user) => {
-			console.log("user", JSON.stringify(user));
-			setUser(user);
-		});
-
-		return subscriber;
-	}, []);
+		const res = requestLocationPermission();
+		res.then(() => {
+			console.log("Got location")
+		})
+		.catch(() => {
+			console.log("Failed to get location")
+		})
+	}, [])
 
 	logoff = () => {
 		auth()
 			.signOut()
 			.then(() => {
-				navigation.replace("Login")
+				navigation.navigate("Login")
 			})
 			.catch(error => alert(error.message))
 	}
