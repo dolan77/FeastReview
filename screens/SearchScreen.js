@@ -171,7 +171,7 @@ export default function SearchScreen() {
 
 							{/* View for the 'Sort By' filter by Kenny Du */}
 							<View style={styles.filterComponent1}>
-								<Text style={{fontSize:'5'}}>Sort By</Text>
+								<Text style={{fontSize:15}}>Sort By</Text>
 								{sort_by.map((sorting) => {
 									return (
 										<View style={{padding: 5}} key={sorting}>
