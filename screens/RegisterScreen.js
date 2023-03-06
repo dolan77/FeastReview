@@ -75,13 +75,7 @@ export default function RegisterScreen() {
 	 */
 	const redirect = (user) => {
 		addUserToDb(user).then(() => {
-			const res = requestLocationPermission();
-			res.then(() => {
-				navigation.navigate("TabNavigator")
-			})
-			.catch(() => {
-				console.log("Failed to get location")
-			})
+			navigation.navigate("TabNavigator")
 		})
 		.catch(() => {
 			console.log("Failed to add user to database")
