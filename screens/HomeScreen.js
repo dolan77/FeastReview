@@ -7,12 +7,23 @@ import * as firebase from '../utils/firebase'
 import * as yelp from '../utils/yelp'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+import { requestLocationPermission } from '../utils/locationPermission.js'
 import image from "../assets/feast_blue.png"
 
 export default function HomeScreen() {
 	const [user, setUser] = useState({});
 
 	const navigation = useNavigation()
+
+	useEffect(() => {
+		const res = requestLocationPermission();
+		res.then(() => {
+			console.log("Got location")
+		})
+		.catch(() => {
+			console.log("Failed to get location")
+		})
+	}, [])
 
 	logoff = () => {
 		auth()
