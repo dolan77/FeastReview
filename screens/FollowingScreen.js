@@ -9,14 +9,21 @@ import * as firebase from '../utils/firebase'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 
+import image from "../assets/feast_blue.png"
+
 export default function FollowingScreen(props){
     const passedInFollowingUID = props.followingUID
     const passedInFollowingDoc = props.followingDoc
     const navigation = useNavigation();
+
+    const [FollowingProfilePictures, setFollowingProfilePictures] = React.useState([])
+
     //.log('passedInUID: ' + passedInFollowingUID)
     //console.log('passedInNames: ' + passedInFollowingNames)
     React.useEffect(() =>{
+        PopulateProfilePictures();
         PopulateFollowing();
+        
     }, [])
     /**
      * Method that will navigate the user to see another user's profile
@@ -32,13 +39,79 @@ export default function FollowingScreen(props){
     }
     // console.log(passedInFollowing)
 
+    const PopulateProfilePictures = async () => {
+        console.log('\n')
+        let pictures = []
+        try{
+            for(let i = 0; i < passedInFollowingUID.length; i++){
+                try{
+                    //console.log('ProfilePictures/' + passedinUID[i])
+                    await firebase.dbFileGetUrl('ProfilePictures/' + passedInFollowingUID[i]).then(
+                        url => {
+                            pictures.push(url)
+                            }
+                    ).catch((error) => {
+                        switch (error.code) {
+
+                            case 'storage/object-not-found':
+                              console.log(passedInFollowingUID[i] + "File doesn't exist")
+                              firebase.dbFileGetUrl('feast_blue.png').then(
+                                url => {
+                                    pictures.push(url)
+                                })
+                            case 'storage/unauthorized':
+                              console.log(passedInFollowingUID[i] + "User doesn't have permission to access the object");
+                              firebase.dbFileGetUrl('feast_blue.png').then(
+                                url => {
+                                    pictures.push(url)
+                                })
+                              break;
+
+                            case 'storage/canceled':
+                              console.log("User canceled the upload")
+                              break;
+
+                            case 'storage/unknown':
+                              console.log("Unknown error occurred, inspect the server response")
+                              break;
+                          }
+                      
+                    })
+                    
+                }
+                catch (error){
+                    // console.log(passedinUID[i], 'does not have a profile picture on db')
+                    // console.log(error)
+                    
+                }
+            }
+            //console.log(pictures)
+            setFollowingProfilePictures(pictures)
+            console.log(pictures)
+            console.log(FollowingProfilePictures)
+            
+        }catch(error){
+            //console.log('outside')
+            console.log(error)
+        }
+        
+
+        
+    }
+
     // method will populate the screen with touchable opactities that represent the Feasters the current user is following
     const PopulateFollowing = () => {
         let table = []
 
         for (let i = 0; i < passedInFollowingUID.length; i++){
-            table.push(<TouchableOpacity onPress={() => SeeOtherProfile(passedInFollowingUID[i])} key = {i} style = {[styles.FollowingBox, styles.FollowBoxItems]}>
-                <Text style = {[styles.FollowBoxText]}>{passedInFollowingDoc[i].name}</Text>
+            table.push(<TouchableOpacity onPress={() => SeeOtherProfile(passedInFollowingUID[i])} key = {i} style = {[styles.FollowingBox]}>
+                                <View style={{justifyContent: 'center'}}>
+                    <Image style = {[styles.tinyLogo]} source ={FollowingProfilePictures[i] != undefined? {uri:FollowingProfilePictures[i]} : image}/>
+                </View>
+                <View style={[styles.FollowBoxItems]}>
+                    <Text style = {[styles.FollowBoxHeader]}>{passedInFollowingDoc[i].name}</Text>
+                    <Text style={[styles.FollowBoxText]}>{passedInFollowingDoc[i].bio}</Text>
+                </View>
                 </TouchableOpacity>)
         }
         return table
@@ -92,21 +165,27 @@ const styles = StyleSheet.create({
     },
     FollowingBox: {
         backgroundColor: '#3f3a42',
-        height: 75,
+        height: 100,
         marginTop: 10,
         bordercolor: 'black',
         borderWidth: 3,
-        borderRadius: 10
+        borderRadius: 10,
+        flexDirection: 'row',
+        paddingHorizontal: 10,
     },
     FollowBoxItems:{
-        alignContent: 'center',
-        justifyContent: 'center',
-        alignItems: 'center'
+        padding: 10,
+        width: 300,
+    },
+    FollowBoxHeader: {
+        color: 'white',
+        fontWeight: '700',
+        fontSize: 25,
     },
     FollowBoxText:{
         color: 'white',
-		fontWeight: '700',
-		fontSize: 25,
+        fontsize: 12,
+        fontWeight: '650'
     }
 
 })
