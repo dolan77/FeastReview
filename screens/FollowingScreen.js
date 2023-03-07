@@ -11,7 +11,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 export default function FollowingScreen(props){
     const passedInFollowingUID = props.followingUID
-    const passedInFollowingNames = props.followingNames
+    const passedInFollowingDoc = props.followingDoc
     const navigation = useNavigation();
     //.log('passedInUID: ' + passedInFollowingUID)
     //console.log('passedInNames: ' + passedInFollowingNames)
@@ -38,7 +38,7 @@ export default function FollowingScreen(props){
 
         for (let i = 0; i < passedInFollowingUID.length; i++){
             table.push(<TouchableOpacity onPress={() => SeeOtherProfile(passedInFollowingUID[i])} key = {i} style = {[styles.FollowingBox, styles.FollowBoxItems]}>
-                <Text style = {[styles.FollowBoxText]}>{passedInFollowingNames[i]}</Text>
+                <Text style = {[styles.FollowBoxText]}>{passedInFollowingDoc[i].name}</Text>
                 </TouchableOpacity>)
         }
         return table
