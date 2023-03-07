@@ -118,6 +118,7 @@ export default function UserProfileScreen(){
 
     /**
      * method that will transition to the screen where the user can view their saved restaurants
+     * Made by Dylan Huynh
      */
     const seeRestaurants = async() => {
         try {
