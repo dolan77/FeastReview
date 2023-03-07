@@ -9,8 +9,8 @@ export default function FollowersAndFollowing({route}){
 
     return(
         <Tab.Navigator>
-            <Tab.Screen name="following" children={() => <FollowingScreen followingUID={route.params.following} followingNames={route.params.following_names}/>}/>
-            <Tab.Screen name="followers" children={() => <FollowersScreen followersUID={route.params.followers} followersNames={route.params.followers_names}/>}/>
+            <Tab.Screen name="following" children={() => <FollowingScreen followingUID={route.params.following} followingDoc={route.params.following_doc}/>}/>
+            <Tab.Screen name="followers" children={() => <FollowersScreen followersUID={route.params.followers} followersDoc={route.params.followers_doc}/>}/>
         </Tab.Navigator>
     )
 }
