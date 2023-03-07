@@ -163,18 +163,19 @@ export default function SearchScreen() {
 						setModalVisible(!modalVisible);
 					}}
 				>
+					{/* Container for all filter components */}
 					<View style = {styles.modalView}>
-						<Text>Filter</Text>
+						<Text style={[styles.buttonText, {fontSize: 30}]}>Filter Results</Text>
 
-						{/* Container for all filter components */}
+						{/* Container for 'Sort By' and 'Price */}
 						<View style = {styles.sortPriceView}>
 
 							{/* View for the 'Sort By' filter by Kenny Du */}
 							<View style={styles.filterComponent1}>
-								<Text style={{fontSize:15}}>Sort By</Text>
+								<Text style={styles.buttonText}>Sort By</Text>
 								{sort_by.map((sorting) => {
 									return (
-										<View style={{padding: 5}} key={sorting}>
+										<View  key={sorting}> 
 											<TouchableOpacity onPress={() => filtering(sorting)}>
 												<Text>{sorting.replaceAll('_', ' ')}</Text>
 											</TouchableOpacity>
@@ -185,10 +186,10 @@ export default function SearchScreen() {
 							
 							{/* View for the 'Price' filter by Kenny Du */}
 							<View style={styles.filterComponent1}>
-								<Text>Price</Text>
+								<Text style={styles.buttonText}>Price</Text>
 								{prices.map((p) => {
 									return (
-										<View style={[{alignSelf: 'center'}, {borderWidth:1}]} key={p.number} >
+										<View key={p.number} >
 											<TouchableOpacity onPress={() => filtering(p.number)}>
 												<Text>{p.price}</Text>
 											</TouchableOpacity>
@@ -198,36 +199,38 @@ export default function SearchScreen() {
 							</View>
 						</View>
 							
-							{/* View for the 'Attributes' filter by Kenny Du */}
-							<View style={styles.filterComponent}>
-								<Text>Attributes</Text>
-								{attributes.map((attribute) => {
-									return (
-										<View style={{padding: 5}} key={attribute} >
-											<TouchableOpacity onPress={() => filtering(attribute)}>
-												<Text>{attribute.replaceAll('_', ' ')}</Text>
-											</TouchableOpacity>
-										</View>
-									)
-								})}
+						<Text style={[styles.buttonText, {paddingTop:10}]}>Attributes</Text>
+						{/* View for the 'Attributes' filter by Kenny Du */}
+						<View style={styles.attributesFilter}>
+							{attributes.map((attribute) => {
+								return (
+									<View style={{padding: 5}} key={attribute} >
+										<TouchableOpacity onPress={() => filtering(attribute)}>
+											<Text>{attribute.replaceAll('_', ' ')}</Text>
+										</TouchableOpacity>
+									</View>
+								)
+							})}
 						</View>
 
+						{/* View for the 'Back' and 'Save buttons */}
+						<View style = {styles.filterExitButtonsContainer}>
+							<TouchableOpacity
+								onPress={() => setModalVisible(!modalVisible)}
+								style={styles.filterExitButtons}
+							>
+								<Text style={styles.buttonText}>{"Back"}</Text>
+							</TouchableOpacity>
+							
+							<TouchableOpacity
+								onPress={saveFilters}
+								style={styles.filterExitButtons}
+							>
+								<Text style={styles.buttonText}>{"Save"}</Text>
+							</TouchableOpacity>
+						</View>
 						
 						
-						<TouchableOpacity
-							onPress={() => setModalVisible(!modalVisible)}
-							style={styles.button}
-							options={padding=5}
-						>
-							<Text style={styles.buttonText}>{"Back"}</Text>
-						</TouchableOpacity>
-						
-						<TouchableOpacity
-							onPress={saveFilters}
-							style={styles.button}
-						>
-							<Text style={styles.buttonText}>{"Save"}</Text>
-						</TouchableOpacity>
 
 					</View>
 				</Modal>
@@ -395,24 +398,52 @@ const styles = StyleSheet.create({
     },
 	filterComponent1: {
 		flexDirection: 'column',
-		flexWrap: 'wrap',
-		borderWidth: 1,
 		borderRadius: 5,
 		borderColor: 'red',
 		alignItems: 'center',
-		alignSelf: 'center',
-		// width:100.5,
-		height: 220,
-		padding: 40,
-		// justifyContent: 'space-evenly'
+		height: 175,
+		padding: 20,
+		paddingEnd: 40,
+		paddingTop: 10,
+		paddingBottom: 5,
+		justifyContent: 'space-between',
 	},
 	sortPriceView: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		borderWidth:1,
-		borderColor: 'green'
+		borderBottomWidth:1,
+		paddingBottom:10,
+		// borderWidth: 1,
+		borderColor: 'black'
 	},
 	centerText:{
 		alignItems: 'center'
+	},
+	attributesFilter:{
+		height: 140, 
+		width: 340,
+		paddingHorizontal: 30,
+		flexDirection: 'column',
+		flexWrap: 'wrap',
+		// borderWidth: 1,
+		borderRadius: 5,
+		borderColor: 'red',
+		alignItems: 'center',
+		alignSelf: 'center',
+		justifyContent: 'space-between',
+	},
+	filterExitButtons:{
+		backgroundColor: '#75d9fc',
+		width: '100%',
+		padding: 15,
+		borderRadius: 50,
+		alignItems: 'center',
+		width: 120,
+		margin: 10,
+		marginTop: 10,
+	},
+	filterExitButtonsContainer:{
+		flexDirection: 'row', 
+		justifyContent: 'center',
 	}
 })
