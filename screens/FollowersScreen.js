@@ -16,8 +16,9 @@ export default function FollowersScreen(props){
     const [profilePictures, setprofilePictures] = React.useState([])
 
     React.useEffect(() =>{
-        PopulateFollowers();
         PopulateProfilePictures();
+        PopulateFollowers();
+        
     }, [])
 
     /**
@@ -33,7 +34,7 @@ export default function FollowersScreen(props){
 
     }
 
-    /** ask for help on this later */
+    
     const PopulateProfilePictures = async () => {
         console.log('\n')
         let pictures = []
@@ -49,13 +50,13 @@ export default function FollowersScreen(props){
                         switch (error.code) {
 
                             case 'storage/object-not-found':
-                              console.log(passedinUID[i] + "File doesn't exist")
+                              //console.log(passedinUID[i] + "File doesn't exist")
                               firebase.dbFileGetUrl('feast_blue.png').then(
                                 url => {
                                     pictures.push(url)
                                 })
                             case 'storage/unauthorized':
-                              console.log(passedinUID[i] + "User doesn't have permission to access the object");
+                              //console.log(passedinUID[i] + "User doesn't have permission to access the object");
                               firebase.dbFileGetUrl('feast_blue.png').then(
                                 url => {
                                     pictures.push(url)
@@ -80,12 +81,12 @@ export default function FollowersScreen(props){
                     
                 }
             }
-            console.log(pictures)
+            //console.log(pictures)
             setprofilePictures(pictures)
-            console.log(profilePictures)
+            //console.log(profilePictures)
             
         }catch(error){
-            console.log('outside')
+            //console.log('outside')
             console.log(error)
         }
         
@@ -102,15 +103,13 @@ export default function FollowersScreen(props){
 
         for (let i = 0; i < passedinUID.length; i++){
             table.push(<TouchableOpacity onPress={() => SeeOtherProfile(passedinUID[i])} key = {i} style = {[styles.FollowingBox]}>
-                <View>
-                    {/* <Image style = {[styles.tinyLogo]} source ={profilePictures[i] != undefined? {uri:profilePictures[i]} : image}/> */}
+                <View style={{justifyContent: 'center'}}>
+                    <Image style = {[styles.tinyLogo]} source ={profilePictures[i] != undefined? {uri:profilePictures[i]} : image}/>
                 </View>
                 <View style={[styles.FollowBoxItems]}>
                     <Text style = {[styles.FollowBoxHeader]}>{passedinFollowersDoc[i].name}</Text>
-                    <Text style={[styles.FollowBoxText]}>This is a test bio, i really love to eat cookies for breakfast and dessert for lunch. I also like to eat pancakes</Text>
+                    <Text style={[styles.FollowBoxText]}>{passedinFollowersDoc[i].bio}</Text>
                 </View>
-
-                {/* <Text style={[styles.FollowBoxText]}>{passedinFollowersDoc[i].bio}</Text> */}
                 </TouchableOpacity>)
         }
         return table
@@ -154,10 +153,10 @@ const styles = StyleSheet.create({
     tinyLogo: {
         width: 50,
         height: 50,
-        borderRadius: 0,
+        borderRadius: 50,
         overflow: 'hidden',
-        borderWidth: 5,
-        borderColor: '#EECACA'
+        borderWidth: 2,
+        borderColor: '#EECACA',
     },
     scrollOuter:{
         flex: 1,
@@ -176,10 +175,12 @@ const styles = StyleSheet.create({
         bordercolor: 'black',
         borderWidth: 3,
         borderRadius: 10,
+        flexDirection: 'row',
+        paddingHorizontal: 10,
     },
     FollowBoxItems:{
-        justifyContent: 'center',
-        paddingHorizontal: 10
+        padding: 10,
+        width: 300,
         
     },
     FollowBoxHeader: {
@@ -189,8 +190,8 @@ const styles = StyleSheet.create({
     },
     FollowBoxText:{
         color: 'white',
-		fontWeight: '700',
-		fontSize: 12,
+        fontsize: 12,
+        fontWeight: '650'
     }
 
 })
