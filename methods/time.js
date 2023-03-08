@@ -4,7 +4,7 @@ export const timeConvert = (time) => {
 
 	if (time.length > 1) {
 	  time = time.slice (1);  // Remove full string match value
-	  time[3] = + time[0] < 12 ? 'AM' : 'PM' // Set AM/PM
+	  time[3] = + time[0] < 12 ? ' AM' : ' PM' // Set AM/PM
 	  time[1] = ':' + time[1] // add :
 	  time[0] = + time[0] % 12 || 12 // Adjust hours
 	}
