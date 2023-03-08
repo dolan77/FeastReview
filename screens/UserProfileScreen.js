@@ -7,6 +7,8 @@ import image from "../assets/feast_blue.png"
 import * as React from 'react';
 import * as firebase from '../utils/firebase'
 
+import ImagePicker from 'react-native-image-crop-picker';
+
 // background color: #3d4051 change for View, bioSubscript, flexbio, flexbutton
 
 // function that returns the screen for the current user
@@ -22,6 +24,7 @@ export default function UserProfileScreen(){
     
     React.useEffect(() => {
         getBio();
+        getAvatarDB();
     }, [])
     
     /**
@@ -73,14 +76,14 @@ export default function UserProfileScreen(){
         // uid : doc_data
         try {
             followers = []
-            followers_names = []
+            followers_doc = []
             following = []
-            following_names = []
+            following_doc = []
             // get the people who follow the current user
             firebase.dbGetFollowers(user.uid).then(result => {
                 result.forEach( (doc, key) => {
                     followers.push(key)
-                    followers_names.push(doc.name)
+                    followers_doc.push(doc)
                     // console.log(key + ":" + JSON.stringify(doc))
                 })
                 // console.log('followers: ' + followers)
@@ -93,16 +96,18 @@ export default function UserProfileScreen(){
                     firebase.dbGetFollowed(result.following).then(result => {
                         result.forEach( (doc, key) => {
                             following.push(key)
-                            following_names.push(doc.name)
+                            following_doc.push(doc)
                         })
                     // wait to get who the user is following, then navigate to the Followers and Following Screen
                     })
                     .then(result3 => {
+                        //console.log(followers)
+                        //console.log(followers_doc)
                         navigation.navigate('FollowersAndFollowing', {
                             followers : followers,
-                            followers_names : followers_names,
+                            followers_doc : followers_doc,
                             following: following,
-                            following_names: following_names
+                            following_doc: following_doc
                         })
                     })
                 })
@@ -112,9 +117,10 @@ export default function UserProfileScreen(){
             console.log(error)
         }
     }
-    
+
     /**
      * method that will transition to the screen where the user can view their saved restaurants
+     * Made by Dylan Huynh
      */
     const seeRestaurants = async() => {
         try {
@@ -138,6 +144,51 @@ export default function UserProfileScreen(){
         }
         
         // cache the restaurant's data within the RestaurantProfileScreen to show it as buttons similar to Search.
+    }
+
+    // Saves properties of selected image
+    // Written by Kenny Du
+    const [avatarPath, setAvatarPath] = React.useState();
+
+    // Get user's previously uploaded profile picture from the database
+    // Written by Kenny Du
+    const getAvatarDB = async() => {
+        try{
+            await firebase.dbFileGetUrl('ProfilePictures/' + user.uid).then(
+                url => {
+                    setAvatarPath(url)
+                    }
+            )
+        }
+        catch (error){
+            console.log(user.displayName, 'does not have a profile picture on db')
+        }
+    }
+
+    
+    
+    /**
+     * Method that handle the user's ability to change their profile picture
+     * Written by Kenny Du
+     */
+    const changePicture = async() => {
+        try{
+            await ImagePicker.openPicker({
+                        width: 120,
+                        height: 120,
+                        cropping: true,
+                        // includeBase64: true,
+                        cropperCircleOverlay: true
+                    }).then(image? image => {
+                        setAvatarPath(image.path);
+                        console.log('image: ', image);
+                        firebase.dbFileAdd('ProfilePictures/' + user.uid, image.path)
+                    }: console.log('cancelled'));
+        }
+        catch (error){
+            console.log(error)
+        }
+        
     }
     
     // this returns the User Profile Screen onto the application on the mobile device. The screen consists of a picture, user name, biography, expertise, and three
@@ -173,14 +224,17 @@ export default function UserProfileScreen(){
 
             
             <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
-                <Image style = {[styles.tinyLogo]} source ={image}/>
+                <Image style = {[styles.tinyLogo]} source ={avatarPath != undefined? {uri:avatarPath} : image}/>
+                <Text style = {[styles.globalFont, {fontSize: 15}, {color: '#75d9fc'}, {paddingTop: 3}]}
+                    onPress = {() => {console.log('Pressed edit photo'); changePicture()}}>
+                    Edit Photo</Text>
                 <Text style = {styles.globalFont}>{user.displayName}</Text>
-                <Text style = {styles.globalFont}>Dessert Expert</Text>
+                <Text style = {styles.globalFont} onPress={() => {console.log('avatar: ', avatarPath)}}>Dessert Expert</Text>
             </View> 
 
             <View style = {[{flex: 1}, styles.bioSubscriptContent]}>
                 <Text style={[styles.globalFont]}>{bio}</Text>
-                <Text style = {[styles.editButton, styles.globalFont]} onPress={() => setModalVisible(true)}>Edit Bio</Text>
+                <Text style = {[styles.editButton, styles.globalFont, {fontSize: 15}, {color: '#75d9fc'}]} onPress={() => setModalVisible(true)}>Edit Bio</Text>
                 
             </View>
 

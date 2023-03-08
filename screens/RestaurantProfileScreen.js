@@ -52,13 +52,10 @@ export default function RestaurantProfileScreen({route}){
     }, 
     [])
 
-
-
-
-
-    // PopulateReviews()
-
-
+    /**
+     * method that handles the event where the user clicks the save restuarant button
+     * Made by Dylan Huynh
+     */
     const clickSaved = async () => {
         console.log(user.uid);
         try{
@@ -79,7 +76,10 @@ export default function RestaurantProfileScreen({route}){
             console.log(error);
         }
     }
-
+    /**
+     * method that changes the text and color of the "save restaurant" button
+     * Made by Dylan Huynh
+     */
     const PopulateButton = async () => {
         try {
             const currentUser = await firebase.dbGet('users', user.uid);
@@ -112,20 +112,6 @@ export default function RestaurantProfileScreen({route}){
      */
     const openSite = () => {
         Linking.openURL(restaurantData.data.url)
-    }
-
-    /**
-     * method to navigate to the Reviews Tab
-     */
-    const navigateReview = () => {
-
-        // navigate to the reviews tab and send in the hash and the type of review we want to see
-        // pass in alias and type of review we want to ReviewsScreen
-        nagivation.navigate('Reviews', 
-        {
-            dbID: restaurantData.data.alias,
-            type: 'restaurant'
-        })
     }
 
     /**
@@ -215,8 +201,8 @@ export default function RestaurantProfileScreen({route}){
     }
 
     const PopulateReviews = () => {
-        console.log('in populatereviews: ' + limit)
-        console.log('pressed: ' + pressed)
+        //console.log('in populatereviews: ' + limit)
+        //console.log('pressed: ' + pressed)
         let table = []
         if (reviews.length != 0){
             for(let i = 0;  i < limit; i++){
@@ -232,7 +218,7 @@ export default function RestaurantProfileScreen({route}){
         }
 
         else{
-            table.push(<Text key={0}>There are no reviews on the restaurant</Text>)
+            table.push(<Text key={0} style={[style.buttonText, style.ReviewHeader, {alignSelf: 'center', marginVertical: 10}]}>There are no reviews on the restaurant</Text>)
         }
         return(table)
     }
@@ -256,7 +242,7 @@ export default function RestaurantProfileScreen({route}){
                             </Text>
                             <View>
                                 <Text>{starRating(restaurantData.data.id, restaurantData.data.rating)}</Text>
-                                <Text style={[style.text]}>{restaurantData.data.review_count} reviews</Text>
+                                <Text style={[style.text]}>{reviews.length} reviews</Text>
                                 
                             </View>
                             
@@ -345,12 +331,17 @@ export default function RestaurantProfileScreen({route}){
 
 
 
-                    <TouchableOpacity style={[style.button, {backgroundColor: color}]} onPress={clickSaved}>
+                    <TouchableOpacity style={[style.button, {backgroundColor: color, marginBottom: 20}]} onPress={clickSaved}>
                         <Text style={style.buttonText}>{saved}</Text>
                     </TouchableOpacity>
 
                 </View>
 
+                <View style={{backgroundColor: '#161414'}}>
+                    <View style={style.horizontalLine} />
+                    <Text style={style.ReviewTop}>Restaurant Reviews</Text>
+                    <View style={style.horizontalLine} />
+                </View>
                 {/* {This part will render the reviews} */}
                 <View>
                    {PopulateReviews()}
@@ -381,6 +372,13 @@ const style = StyleSheet.create({
         height: 130,
         width: 130,
         borderRadius: 130
+    },
+    ReviewTop: {
+        color: 'white',
+        fontWeight: '700',
+        fontSize: 25,
+        marginVertical: 10,
+        alignSelf: 'center'
     },
     horizontalLine:{
         height: 2, 
@@ -542,6 +540,7 @@ const style = StyleSheet.create({
         borderRadius: 10,
         marginTop: 10,
         justifyContent: 'center',
+        paddingVertical: 10
         
     },
     ReviewBoxItems:{

@@ -104,6 +104,7 @@ export default function OtherUserProfileScreen({route}){
     React.useEffect(() => {
         PopulateScreen();
         PopulateButton();
+        getAvatarDB();
     },
     []
     )
@@ -112,14 +113,31 @@ export default function OtherUserProfileScreen({route}){
         console.log(otherUser)
     }
     
-    
+    // Saves properties of selected image
+    // Written by Kenny Du
+    const [avatarPath, setAvatarPath] = React.useState();
+
+    // Get user's previously uploaded profile picture from the database
+    // Written by Kenny Du
+    const getAvatarDB = async() => {
+        try{
+            await firebase.dbFileGetUrl('ProfilePictures/' + otherID).then(
+                url => {
+                    setAvatarPath(url)
+                    }
+            )
+        }
+        catch (error){
+            console.log(name, 'does not have a profile picture on db')
+        }
+    }
     
     return (
         <View style = {styles.container}>
                 <View style = {styles.UserBackground}>
 
                     <View style = {[{alignItems: 'center', flex: 3, justifyContent: 'space-evenly'}]}>
-                        <Image style = {[styles.tinyLogo]} source ={image}/>
+                        <Image style = {[styles.tinyLogo]} source ={avatarPath? {uri:avatarPath} : image}/>
                         <Text style={styles.globalText}>{name}</Text>
                         
                     </View>
