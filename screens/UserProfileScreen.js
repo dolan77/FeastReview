@@ -76,14 +76,14 @@ export default function UserProfileScreen(){
         // uid : doc_data
         try {
             followers = []
-            followers_names = []
+            followers_doc = []
             following = []
-            following_names = []
+            following_doc = []
             // get the people who follow the current user
             firebase.dbGetFollowers(user.uid).then(result => {
                 result.forEach( (doc, key) => {
                     followers.push(key)
-                    followers_names.push(doc.name)
+                    followers_doc.push(doc)
                     // console.log(key + ":" + JSON.stringify(doc))
                 })
                 // console.log('followers: ' + followers)
@@ -96,16 +96,18 @@ export default function UserProfileScreen(){
                     firebase.dbGetFollowed(result.following).then(result => {
                         result.forEach( (doc, key) => {
                             following.push(key)
-                            following_names.push(doc.name)
+                            following_doc.push(doc)
                         })
                     // wait to get who the user is following, then navigate to the Followers and Following Screen
                     })
                     .then(result3 => {
+                        //console.log(followers)
+                        //console.log(followers_doc)
                         navigation.navigate('FollowersAndFollowing', {
                             followers : followers,
-                            followers_names : followers_names,
+                            followers_doc : followers_doc,
                             following: following,
-                            following_names: following_names
+                            following_doc: following_doc
                         })
                     })
                 })
@@ -118,6 +120,7 @@ export default function UserProfileScreen(){
 
     /**
      * method that will transition to the screen where the user can view their saved restaurants
+     * Made by Dylan Huynh
      */
     const seeRestaurants = async() => {
         try {

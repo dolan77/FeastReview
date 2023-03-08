@@ -52,13 +52,10 @@ export default function RestaurantProfileScreen({route}){
     }, 
     [])
 
-
-
-
-
-    // PopulateReviews()
-
-
+    /**
+     * method that handles the event where the user clicks the save restuarant button
+     * Made by Dylan Huynh
+     */
     const clickSaved = async () => {
         console.log(user.uid);
         try{
@@ -79,7 +76,10 @@ export default function RestaurantProfileScreen({route}){
             console.log(error);
         }
     }
-
+    /**
+     * method that changes the text and color of the "save restaurant" button
+     * Made by Dylan Huynh
+     */
     const PopulateButton = async () => {
         try {
             const currentUser = await firebase.dbGet('users', user.uid);
