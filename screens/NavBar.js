@@ -79,7 +79,7 @@ function StackScreens(props) {
 				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
 				<Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen}/>
 				<Stack.Screen name="Create Review" component={CreateReviewScreen} />
-				<Stack.Screen name='FollowersAndFollowing' component={FollowersAndFollowingScreen}/>
+				<Stack.Screen options={{title: ''}}name='FollowersAndFollowing' component={FollowersAndFollowingScreen}/>
                 <Stack.Screen options={{headerShown: false}}name='SavedRestaurants' component = {SavedRestaurantsScreen} />
 			</Stack.Navigator>
     )
