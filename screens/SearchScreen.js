@@ -9,6 +9,7 @@ import { dbGet, dbSet } from '../utils/firebase.js';
 import { requestLocationPermission } from '../utils/locationPermission.js'
 import { SearchBar} from '../components/SearchBar.js';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import colors from '../utils/colors'
 
 export default function SearchScreen() {
 	const [searchText, setSearchText] = useState('')
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
 	container: {
 		width: '100%',
 		height: '100%',
-		backgroundColor: '#3A3A3A',
+		backgroundColor: colors.backgroundDark,
 	},
 	searchContainer:{
         margin: 10,
@@ -193,9 +194,9 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         alignItems: 'center',
         borderStyle: 'solid',
-        borderColor: '#75d9fc',
+        borderColor: colors.feastBlue,
         borderWidth: 2,
-		color: 'white'
+		color: colors.white
     },
 	restaurantContainer: {
         flex: 1,
@@ -204,7 +205,7 @@ const styles = StyleSheet.create({
     },
 	restaurant: {
 		width: '100%',
-		backgroundColor: '#575757',
+		backgroundColor: colors.backgroundDarker,
 		borderRadius: 25,
 		height: 150,
 		marginBottom: 20,
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
 		
 	},
 	button: {
-		backgroundColor: '#75d9fc',
+		backgroundColor: colors.feastBlue,
 		width: '100%',
 		padding: 15,
 		borderRadius: 50,
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
 		marginBottom: 35
 	},
 	buttonText: {
-		color: 'black',
+		color: colors.black,
 		fontWeight: '700',
 		fontSize: 16
 	},

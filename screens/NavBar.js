@@ -15,6 +15,7 @@ import OtherUserProfileScreen from './OtherUserProfileScreen';
 import CreateReviewScreen from './CreateReviewScreen';
 import FollowersAndFollowingScreen from './FollowersAndFollowingScreen';
 import SavedRestaurantsScreen from './SavedRestaurantsScreen';
+import colors from '../utils/colors'
 
 // Screen names
 const homeName = 'Home';
@@ -36,7 +37,7 @@ export default function NavBar({A_Stack}) {
             <Tab.Navigator
                 initialRouteName={homeName}
                 screenOptions={({route}) => ({
-                    tabBarIcon: ({focused, color, size}) => {
+                    tabBarIcon: ({focused, size}) => {
                         let iconName;
                         let rn = route.name;
                         
@@ -50,7 +51,7 @@ export default function NavBar({A_Stack}) {
                             iconName = focused ? 'person' : 'person-outline'
                         }
 
-                        return <Ionicons name = {iconName} size = {size} color = {color}/>  // This can be put on the individual icons above for custom effects
+                        return <Ionicons name = {iconName} size = {size} color = {colors.feastBlueDark}/>  // This can be put on the individual icons above for custom effects
                     }
                 })}
             >
