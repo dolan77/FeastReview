@@ -4,5 +4,8 @@ module.exports = {
     backgroundDark: '#3D4051',
     backgroundDarker: '#262833',
     white: '#ffffff',
-    black: '#000000'
+    black: '#000000',
+    goodGreen: '#4fa825',
+    badRed: '#ab0000',
+    modTransparent: '71'
 }

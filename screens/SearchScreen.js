@@ -80,6 +80,7 @@ export default function SearchScreen() {
 				)
 				.then(result => {
 					setRestaurants([...result])
+					console.log(result)
 				});
 		});
 	}
@@ -119,7 +120,7 @@ export default function SearchScreen() {
 				/>
 			</View>
 			{restaurants.length !== 0 ? map(restaurants, location) : <></>}
-			{restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20, padding: 10}}>Results</Text> : <></>}
+			{restaurants.length !== 0 ? <Text style={{color: colors.white, fontSize: 20, padding: 10}}>Results</Text> : <></>}
 			<ScrollView style={styles.restaurantContainer} keyboardShouldPersistTaps={'handled'}>
 				{restaurants !== [] &&
 					restaurants.map(restaurant => {
@@ -153,7 +154,7 @@ export default function SearchScreen() {
 											fontSize: 17, 
 											flexShrink: 1, 
 											flexWrap: 'wrap', 
-											color: restaurant.is_closed.toString() ? '#26B702' : '#FF0000'
+											color: restaurant.is_closed ? colors.goodGreen: colors.badRed
 										}}>
 											{restaurant.is_closed.toString() ? `Open` : `Closed`}
 										</Text>

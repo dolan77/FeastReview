@@ -8,6 +8,7 @@ import * as React from 'react';
 import * as firebase from '../utils/firebase'
 
 import ImagePicker from 'react-native-image-crop-picker';
+import colors from '../utils/colors';
 
 // background color: #3d4051 change for View, bioSubscript, flexbio, flexbutton
 
@@ -280,7 +281,7 @@ const styles = StyleSheet.create({
         borderRadius: 150,
         overflow: 'hidden',
         borderWidth: 5,
-        borderColor: '#EECACA'
+        borderColor: colors.feastBlue
     },
 
     bioSubscriptContent:{
@@ -289,7 +290,7 @@ const styles = StyleSheet.create({
     },
 
     button: {
-		backgroundColor: '#342B2B51',
+		backgroundColor: colors.backgroundDarker,
 		width: '100%',
 		padding: 15,
 		alignItems: 'center',
@@ -301,7 +302,7 @@ const styles = StyleSheet.create({
         
 	},
 	buttonText: {
-		color: 'white',
+		color: colors.white,
 		fontWeight: '700',
 		fontSize: 16,
 	},
@@ -317,7 +318,7 @@ const styles = StyleSheet.create({
       modalView: {
         margin: 20,
         height: 500,
-        backgroundColor: '#a2bef0',
+        backgroundColor: colors.feastBlue,
         borderRadius: 20,
         padding: 35,
         alignItems: 'center',
@@ -328,13 +329,13 @@ const styles = StyleSheet.create({
         }
     },
     editButton: {
-        color: 'white',
+        color: colors.white,
         fontWeight: 'bold',
         
     },
 
     globalFont:{
-        color: 'white',
+        color: colors.white,
         fontSize: 20,
         fontWeight: '500',
         
