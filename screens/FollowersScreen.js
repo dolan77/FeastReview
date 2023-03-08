@@ -46,39 +46,16 @@ export default function FollowersScreen(props){
                         url => {
                             pictures.push(url)
                             }
-                    ).catch((error) => {
-                        switch (error.code) {
-
-                            case 'storage/object-not-found':
-                              //console.log(passedinUID[i] + "File doesn't exist")
-                              firebase.dbFileGetUrl('feast_blue.png').then(
-                                url => {
-                                    pictures.push(url)
-                                })
-                            case 'storage/unauthorized':
-                              //console.log(passedinUID[i] + "User doesn't have permission to access the object");
-                              firebase.dbFileGetUrl('feast_blue.png').then(
-                                url => {
-                                    pictures.push(url)
-                                })
-                              break;
-
-                            case 'storage/canceled':
-                              console.log("User canceled the upload")
-                              break;
-
-                            case 'storage/unknown':
-                              console.log("Unknown error occurred, inspect the server response")
-                              break;
-                          }
-                      
-                    })
-                    
+                    )
                 }
                 catch (error){
-                    // console.log(passedinUID[i], 'does not have a profile picture on db')
+                    console.log(passedinUID[i], 'does not have a profile picture on db')
                     // console.log(error)
-                    
+                    await firebase.dbFileGetUrl('feast_blue.png').then(
+                        url => {
+                            pictures.push(url)
+                            }
+                        )
                 }
             }
             //console.log(pictures)
@@ -104,7 +81,7 @@ export default function FollowersScreen(props){
         for (let i = 0; i < passedinUID.length; i++){
             table.push(<TouchableOpacity onPress={() => SeeOtherProfile(passedinUID[i])} key = {i} style = {[styles.FollowingBox]}>
                 <View style={{justifyContent: 'center'}}>
-                    <Image style = {[styles.tinyLogo]} source ={profilePictures[i] != undefined? {uri:profilePictures[i]} : image}/>
+                    <Image style = {[styles.tinyLogo]} source ={{uri:profilePictures[i]}}/>
                 </View>
                 <View style={[styles.FollowBoxItems]}>
                     <Text style = {[styles.FollowBoxHeader]}>{passedinFollowersDoc[i].name}</Text>
