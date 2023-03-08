@@ -162,6 +162,11 @@ export default function UserProfileScreen(){
         }
         catch (error){
             console.log(user.displayName, 'does not have a profile picture on db')
+            await firebase.dbFileGetUrl('feast_blue.png').then(
+                url => {
+                    setAvatarPath(url)
+                }
+            )
         }
     }
 
@@ -224,7 +229,7 @@ export default function UserProfileScreen(){
 
             
             <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
-                <Image style = {[styles.tinyLogo]} source ={avatarPath != undefined? {uri:avatarPath} : image}/>
+                <Image style = {[styles.tinyLogo]} source ={{uri:avatarPath}}/>
                 <Text style = {[styles.globalFont, {fontSize: 15}, {color: '#75d9fc'}, {paddingTop: 3}]}
                     onPress = {() => {console.log('Pressed edit photo'); changePicture()}}>
                     Edit Photo</Text>

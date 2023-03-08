@@ -43,47 +43,27 @@ export default function FollowingScreen(props){
         console.log('\n')
         let pictures = []
         try{
-            // console.log(passedInFollowingUID.length)
             for(let i = 0; i < passedInFollowingUID.length; i++){
                 try{
-                    // console.log('ProfilePictures/' + passedinUID[i])
                     await firebase.dbFileGetUrl('ProfilePictures/' + passedInFollowingUID[i]).then(
                         url => {
                             pictures.push(url)
                             }
-                    ).catch((error) => {
-                        firebase.dbFileGetUrl('feast_blue.png').then(
-                            url => {
-                                pictures.push(url)
-                            })
-                        // switch (error.code) {
-
-                        //     case 'storage/object-not-found':
-                        //       //console.log(passedInFollowingUID[i] + "File doesn't exist")
-                        //       firebase.dbFileGetUrl('feast_blue.png').then(
-                        //         url => {
-                        //             pictures.push(url)
-                        //         })
-                        //     case 'storage/unauthorized':
-                        //       //console.log(passedInFollowingUID[i] + "User doesn't have permission to access the object");
-                        //       firebase.dbFileGetUrl('feast_blue.png').then(
-                        //         url => {
-                        //             pictures.push(url)
-                        //         })
-                        //       break;
-                        //   }
+                        )
                       
-                    })
-                    // console.log(pictures)
                 }
+                    // )
+                    // console.log(pictures)
                 catch (error){
-                    // console.log(passedinUID[i], 'does not have a profile picture on db')
+                    console.log(passedInFollowingUID[i], 'does not have a profile picture on db')
                     // console.log(error)
-                    
+                    await firebase.dbFileGetUrl('feast_blue.png').then(
+                        url => {
+                            pictures.push(url)
+                            }
+                        )
                 }
             }
-            //console.log(pictures)
-            //console.log(pictures)
             console.log(pictures.length)
             await setFollowingProfilePictures(pictures)
 
@@ -105,7 +85,7 @@ export default function FollowingScreen(props){
         for (let i = 0; i < passedInFollowingUID.length; i++){
             table.push(<TouchableOpacity onPress={() => SeeOtherProfile(passedInFollowingUID[i])} key = {i} style = {[styles.FollowingBox]}>
                 <View style={{justifyContent: 'center'}}>
-                    <Image style = {[styles.tinyLogo]} source ={FollowingProfilePictures[i] != undefined? {uri:FollowingProfilePictures[i]} : image}/>
+                    <Image style = {[styles.tinyLogo]} source ={{uri:FollowingProfilePictures[i]}}/>
                 </View>
                 <View style={[styles.FollowBoxItems]}>
                     <Text style = {[styles.FollowBoxHeader]}>{passedInFollowingDoc[i].name}</Text>
