@@ -335,12 +335,6 @@ export default function RestaurantProfileScreen({route}){
                 </View>
 
                 <View style={[style.buttonContainer]}>
-                   <TouchableOpacity
-                   onPress={navigateReview}
-                   style={style.button}
-                >
-                    <Text style={style.buttonText}>See Reviews</Text>
-                   </TouchableOpacity>
 
                    <TouchableOpacity
                    onPress={addReview}
