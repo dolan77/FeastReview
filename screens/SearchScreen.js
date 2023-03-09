@@ -138,9 +138,8 @@ export default function SearchScreen() {
 	const [priceSel, setpriceSel] = useState([]);
 	const handlePriceSel = (p_num) => {
 		priceSel.some((element) => element === p_num) ? 
-			[console.log(p_num,' in priceSel'), setpriceSel(prevSel => prevSel.filter(e => e != p_num))] : 
-			[console.log(p_num, ' not in priceSel'), setpriceSel(prevSel => [...prevSel, p_num])]
-		console.log('priceSel: ', priceSel)
+			[console.log(p_num,'in priceSel, removing....'), setpriceSel(prevSel => prevSel.filter(e => e != p_num))] : 
+			[console.log(p_num, 'not in priceSel, adding....'), setpriceSel(prevSel => [...prevSel, p_num])]
 	}
 
 	/**
@@ -190,7 +189,7 @@ export default function SearchScreen() {
 				>
 					{/* Container for all filter components */}
 					<View style = {styles.modalView}>
-						<Text style={[styles.buttonText, {fontSize: 30}]}>Filter Results</Text>
+						<Text style={[styles.buttonText, {fontSize: 30}]} >Filter Results</Text>
 
 						{/* Container for 'Sort By' and 'Price */}
 						<View style = {styles.sortPriceView}>
@@ -224,7 +223,7 @@ export default function SearchScreen() {
 							</View>
 						</View>
 							
-						<Text style={[styles.buttonText, {paddingTop:10}]}>Attributes</Text>
+						<Text style={[styles.buttonText, {paddingTop:10}]} >Attributes</Text>
 						{/* View for the 'Attributes' filter by Kenny Du */}
 						<View style={styles.attributesFilter}>
 							{attributes.map((attribute) => {
