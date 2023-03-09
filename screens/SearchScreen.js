@@ -131,6 +131,31 @@ export default function SearchScreen() {
 	}
 
 	/**
+	 * useState holds the selected values for the price filter option.
+	 * multiple price points can be selected
+	 * written by Kenny Du
+	 */
+	const [priceSel, setpriceSel] = useState([]);
+	const handlePriceSel = (p_num) => {
+		priceSel.some((element) => element === p_num) ? 
+			[console.log(p_num,' in priceSel'), setpriceSel(prevSel => prevSel.filter(e => e != p_num))] : 
+			[console.log(p_num, ' not in priceSel'), setpriceSel(prevSel => [...prevSel, p_num])]
+		console.log('priceSel: ', priceSel)
+	}
+
+	/**
+	 * 
+	 * @param {*} p_num 
+	 * @returns bool
+	 * Checks if price number is inside of the priceSel array. If so, return true.
+	 * written by Kenny Du
+	 */
+	function checkPriceSelect(p_num) {
+		return priceSel.some((element) => element === p_num)
+	}
+
+
+	/**
 	 * displays a map with markers of the restaurants that the user searched
 	 * written by Matthew Hirai
 	*/
@@ -190,8 +215,8 @@ export default function SearchScreen() {
 								{prices.map((p) => {
 									return (
 										<View key={p.number} >
-											<TouchableOpacity onPress={() => filtering(p.number)}>
-												<Text>{p.price}</Text>
+											<TouchableOpacity onPress={() => [filtering(p.number), handlePriceSel(p.number)]}>
+												<Text style={{color:checkPriceSelect(p.number)? 'blue':'black'}}>{p.price}</Text>
 											</TouchableOpacity>
 										</View>
 									)
