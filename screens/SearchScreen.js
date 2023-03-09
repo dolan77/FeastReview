@@ -189,7 +189,7 @@ export default function SearchScreen() {
 				>
 					{/* Container for all filter components */}
 					<View style = {styles.modalView}>
-						<Text style={[styles.buttonText, {fontSize: 30}]} >Filter Results</Text>
+						<Text style={[styles.buttonText, {fontSize: 30}]} onPress={console.log('priceSel: ', priceSel)}>Filter Results</Text>
 
 						{/* Container for 'Sort By' and 'Price */}
 						<View style = {styles.sortPriceView}>
