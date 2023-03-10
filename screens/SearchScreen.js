@@ -143,14 +143,22 @@ export default function SearchScreen() {
 	}
 
 	/**
-	 * 
-	 * @param {*} p_num 
-	 * @returns bool
 	 * Checks if price number is inside of the priceSel array. If so, return true.
 	 * written by Kenny Du
 	 */
 	function checkPriceSelect(p_num) {
 		return priceSel.some((element) => element === p_num)
+	}
+
+	/**
+	 * Stores the string for the attribute that is selected for the 'Sort By' filter option.
+	 */
+	const [sortBySel, setsortBySel] = useState();
+	const handleSortBySel = (sort_sel) => {
+		setsortBySel(sort_sel)
+	}
+	function checkSortBySel(sort_attr) {
+		return sort_attr == sortBySel;
 	}
 
 
@@ -189,7 +197,7 @@ export default function SearchScreen() {
 				>
 					{/* Container for all filter components */}
 					<View style = {styles.modalView}>
-						<Text style={[styles.buttonText, {fontSize: 30}]} onPress={console.log('priceSel: ', priceSel)}>Filter Results</Text>
+						<Text style={[styles.buttonText, {fontSize: 30}]} onPress={console.log('priceSel: ', priceSel, '\nsortBySel: ', sortBySel)}>Filter Results</Text>
 
 						{/* Container for 'Sort By' and 'Price */}
 						<View style = {styles.sortPriceView}>
@@ -199,9 +207,12 @@ export default function SearchScreen() {
 								<Text style={styles.buttonText}>Sort By</Text>
 								{sort_by.map((sorting) => {
 									return (
-										<View  key={sorting}> 
-											<TouchableOpacity onPress={() => filtering(sorting)}>
-												<Text>{sorting.replaceAll('_', ' ')}</Text>
+										<View  key={sorting} style={[{borderWidth: checkSortBySel(sorting)? 1:0}, {width: 95}, {alignItems: 'center'}, 
+																{borderRadius: 8}, {backgroundColor: checkSortBySel(sorting)? 'black':"#00000000"}]} > 
+											<TouchableOpacity onPress={() => [filtering(sorting), handleSortBySel(sorting)]}>
+												<Text style={[{color:checkSortBySel(sorting)? 'white':'black'}]}>
+													{sorting.replaceAll('_', ' ')}
+												</Text>
 											</TouchableOpacity>
 										</View>
 									)
@@ -213,9 +224,12 @@ export default function SearchScreen() {
 								<Text style={styles.buttonText}>Price</Text>
 								{prices.map((p) => {
 									return (
-										<View key={p.number} >
-											<TouchableOpacity onPress={() => [filtering(p.number), handlePriceSel(p.number)]}>
-												<Text style={{color:checkPriceSelect(p.number)? 'blue':'black'}}>{p.price}</Text>
+										<View key={p.number} style={[{borderWidth: checkPriceSelect(p.number)? 1:0}, {width: 50}, {alignItems: 'center'}, 
+																	{borderRadius: 8}, {backgroundColor: checkPriceSelect(p.number)? 'black':"#00000000"}]} >
+											<TouchableOpacity style = {[{width:50}, {alignItems:'center'}]} onPress={() => [filtering(p.number), handlePriceSel(p.number)]}>
+												<Text style={[{color:checkPriceSelect(p.number)? 'white':'black'}]} >
+													{p.price}
+												</Text>
 											</TouchableOpacity>
 										</View>
 									)
