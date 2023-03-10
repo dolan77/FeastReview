@@ -18,10 +18,6 @@ export default function UserProfileScreen(){
     const [bio, setBio] = React.useState('');
     const navigation = useNavigation();
     
-    React.useLayoutEffect(() => {
-		navigation.setOptions({headerShown: true});
-	  }, [navigation]);
-    
     React.useEffect(() => {
         getBio();
         getAvatarDB();
@@ -170,6 +166,15 @@ export default function UserProfileScreen(){
         }
     }
 
+    // log off made by Matthew Hirai
+    const logoff = () => {
+		auth()
+			.signOut()
+			.then(() => {
+				navigation.replace("Login")
+			})
+			.catch(error => alert(error.message))
+	}
     
     
     /**
@@ -209,7 +214,10 @@ export default function UserProfileScreen(){
             setModalVisible(!modalVisible);
             }}>
             <View style = {styles.modalView}>
-                <Text styles = {{fontWeight: 'bold'}}>Your New bio will be...</Text>
+                <View>
+                    <Text style = {[styles.globalFont]}>Your new bio will be...</Text>
+                </View>
+
                 <TextInput
                 style={styles.input}
                 maxLength={100}
@@ -220,8 +228,11 @@ export default function UserProfileScreen(){
                 title="go back"
                 onPress={() => setModalVisible(!modalVisible)}
                 />
-                <Text>{"\n"}100 characters max</Text>
-                <Text>Press Enter before you click the go back button if you want to submit your changes to bio</Text>
+                <View style={{alignItems: 'center'}}>
+                    <Text style={styles.modalText}>100 characters max</Text>
+                    <Text style={styles.modalText}>Press Submit before you click the go back button if you want to submit your changes to bio</Text>
+                </View>
+                
             </View>
         </Modal>
         
@@ -233,7 +244,7 @@ export default function UserProfileScreen(){
                 <Text style = {[styles.globalFont, {fontSize: 15}, {color: '#75d9fc'}, {paddingTop: 3}]}
                     onPress = {() => {console.log('Pressed edit photo'); changePicture()}}>
                     Edit Photo</Text>
-                <Text style = {styles.globalFont}>{user.displayName}</Text>
+                <Text style = {[styles.globalFont, {fontSize: 25}]}>{user.displayName}</Text>
                 <Text style = {styles.globalFont} onPress={() => {console.log('avatar: ', avatarPath)}}>Dessert Expert</Text>
             </View> 
 
@@ -261,6 +272,9 @@ export default function UserProfileScreen(){
             <Text style={styles.buttonText}>Saved Restaurants</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity onPress={logoff} style={styles.button}>
+            <Text style={styles.buttonText}>Log Off</Text>
+        </TouchableOpacity>
         </View>
     </View>
     );
@@ -270,7 +284,7 @@ export default function UserProfileScreen(){
 const styles = StyleSheet.create({
 
     flexbutton:{
-        flex: 2,
+        flex: 3,
         justifyContent: 'space-evenly'
     },
 
@@ -285,7 +299,7 @@ const styles = StyleSheet.create({
         borderRadius: 150,
         overflow: 'hidden',
         borderWidth: 5,
-        borderColor: '#EECACA'
+        borderColor: 'white'
     },
 
     bioSubscriptContent:{
@@ -318,11 +332,12 @@ const styles = StyleSheet.create({
         margin: 12,
         borderWidth: 1,
         padding: 10,
-      },
-      modalView: {
+        color:'white'
+    },
+    modalView: {
         margin: 20,
         height: 500,
-        backgroundColor: '#a2bef0',
+        backgroundColor: '#3D4051',
         borderRadius: 20,
         padding: 35,
         alignItems: 'center',
@@ -330,7 +345,12 @@ const styles = StyleSheet.create({
         shadowOffset: {
           width: 0,
           height: 2,
-        }
+        },
+    },
+    modalText: {
+        color: 'white',
+        fontWeight: '400',
+        fontSize: 16
     },
     editButton: {
         color: 'white',
