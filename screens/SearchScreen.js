@@ -131,8 +131,8 @@ export default function SearchScreen() {
 	}
 
 	/**
-	 * useState holds the selected values for the price filter option.
-	 * multiple price points can be selected
+	 * priceSel holds the selected values for the 'Price' filter option.
+	 * Multiple price points can be selected.
 	 * written by Kenny Du
 	 */
 	const [priceSel, setpriceSel] = useState([]);
@@ -141,7 +141,6 @@ export default function SearchScreen() {
 			[console.log(p_num,'in priceSel, removing....'), setpriceSel(prevSel => prevSel.filter(e => e != p_num))] : 
 			[console.log(p_num, 'not in priceSel, adding....'), setpriceSel(prevSel => [...prevSel, p_num])]
 	}
-
 	/**
 	 * Checks if price number is inside of the priceSel array. If so, return true.
 	 * written by Kenny Du
@@ -151,14 +150,34 @@ export default function SearchScreen() {
 	}
 
 	/**
-	 * Stores the string for the attribute that is selected for the 'Sort By' filter option.
+	 * sortBySel stores the string of the attribute that is selected for the 'Sort By' filter option.
+	 * Only 1 option can be selected
 	 */
 	const [sortBySel, setsortBySel] = useState();
 	const handleSortBySel = (sort_sel) => {
 		setsortBySel(sort_sel)
 	}
-	function checkSortBySel(sort_attr) {
-		return sort_attr == sortBySel;
+	function checkSortBySel(sort_sel) {
+		return sort_sel == sortBySel;
+	}
+
+	/**
+	 * attrSel holds the selected values for the 'Attributes' filter option.
+	 * Multiple attributes can be selected
+	 * written by Kenny Du
+	 */
+	const [attrSel, setattrSel] = useState([]);
+	const handleAttrSel = (attr) => {
+		attrSel.some((element) => element === attr) ?
+		[console.log(attr,'in attributesSel, removing....'), setattrSel(prevSel => prevSel.filter(e => e != attr))] : 
+		[console.log(attr, 'not in attributesSel, adding....'), setattrSel(prevSel => [...prevSel, attr])];
+	}
+	/**
+	 * function returns true if the attribute parameter exists inside attrSel
+	 * written by Kenny Du
+	 */
+	function checkAttrSel(attr) {
+		return attrSel.some((element) => element === attr);
 	}
 
 
@@ -197,7 +216,7 @@ export default function SearchScreen() {
 				>
 					{/* Container for all filter components */}
 					<View style = {styles.modalView}>
-						<Text style={[styles.buttonText, {fontSize: 30}]} onPress={console.log('priceSel: ', priceSel, '\nsortBySel: ', sortBySel)}>Filter Results</Text>
+						<Text style={[styles.buttonText, {fontSize: 30}]} onPress={console.log('\npriceSel: ', priceSel, '\nsortBySel: ', sortBySel, '\nattrSel: ', attrSel)}>Filter Results</Text>
 
 						{/* Container for 'Sort By' and 'Price */}
 						<View style = {styles.sortPriceView}>
@@ -242,9 +261,12 @@ export default function SearchScreen() {
 						<View style={styles.attributesFilter}>
 							{attributes.map((attribute) => {
 								return (
-									<View style={{padding: 5}} key={attribute} >
-										<TouchableOpacity onPress={() => filtering(attribute)}>
-											<Text>{attribute.replaceAll('_', ' ')}</Text>
+									<View key={attribute} style={[{padding: 5}, {borderRadius: 8}, {borderWidth: checkAttrSel(attribute)? 1:0}, 
+																  {backgroundColor: checkAttrSel(attribute)? 'black':"#00000000"}]} >
+										<TouchableOpacity style={{justifyContent:'center'}} onPress={() => [filtering(attribute), handleAttrSel(attribute)]}>
+											<Text style={[{color:checkAttrSel(attribute)? 'white':'black'}]} >
+												{attribute.replaceAll('_', ' ')} 
+											</Text>
 										</TouchableOpacity>
 									</View>
 								)
@@ -421,7 +443,7 @@ const styles = StyleSheet.create({
 	},
 	modalView: {
         margin: 20,
-        height: 500,
+        height: 510,
         backgroundColor: '#a2bef0',
         borderRadius: 20,
         padding: 35,
