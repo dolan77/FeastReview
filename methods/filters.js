@@ -16,10 +16,10 @@ const attributes = [
  * List of all prices
  */
 const prices = [
-	{number: 1, price: '$'},
-	{number: 2, price: '$$'},
-	{number: 3, price: '$$$'},
-	{number: 4, price: '$$$$'},
+	{number: '1', price: '$'},
+	{number: '2', price: '$$'},
+	{number: '3', price: '$$$'},
+	{number: '4', price: '$$$$'},
 ]
 
 /**
