@@ -26,6 +26,7 @@ export default function SearchScreen() {
 	const [priceSel, setpriceSel] = useState([]);
 	const [sortBySel, setsortBySel] = useState('');
 	const [attrSel, setattrSel] = useState([]);
+	const [filterString, setFilterString] = useState('')
 
     const navigation = useNavigation();
 
@@ -34,7 +35,6 @@ export default function SearchScreen() {
 	 * written by Matthew Hirai
 	 */
 	useEffect(() => {
-		setPressed(1)
 		getLocation()
 	}, [])
 
@@ -46,7 +46,12 @@ export default function SearchScreen() {
 	useEffect(() => {
 		if (pressed !== 1) {
 			const limit = 10 * pressed
-			handleSearch({limit})
+			if (filterString) {
+				handleSearch({limit}, filterString, false)
+			}
+			else {
+				handleSearch({limit})
+			}
 		}
 	}, [pressed])
 
@@ -72,8 +77,13 @@ export default function SearchScreen() {
 	 * @param {*} limit amount of results that will be displayed (default value of 10)
 	 * written by Nathan Lai
 	 */
-	handleSearch = ({limit = 10}, filter = "") => {
-		console.log("filter", filter)
+	handleSearch = ({limit = 10}, filter = "", newSearch = true) => {
+		if (newSearch) {
+			setFilterString('')
+			setPressed(1)
+			limit = 10
+		}
+
 		dbGet('api_keys','key')
 			.then(keys => {
 				searchBusinesses(
@@ -108,6 +118,7 @@ export default function SearchScreen() {
 	saveFilters = () => {
 		let priceFilter = ''
 		let attributesFilter = ''
+		let filter = ''
 
 		if (priceSel.length !== 0) {
 			priceFilter = priceSel.toString().replaceAll(',', '&')
@@ -117,7 +128,10 @@ export default function SearchScreen() {
 			attributesFilter = attrSel.toString().replaceAll(',', '&')
 		}
 
-		handleSearch(10, '&' + priceFilter + '&' + attributesFilter + '&' + sortBySel)
+		filter = `${priceFilter ? `&${priceFilter}` : ''}${attributesFilter ? `&${attributesFilter}` : ''}${sortBySel ? `&${sortBySel}` : ''}` 
+		
+		setFilterString(filter)
+		handleSearch(10 * pressed, filter, false)
 		setModalVisible(false)
 	}
 
@@ -162,7 +176,7 @@ export default function SearchScreen() {
 	 * written by Kenny Du
 	 */
 	const handleAttrSel = (attr) => {
-		attrSel.some((element) => element === attr) ?
+		attrSel.some((element) => element === `attributes=${attr}`) ?
 		[console.log(attr,'in attributesSel, removing....'), setattrSel(prevSel => prevSel.filter(e => e != `attributes=${attr}`))] : 
 		[console.log(attr, 'not in attributesSel, adding....'), setattrSel(prevSel => [...prevSel, `attributes=${attr}`])];
 	}
@@ -230,7 +244,7 @@ export default function SearchScreen() {
 												{backgroundColor: checkSortBySel(sorting)? 'black':"#00000000"}
 											]}
 										> 
-											<TouchableOpacity onPress={() => [filtering(sorting), handleSortBySel(sorting)]}>
+											<TouchableOpacity onPress={() => handleSortBySel(sorting)}>
 												<Text style={[{color:checkSortBySel(sorting)? 'white':'black'}]}>
 													{sorting.replaceAll('_', ' ')}
 												</Text>
@@ -280,7 +294,7 @@ export default function SearchScreen() {
 											{backgroundColor: checkAttrSel(attribute)? 'black':"#00000000"}
 										]} 
 									>
-										<TouchableOpacity style={{justifyContent:'center'}} onPress={() => [filtering(attribute), handleAttrSel(attribute)]}>
+										<TouchableOpacity style={{justifyContent:'center'}} onPress={() => handleAttrSel(attribute)}>
 											<Text style={[{color:checkAttrSel(attribute)? 'white':'black'}]} >
 												{attribute.replaceAll('_', ' ')} 
 											</Text>
