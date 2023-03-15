@@ -320,9 +320,6 @@ export default function SearchScreen() {
 								<Text style={styles.buttonText}>{"Save"}</Text>
 							</TouchableOpacity>
 						</View>
-						
-						
-
 					</View>
 				</Modal>
 			}
