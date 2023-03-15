@@ -15,6 +15,7 @@ import OtherUserProfileScreen from './OtherUserProfileScreen';
 import CreateReviewScreen from './CreateReviewScreen';
 import FollowersAndFollowingScreen from './FollowersAndFollowingScreen';
 import SavedRestaurantsScreen from './SavedRestaurantsScreen';
+import DetailedReviewScreen from './DetailedReviewScreen';
 
 // Screen names
 const homeName = 'Home';
@@ -81,6 +82,7 @@ function StackScreens(props) {
 				<Stack.Screen name="Create Review" component={CreateReviewScreen} />
 				<Stack.Screen options={{title: ''}}name='FollowersAndFollowing' component={FollowersAndFollowingScreen}/>
                 <Stack.Screen options={{headerShown: false}}name='SavedRestaurants' component = {SavedRestaurantsScreen} />
+                <Stack.Screen options={{headerShown: false}}name="Detailed Review Screen" component={DetailedReviewScreen} />
 			</Stack.Navigator>
     )
 }
