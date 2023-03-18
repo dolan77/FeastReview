@@ -11,10 +11,16 @@ import { requestLocationPermission } from '../utils/locationPermission.js'
 import image from "../assets/feast_blue.png"
 
 export default function HomeScreen() {
-	const [user, setUser] = useState({});
+	const user = auth().currentUser
+	const [reviews, setReviews] = useState([])
+	const [following, setFollowing] = useState([])
 
 	const navigation = useNavigation()
 
+	/**
+	 * Requests the user for their permission to get there location
+	 * Calls teh getFollowers method
+	 */
 	useEffect(() => {
 		const res = requestLocationPermission();
 		res.then(() => {
@@ -23,8 +29,15 @@ export default function HomeScreen() {
 		.catch(() => {
 			console.log("Failed to get location")
 		})
+
+		setReviews([])
+		setFollowing([])
+		getFollowers(user.uid)
 	}, [])
 
+	/**
+	 * Logs the user out of the app
+	 */
 	logoff = () => {
 		auth()
 			.signOut()
@@ -33,17 +46,37 @@ export default function HomeScreen() {
 			})
 			.catch(error => alert(error.message))
 	}
-	// navigation.navigate('RestaurantProfile',{data: result})
-	// testing passing in data from a McDonalds. Search must handle passing data of that specific restaurant
-	const nagivateRestaurant = () => {
-		firebase.dbGet('api_keys', 'key')
-		.then(keys => {yelp.businessDetail("mcdonalds-westminster-10", keys.yelp)
-		.then(result => navigation.navigate('RestaurantProfile',{data: result}))});
+	
+	/**
+	 * Gets the user's following and sets them to the reviews state
+	 * @param {*} uid user's unique id
+	 */
+	getFollowers = (uid) => {
+		firebase.dbGet('users', uid)
+		.then(result => {
+			firebase.dbGetFollowed(result.following).then(result => {
+				result.forEach( (doc, key) => {
+					firebase.dbGetReviews(key, "authorid")
+					.then(dbReviews => {
+						if (dbReviews.size !== 0) {
+							setReviews(prev => [...prev, ...dbReviews])
+						}
+					})
+
+					setFollowing(prev => [...prev, {"id": key, "name": doc.name}])
+				})
+			})
+		})
 	}
 
-	// testing following this user.
-	const navigateOtherUserProfile = () => {
-		navigation.navigate("OtherUserProfile", {id: "pm6f9wpKmZM9GyEVL2HJuowhEda2"});
+	displayReviews = () => {
+		const followingUser = following.find(user => user.id == "pm6f9wpKmZM9GyEVL2HJuowhEda2")
+		console.log(followingUser.name)
+	}
+
+	getUserName = (id) => {
+		const followingUser = following.find(user => user.id == id)
+		return followingUser.name
 	}
 	
 	return (
@@ -51,56 +84,48 @@ export default function HomeScreen() {
 
 			{/* ScrollView allows you to scroll down the feed */}
 			<ScrollView style={{flex:1, backgroundColor: '#3d4051'}}>
-				
-				{/* First "review" container */}
-				<View style = {styles.reviewContainer}>
-					{/* Picture and name of the reviewer */}
-					<View style = {{flexDirection: "row"}}>
-						<Image style = {[styles.profileIcon]} source={image}/>
-						<Text style = {styles.emailWrap}> {user.email}</Text>
-					</View>
+				{reviews.map(review => {
+					return (
+						<View style = {styles.reviewContainer} key={review[0]}>
+							
+							<View style = {{flexDirection: "row"}}>
+								<Image style = {[styles.profileIcon]} source={image}/>
+								<Text style = {styles.emailWrap}> {getUserName(review[1].authorid)}</Text>
+							</View>
 
-					{/* Reviewer's comments on the restaurant. */}
-					<View >
-						<Text style = {styles.reviewContent}>
-							Food here is about average for the pricepoint, but you HAVE to try the Sister Meal Deluxe!! BEST THING EVER 💋💋💅💅'
-						</Text>
-					</View>
+							<View >
+								<Text style = {styles.reviewContent}>
+									{review[1].content}
+								</Text>
+							</View>
 
-					{/* Name of the restaurant reviewed */}
-					<View style = {{flexDirection: "row"}}>
-						<Ionicons style={styles.locationIcon} name="location-outline">
-							<Text> - </Text>
-						</Ionicons>
-						<Text style = {styles.restaurantName}>Hey Sisters LA</Text>
-					</View>
-
-				</View>
-				
-				
-
-				<Image style = {[styles.tempPicture]} source={image}/>
-				<Image style = {[styles.tempPicture]} source={image}/>
-				<Image style = {[styles.tempPicture]} source={image}/>
-				
-				
+							<View style = {{flexDirection: "row"}}>
+								<Ionicons style={styles.locationIcon} name="location-outline">
+									<Text> - </Text>
+								</Ionicons>
+								<Text style = {styles.restaurantName}>{review[0]}</Text>
+							</View>
+						</View>
+					)
+				})}
 				<View style={styles.container}>
 					<TouchableOpacity 
 						style={styles.button}
 						onPress={logoff}
 					>
-						<Text style={{color: "white"}}>{user.displayName} LOG OUT </Text>
+						<Text style={{color: "white"}}>LOG OUT </Text>
 					</TouchableOpacity>
-
-					<Button title = "User Profile" onPress={() => navigation.navigate('Your Profile')} />
-					<Button title = "RestaurantProfile" onPress={nagivateRestaurant} />
-            		<Button title = "Matthew's Profile" onPress={navigateOtherUserProfile} />
+				</View>
+				<View style={styles.container}>
+					<TouchableOpacity 
+						style={styles.button}
+						onPress={displayReviews}
+					>
+						<Text style={{color: "white"}}>R</Text>
+					</TouchableOpacity>
 				</View>
 			</ScrollView>
 		</View>
-		
-		
-
 	)
 }
 
