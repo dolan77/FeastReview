@@ -80,6 +80,9 @@ export default function SearchScreen() {
 	handleSearch = ({limit = 10}, filter = "", newSearch = true) => {
 		if (newSearch) {
 			setFilterString('')
+			setattrSel([])
+			setpriceSel([])
+			setsortBySel('')
 			setPressed(1)
 			limit = 10
 		}
