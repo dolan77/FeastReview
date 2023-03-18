@@ -92,7 +92,7 @@ export default function RegisterScreen() {
 				expertise: {},
 				followers: [],
 				following: [],
-				username: user.displayName,
+				name: user.displayName,
 				reviews: []
 			}
 		)

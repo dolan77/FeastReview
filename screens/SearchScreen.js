@@ -22,7 +22,11 @@ export default function SearchScreen() {
 	const [pressed, setPressed] = useState(1)
 	const [displayMap, setDisplayMap] = useState(false)
 	const [modalVisible, setModalVisible] = useState(false);
-	const [filterString, setFilterString] = useState('&')
+
+	const [priceSel, setpriceSel] = useState([]);
+	const [sortBySel, setsortBySel] = useState('');
+	const [attrSel, setattrSel] = useState([]);
+	const [filterString, setFilterString] = useState('')
 
     const navigation = useNavigation();
 
@@ -31,7 +35,6 @@ export default function SearchScreen() {
 	 * written by Matthew Hirai
 	 */
 	useEffect(() => {
-		setPressed(1)
 		getLocation()
 	}, [])
 
@@ -43,7 +46,12 @@ export default function SearchScreen() {
 	useEffect(() => {
 		if (pressed !== 1) {
 			const limit = 10 * pressed
-			handleSearch({limit})
+			if (filterString) {
+				handleSearch({limit}, filterString, false)
+			}
+			else {
+				handleSearch({limit})
+			}
 		}
 	}, [pressed])
 
@@ -69,7 +77,13 @@ export default function SearchScreen() {
 	 * @param {*} limit amount of results that will be displayed (default value of 10)
 	 * written by Nathan Lai
 	 */
-	handleSearch = ({limit = 10}, filter = "") => {
+	handleSearch = ({limit = 10}, filter = "", newSearch = true) => {
+		if (newSearch) {
+			setFilterString('')
+			setPressed(1)
+			limit = 10
+		}
+
 		dbGet('api_keys','key')
 			.then(keys => {
 				searchBusinesses(
@@ -81,7 +95,6 @@ export default function SearchScreen() {
 				)
 				.then(result => {
 					setRestaurants([...result])
-					setFilterString('&')
 				})
 				.catch(() => console.log("Error, searching YELP businesses"));
 		})
@@ -99,36 +112,82 @@ export default function SearchScreen() {
 	}
 
 	/**
-	 * adds a query param to the filterString state
-	 * @param {*} filter string that user presses from the filter modal
-	 * written by Matthew Hirai
-	 */
-	filtering = (filter) => {
-		if (filterString.length != 1) {
-			setFilterString((prev) => prev + '&')
-		}
-		if (attributes.includes(filter)) {
-			setFilterString((prev) => prev + `attributes=${filter}`)
-		}
-
-		else if (sort_by.includes(filter)) {
-			setFilterString((prev) => prev + `sort_by=${filter}`)
-		}
-
-		else if (prices.some(p => p.number === filter)) {
-			setFilterString((prev) => prev + `price=${filter}`)
-		}
-	}
-
-	/**
 	 * calls the handleSearch function with filters
 	 * written by Matthew Hirai
 	 */
 	saveFilters = () => {
-		handleSearch(10, filterString)
-		setFilterString('&')
+		let priceFilter = ''
+		let attributesFilter = ''
+		let filter = ''
+
+		if (priceSel.length !== 0) {
+			priceFilter = priceSel.toString().replaceAll(',', '&')
+		}
+
+		if (attrSel.length !== 0) {
+			attributesFilter = attrSel.toString().replaceAll(',', '&')
+		}
+
+		filter = `${priceFilter ? `&${priceFilter}` : ''}${attributesFilter ? `&${attributesFilter}` : ''}${sortBySel ? `&${sortBySel}` : ''}` 
+		
+		setFilterString(filter)
+		handleSearch(10 * pressed, filter, false)
 		setModalVisible(false)
 	}
+
+	/**
+	 * Adds price filter if selected; if it's already in the array, it'll remove it
+	 * Multiple price points can be selected.
+	 * written by Kenny Du
+	 */
+	handlePriceSel = (p_num) => {
+		priceSel.some((element) => element === `price=${p_num}`) ? 
+			[console.log(p_num,'in priceSel, removing....'), setpriceSel(prevSel => prevSel.filter(e => e != `price=${p_num}`))] : 
+			[console.log(p_num, 'not in priceSel, adding....'), setpriceSel(prevSel => [...prevSel, `price=${p_num}`])]
+	}
+	/**
+	 * Checks if price number is inside of the priceSel array. If so, return true.
+	 * written by Kenny Du
+	 */
+	function checkPriceSelect(p_num) {
+		return priceSel.some((element) => element === `price=${p_num}`)
+	}
+
+	/**
+	 * Stores the string of the attribute that is selected for the 'Sort By' filter option.
+	 * Only 1 option can be selected
+	 * written by Kenny Du
+	 */
+	
+	const handleSortBySel = (sort_sel) => {
+		setsortBySel(`sort_by=${sort_sel}`)
+	}
+	/**
+	 * Checks if sort by filter is inside of the sortBySel state. If so, return true.
+	 * written by Kenny Du
+	 */
+	function checkSortBySel(sort_sel) {
+		return `sort_by=${sort_sel}` == sortBySel;
+	}
+
+	/**
+	 * Adds attribute filter if selected; if it's already in the array, it'll remove it
+	 * Multiple attributes can be selected
+	 * written by Kenny Du
+	 */
+	const handleAttrSel = (attr) => {
+		attrSel.some((element) => element === `attributes=${attr}`) ?
+		[console.log(attr,'in attributesSel, removing....'), setattrSel(prevSel => prevSel.filter(e => e != `attributes=${attr}`))] : 
+		[console.log(attr, 'not in attributesSel, adding....'), setattrSel(prevSel => [...prevSel, `attributes=${attr}`])];
+	}
+	/**
+	 * function returns true if the attribute parameter exists inside attrSel
+	 * written by Kenny Du
+	 */
+	function checkAttrSel(attr) {
+		return attrSel.some((element) => element === `attributes=${attr}`);
+	}
+
 
 	/**
 	 * displays a map with markers of the restaurants that the user searched
@@ -163,20 +222,32 @@ export default function SearchScreen() {
 						setModalVisible(!modalVisible);
 					}}
 				>
+					{/* Container for all filter components */}
 					<View style = {styles.modalView}>
-						<Text>Filter</Text>
+						<Text style={[styles.buttonText, {fontSize: 30}]} onPress={console.log('\npriceSel: ', priceSel, '\nsortBySel: ', sortBySel, '\nattrSel: ', attrSel)}>Filter Results</Text>
 
-						{/* Container for all filter components */}
+						{/* Container for 'Sort By' and 'Price */}
 						<View style = {styles.sortPriceView}>
 
 							{/* View for the 'Sort By' filter by Kenny Du */}
 							<View style={styles.filterComponent1}>
-								<Text style={{fontSize:15}}>Sort By</Text>
+								<Text style={styles.buttonText}>Sort By</Text>
 								{sort_by.map((sorting) => {
 									return (
-										<View style={{padding: 5}} key={sorting}>
-											<TouchableOpacity onPress={() => filtering(sorting)}>
-												<Text>{sorting.replaceAll('_', ' ')}</Text>
+										<View 
+											key={sorting} 
+											style={[
+												{borderWidth: checkSortBySel(sorting)? 1:0}, 
+												{width: 95}, 
+												{alignItems: 'center'}, 
+												{borderRadius: 8}, 
+												{backgroundColor: checkSortBySel(sorting)? 'black':"#00000000"}
+											]}
+										> 
+											<TouchableOpacity onPress={() => handleSortBySel(sorting)}>
+												<Text style={[{color:checkSortBySel(sorting)? 'white':'black'}]}>
+													{sorting.replaceAll('_', ' ')}
+												</Text>
 											</TouchableOpacity>
 										</View>
 									)
@@ -185,12 +256,23 @@ export default function SearchScreen() {
 							
 							{/* View for the 'Price' filter by Kenny Du */}
 							<View style={styles.filterComponent1}>
-								<Text>Price</Text>
+								<Text style={styles.buttonText}>Price</Text>
 								{prices.map((p) => {
 									return (
-										<View style={[{alignSelf: 'center'}, {borderWidth:1}]} key={p.number} >
-											<TouchableOpacity onPress={() => filtering(p.number)}>
-												<Text>{p.price}</Text>
+										<View 
+											key={p.number} 
+											style={[
+												{borderWidth: checkPriceSelect(p.number)? 1:0}, 
+												{width: 50}, 
+												{alignItems: 'center'}, 
+												{borderRadius: 8}, 
+												{backgroundColor: checkPriceSelect(p.number)? 'black':"#00000000"}
+											]} 
+										>
+											<TouchableOpacity style = {[{width:50}, {alignItems:'center'}]} onPress={() => [handlePriceSel(p.number)]}>
+												<Text style={[{color:checkPriceSelect(p.number)? 'white':'black'}]} >
+													{p.price}
+												</Text>
 											</TouchableOpacity>
 										</View>
 									)
@@ -198,37 +280,46 @@ export default function SearchScreen() {
 							</View>
 						</View>
 							
-							{/* View for the 'Attributes' filter by Kenny Du */}
-							<View style={styles.filterComponent}>
-								<Text>Attributes</Text>
-								{attributes.map((attribute) => {
-									return (
-										<View style={{padding: 5}} key={attribute} >
-											<TouchableOpacity onPress={() => filtering(attribute)}>
-												<Text>{attribute.replaceAll('_', ' ')}</Text>
-											</TouchableOpacity>
-										</View>
-									)
-								})}
+						<Text style={[styles.buttonText, {paddingTop:10}]} >Attributes</Text>
+						{/* View for the 'Attributes' filter by Kenny Du */}
+						<View style={styles.attributesFilter}>
+							{attributes.map((attribute) => {
+								return (
+									<View 
+										key={attribute} 
+										style={[
+											{padding: 5}, 
+											{borderRadius: 8}, 
+											{borderWidth: checkAttrSel(attribute)? 1:0}, 
+											{backgroundColor: checkAttrSel(attribute)? 'black':"#00000000"}
+										]} 
+									>
+										<TouchableOpacity style={{justifyContent:'center'}} onPress={() => handleAttrSel(attribute)}>
+											<Text style={[{color:checkAttrSel(attribute)? 'white':'black'}]} >
+												{attribute.replaceAll('_', ' ')} 
+											</Text>
+										</TouchableOpacity>
+									</View>
+								)
+							})}
 						</View>
 
-						
-						
-						<TouchableOpacity
-							onPress={() => setModalVisible(!modalVisible)}
-							style={styles.button}
-							options={padding=5}
-						>
-							<Text style={styles.buttonText}>{"Back"}</Text>
-						</TouchableOpacity>
-						
-						<TouchableOpacity
-							onPress={saveFilters}
-							style={styles.button}
-						>
-							<Text style={styles.buttonText}>{"Save"}</Text>
-						</TouchableOpacity>
-
+						{/* View for the 'Back' and 'Save buttons */}
+						<View style = {styles.filterExitButtonsContainer}>
+							<TouchableOpacity
+								onPress={() => setModalVisible(!modalVisible)}
+								style={styles.filterExitButtons}
+							>
+								<Text style={styles.buttonText}>{"Back"}</Text>
+							</TouchableOpacity>
+							
+							<TouchableOpacity
+								onPress={saveFilters}
+								style={styles.filterExitButtons}
+							>
+								<Text style={styles.buttonText}>{"Save"}</Text>
+							</TouchableOpacity>
+						</View>
 					</View>
 				</Modal>
 			}
@@ -380,7 +471,7 @@ const styles = StyleSheet.create({
 	},
 	modalView: {
         margin: 20,
-        height: 500,
+        height: 510,
         backgroundColor: '#a2bef0',
         borderRadius: 20,
         padding: 35,
@@ -395,24 +486,52 @@ const styles = StyleSheet.create({
     },
 	filterComponent1: {
 		flexDirection: 'column',
-		flexWrap: 'wrap',
-		borderWidth: 1,
 		borderRadius: 5,
 		borderColor: 'red',
 		alignItems: 'center',
-		alignSelf: 'center',
-		// width:100.5,
-		height: 220,
-		padding: 40,
-		// justifyContent: 'space-evenly'
+		height: 175,
+		padding: 20,
+		paddingEnd: 40,
+		paddingTop: 10,
+		paddingBottom: 5,
+		justifyContent: 'space-between',
 	},
 	sortPriceView: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		borderWidth:1,
-		borderColor: 'green'
+		borderBottomWidth:1,
+		paddingBottom:10,
+		// borderWidth: 1,
+		borderColor: 'black'
 	},
 	centerText:{
 		alignItems: 'center'
+	},
+	attributesFilter:{
+		height: 140, 
+		width: 340,
+		paddingHorizontal: 30,
+		flexDirection: 'column',
+		flexWrap: 'wrap',
+		// borderWidth: 1,
+		borderRadius: 5,
+		borderColor: 'red',
+		alignItems: 'center',
+		alignSelf: 'center',
+		justifyContent: 'space-between',
+	},
+	filterExitButtons:{
+		backgroundColor: '#75d9fc',
+		width: '100%',
+		padding: 15,
+		borderRadius: 50,
+		alignItems: 'center',
+		width: 120,
+		margin: 10,
+		marginTop: 10,
+	},
+	filterExitButtonsContainer:{
+		flexDirection: 'row', 
+		justifyContent: 'center',
 	}
 })
