@@ -65,7 +65,7 @@ export default function ReviewsScreen({route}){
             for(let i = 0;  i < limit; i++){
                 table.push(
                 <TouchableOpacity key={i} style={[style.ReviewBox, {marginHorizontal: 10}]}>
-                    <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].authorid}</Text>
+                    <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].username}</Text>
                     <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].datemade.toDate().toDateString()}</Text>
                     <Text style={[style.ReviewBoxItems, style.ReviewText]}>{reviews[i][1].content}</Text>
                 </TouchableOpacity>)
