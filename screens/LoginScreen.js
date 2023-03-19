@@ -27,7 +27,7 @@ export default function LoginScreen() {
 			.then(userCreds => {
 				const user = userCreds.user
 				console.log(user.email, 'has logged in')
-				if (user) navigation.replace("TabNavigator");
+				if (user) navigation.navigate("TabNavigator");
 			})
 			.catch(error => {
 				if (error.code === 'auth/invalid-email') {
