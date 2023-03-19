@@ -55,20 +55,26 @@ export default function DetailedReviewScreen({route}){
                 <Text style={[style.buttonText, style.ReviewHeader]}>{reviewData.username}</Text>
                 <Text style={[style.buttonText, style.ReviewHeader]}>{reviewData.datemade.toDate().toDateString()}</Text>
                 <Text style={[style.ReviewBoxItems, style.ReviewText]}>{reviewData.content}</Text>
-            </TouchableOpacity>
-
-            <ScrollView horizontal={true} style={style.photo_container} contentContainerStyle={style.photo_content_container}>
+                
+                <ScrollView horizontal={true} style={style.photo_container} contentContainerStyle={style.photo_content_container}>
                 {/* <FlatList
                   data={images}
                   renderItem={({item}) => <RenderItem image={item}/>}
                   keyExtractor={item => item.id}
                   numColumns={5} >
                 </FlatList> */}
-            </ScrollView>
+                </ScrollView>
+
+                <TouchableOpacity style={style.commentButton} onPress={() => console.log('pressed')}>
+                    <Ionicons style={[style.globalFont, {color: '#75d9fc'}]} name='chatbox-ellipses-outline'/>
+                    <Text style={{color: '#75d9fc'}}>  Leave a comment</Text>
+                </TouchableOpacity>
+            </TouchableOpacity>
+
 
             <ScrollView>
                 <View>
-                    <Text style={{color:'white'}} onPress={() => {console.log(reviewID, '\n', reviewData)}}>placeholder</Text>
+                    <Text style={{color:'white'}} onPress={() => {[console.log(reviewID, '\n', reviewData), console.log(auth().currentUser)]}}>placeholder</Text>
                 </View>
             </ScrollView>
 
@@ -83,6 +89,11 @@ const style = StyleSheet.create({
 		fontWeight: '700',
 		fontSize: 16,
 	},
+    commentButton: {
+        paddingLeft: 10,
+        flexDirection: 'row',
+        color: '#75d9fc'
+    },
     container:{
         flex: 1,
         backgroundColor: '#3d4051',
@@ -111,15 +122,17 @@ const style = StyleSheet.create({
     },
     photo_container: {
         horizontal: 'true',
-        width: 380,
-        height: 50,
+        width: 360,
+        height: 100,
         borderWidth: 1,
         borderRadius: 10,
+        margin:5,
         borderColor: 'white',
+        alignSelf: 'center'
     },
     photo_content_container: {
         alignItems:'center',
-        paddingHorizontal: 5
+        paddingHorizontal: 5,
     },
     ReviewBox: {
         backgroundColor: '#3f3a42',

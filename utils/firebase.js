@@ -214,3 +214,16 @@ async function dbGetFollowers(uid){
 async function dbGetFollowed(followedList){
     return dbGetQuery("users", firebase.firestore.FieldPath.documentId(), "in", followedList);
 }
+
+/**
+ * 
+ * @param {*} review_id the identifier for the review to be commented on
+ * @param {*} comment_id the identifier for the comment to be uploaded
+ * @param {*} value the fields of the comment 
+ * @returns 
+ */
+async function dbSetReviewComment(review_id, comment_id, value) {
+    const docRef = db.collection('reviews').doc(review_id).collection('comments').doc(comment_id);
+    return docRef.set(value);
+
+}
