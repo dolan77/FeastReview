@@ -52,7 +52,7 @@ export default function DetailedReviewScreen({route}){
             </View>
 
             <TouchableOpacity style={[style.ReviewBox, {marginHorizontal: 10}]}>
-                <Text style={[style.buttonText, style.ReviewHeader]}>{reviewData.authorid}</Text>
+                <Text style={[style.buttonText, style.ReviewHeader]}>{reviewData.username}</Text>
                 <Text style={[style.buttonText, style.ReviewHeader]}>{reviewData.datemade.toDate().toDateString()}</Text>
                 <Text style={[style.ReviewBoxItems, style.ReviewText]}>{reviewData.content}</Text>
             </TouchableOpacity>
@@ -102,6 +102,24 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
+    },
+    photo: {
+		marginLeft: 5,
+		borderWidth: 1,
+		borderColor: 'gray',
+        alignSelf: 'center'
+    },
+    photo_container: {
+        horizontal: 'true',
+        width: 380,
+        height: 50,
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: 'white',
+    },
+    photo_content_container: {
+        alignItems:'center',
+        paddingHorizontal: 5
     },
     ReviewBox: {
         backgroundColor: '#3f3a42',
