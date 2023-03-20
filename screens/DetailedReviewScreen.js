@@ -20,6 +20,8 @@ export default function DetailedReviewScreen({route}){
     var newComment = 'Your comment';
     const [comment, setComment] = React.useState(newComment);
 
+    const [dbComments, setdbComments] = React.useState('')
+
     // Uploads the comment into the related review's "comments" collection.
     async function uploadComment(){
         try{
@@ -64,6 +66,12 @@ export default function DetailedReviewScreen({route}){
         )
     }
 
+    const PopulateComments = () => {
+        let table = []
+
+        
+    }
+
 
     return(
         <SafeAreaView style={style.container}>
@@ -74,7 +82,7 @@ export default function DetailedReviewScreen({route}){
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={[style.ReviewBox, {marginHorizontal: 10}]}>
+            <TouchableOpacity style={[style.ReviewBox, {marginHorizontal: 10}]} onPress={console.log({dbComments})}>
                 <Text style={[style.buttonText, style.ReviewHeader]}>{reviewData.username}</Text>
                 <Text style={[style.buttonText, style.ReviewHeader, {color:'#63B8D6'}]}>{reviewData.restaurant_name}</Text>
                 <Text style={[style.buttonText, style.ReviewHeader]}>{reviewData.datemade.toDate().toDateString()}</Text>
@@ -98,7 +106,9 @@ export default function DetailedReviewScreen({route}){
 
             <ScrollView>
                 <View>
-                    <Text style={{color:'white'}} onPress={() => {[console.log(reviewID, '\n', reviewData)]}}>placeholder</Text>
+                    <Text style={{color:'white'}} onPress={() => {[console.log(reviewID, '\n', reviewData), 
+                                                            firebase.dbGetReviewComments(reviewID).then(result => {setdbComments([...result])})
+                ]}}>placeholder</Text>
                 </View>
             </ScrollView>
 

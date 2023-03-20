@@ -1,8 +1,9 @@
 import firestore, { firebase } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import { CountQueuingStrategy } from 'node:stream/web';
 //import firebase from '@react-native-firebase/app';
 
-module.exports = {del, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbDelete, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews, dbSetReviewComment};
+module.exports = {del, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbDelete, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews, dbSetReviewComment, dbGetReviewComments};
 
 
 /**
@@ -227,3 +228,13 @@ async function dbSetReviewComment(review_id, comment_id, value) {
     return docRef.set(value);
 }
 
+async function dbGetReviewComments(review_id) {
+    const query = await db.collection('reviews').doc(review_id).collection('comments').get();
+    // let results = new Map();
+    // query.docs.forEach((comment_query) => {
+    //     results.set(comment_query.ref.id, comment_query.data());
+    // });
+
+    // return results? results : new Map();
+    return query.docs.map(doc => doc.data());
+}
