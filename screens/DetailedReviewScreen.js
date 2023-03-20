@@ -11,9 +11,32 @@ import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function DetailedReviewScreen({route}){
+    const user = auth().currentUser;
+    
     const reviewID = route.params[0];
     const reviewData = route.params[1];
     const navigation = useNavigation();
+
+    var newComment = 'Your comment';
+    const [comment, setComment] = React.useState(newComment);
+
+    // Uploads the comment into the related review's "comments" collection.
+    async function uploadComment(){
+        try{
+            console.log('In the upload comment function');
+            var comment_id = user.uid + '_' + String(Date.now());
+            await firebase.dbSetReviewComment(reviewID, comment_id, 
+                                                {authorid: user.uid,
+                                                content: comment,
+                                                datemade: new Date(),
+                                                reviewid: reviewID,
+                                                username: user.displayName,
+                                                });
+        }
+        catch (error){
+            console.log(error)
+        }
+    }
 
     // const [reviewPhotos, setReviewPhotos] = React.useState();
     // const getReviewPhotos = async() => {
@@ -53,6 +76,7 @@ export default function DetailedReviewScreen({route}){
 
             <TouchableOpacity style={[style.ReviewBox, {marginHorizontal: 10}]}>
                 <Text style={[style.buttonText, style.ReviewHeader]}>{reviewData.username}</Text>
+                <Text style={[style.buttonText, style.ReviewHeader, {color:'#63B8D6'}]}>{reviewData.restaurant_name}</Text>
                 <Text style={[style.buttonText, style.ReviewHeader]}>{reviewData.datemade.toDate().toDateString()}</Text>
                 <Text style={[style.ReviewBoxItems, style.ReviewText]}>{reviewData.content}</Text>
                 
@@ -65,7 +89,7 @@ export default function DetailedReviewScreen({route}){
                 </FlatList> */}
                 </ScrollView>
 
-                <TouchableOpacity style={style.commentButton} onPress={() => console.log('pressed')}>
+                <TouchableOpacity style={style.commentButton} onPress={() => [console.log('pressed'), uploadComment()]}>
                     <Ionicons style={[style.globalFont, {color: '#75d9fc'}]} name='chatbox-ellipses-outline'/>
                     <Text style={{color: '#75d9fc'}}>  Leave a comment</Text>
                 </TouchableOpacity>
@@ -74,7 +98,7 @@ export default function DetailedReviewScreen({route}){
 
             <ScrollView>
                 <View>
-                    <Text style={{color:'white'}} onPress={() => {[console.log(reviewID, '\n', reviewData), console.log(auth().currentUser)]}}>placeholder</Text>
+                    <Text style={{color:'white'}} onPress={() => {[console.log(reviewID, '\n', reviewData)]}}>placeholder</Text>
                 </View>
             </ScrollView>
 
