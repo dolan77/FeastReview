@@ -55,7 +55,7 @@ export default function FollowingScreen(props){
                     // )
                     // console.log(pictures)
                 catch (error){
-                    console.log(passedInFollowingUID[i], 'does not have a profile picture on db')
+                    // console.log(passedInFollowingUID[i], 'does not have a profile picture on db')
                     // console.log(error)
                     await firebase.dbFileGetUrl('feast_blue.png').then(
                         url => {
