@@ -62,16 +62,10 @@ export default function HomeScreen() {
 							setReviews(prev => [...prev, ...dbReviews])
 						}
 					})
-
 					setFollowing(prev => [...prev, {"id": key, "name": doc.name}])
 				})
 			})
 		})
-	}
-
-	displayReviews = () => {
-		const followingUser = following.find(user => user.id == "pm6f9wpKmZM9GyEVL2HJuowhEda2")
-		console.log(followingUser.name)
 	}
 
 	getUserName = (id) => {
@@ -99,11 +93,17 @@ export default function HomeScreen() {
 								</Text>
 							</View>
 
+							{review[1].image_urls && review[1].image_urls.map(image => {
+								return (
+									<Image source={{uri: image}} key={image}/>
+								)
+							})}
+
 							<View style = {{flexDirection: "row"}}>
 								<Ionicons style={styles.locationIcon} name="location-outline">
 									<Text> - </Text>
 								</Ionicons>
-								<Text style = {styles.restaurantName}>{review[0]}</Text>
+								<Text style = {styles.restaurantName}>{review[1].restaurant_name}</Text>
 							</View>
 						</View>
 					)
@@ -113,15 +113,7 @@ export default function HomeScreen() {
 						style={styles.button}
 						onPress={logoff}
 					>
-						<Text style={{color: "white"}}>LOG OUT </Text>
-					</TouchableOpacity>
-				</View>
-				<View style={styles.container}>
-					<TouchableOpacity 
-						style={styles.button}
-						onPress={displayReviews}
-					>
-						<Text style={{color: "white"}}>R</Text>
+						<Text style={{color: "white"}}>LOG OUT</Text>
 					</TouchableOpacity>
 				</View>
 			</ScrollView>
