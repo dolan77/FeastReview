@@ -18,11 +18,11 @@ export default function DetailedReviewScreen({route}){
     const navigation = useNavigation();
 
     React.useEffect(() => {
-        firebase.dbGetReviewComments(reviewID).then(result => {setdbComments([...result])});
+        retrieveComments();
         console.log('Running useEffect')
     }, []);
 
-    var newComment = 'Your comment';
+    var newComment = 'Your comment...';
     const [comment, setComment] = React.useState(newComment);
 
     const [dbComments, setdbComments] = React.useState('')
@@ -39,6 +39,8 @@ export default function DetailedReviewScreen({route}){
                                                 reviewid: reviewID,
                                                 username: user.displayName,
                                                 });
+            retrieveComments()
+            setComment('Your comment...')
         }
         catch (error){
             console.log(error)
@@ -54,6 +56,10 @@ export default function DetailedReviewScreen({route}){
     //     }
     // }
 
+
+    const retrieveComments = async () => {
+        firebase.dbGetReviewComments(reviewID).then(result => {setdbComments([...result])});
+    }
 
     // Display review images
     const RenderItem = ({image, index}) => {
