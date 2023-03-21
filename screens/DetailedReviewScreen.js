@@ -17,6 +17,11 @@ export default function DetailedReviewScreen({route}){
     const reviewData = route.params[1];
     const navigation = useNavigation();
 
+    React.useEffect(() => {
+        firebase.dbGetReviewComments(reviewID).then(result => {setdbComments([...result])});
+        console.log('Running useEffect')
+    }, []);
+
     var newComment = 'Your comment';
     const [comment, setComment] = React.useState(newComment);
 
@@ -56,7 +61,7 @@ export default function DetailedReviewScreen({route}){
         var is_portrait = image.height > image.width
         return(
             <Image
-              style={styles.photo}
+              style={style.photo}
               width={is_portrait ? 110*(.75) : 110}
               height={is_portrait ? 110 : 110*(.75)} 
               source={{
@@ -67,14 +72,25 @@ export default function DetailedReviewScreen({route}){
     }
 
     const PopulateComments = () => {
-        let table = []
+        let table = [];
 
-        
+        for (let i = 0; i < dbComments.length; i++){
+            table.push(
+                <TouchableOpacity style={[style.ReviewBox, {marginHorizontal: 10}]} key={i} onPress={() => [console.log(dbComments[i])]}>
+                    <Text style={[style.buttonText, style.ReviewHeader]}>{dbComments[i].username}</Text>
+                    <Text style={[style.buttonText, style.ReviewHeader]}>{dbComments[i].datemade.toDate().toDateString()}</Text>
+                    <Text style={[style.ReviewBoxItems, style.ReviewText]}>{dbComments[i].content}</Text>
+                </TouchableOpacity>
+            )
+        }
+        return table;        
     }
 
 
     return(
         <SafeAreaView style={style.container}>
+
+            {/* Header of the page that contains "Review" and the back arrow. */}
             <View style={style.header}>
                 <Text style={[style.globalFont]}>Review</Text>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -82,7 +98,8 @@ export default function DetailedReviewScreen({route}){
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={[style.ReviewBox, {marginHorizontal: 10}]} onPress={console.log({dbComments})}>
+            {/* Container for the main review we are viewing comments of */}
+            <TouchableOpacity style={[style.ReviewBox]} onPress={() => [console.log(dbComments)]}>
                 <Text style={[style.buttonText, style.ReviewHeader]}>{reviewData.username}</Text>
                 <Text style={[style.buttonText, style.ReviewHeader, {color:'#63B8D6'}]}>{reviewData.restaurant_name}</Text>
                 <Text style={[style.buttonText, style.ReviewHeader]}>{reviewData.datemade.toDate().toDateString()}</Text>
@@ -103,14 +120,18 @@ export default function DetailedReviewScreen({route}){
                 </TouchableOpacity>
             </TouchableOpacity>
 
-
-            <ScrollView>
-                <View>
-                    <Text style={{color:'white'}} onPress={() => {[console.log(reviewID, '\n', reviewData), 
-                                                            firebase.dbGetReviewComments(reviewID).then(result => {setdbComments([...result])})
-                ]}}>placeholder</Text>
-                </View>
-            </ScrollView>
+            {/* Container for all comments made on review */}
+            {/* <View> */}
+                <ScrollView style={[{marginTop:5}, , {borderTopWidth:2}, {borderWidth:1}]}>
+                    <View>
+                        <Text style={{color:'white'}} onPress={() => {[console.log(reviewID, '\n', reviewData), console.log('\ntypeof ', dbComments)]}}>
+                            placeholder
+                        </Text>
+                        {dbComments.length > 0 ? PopulateComments() : <Text style={[style.globalFont, {alignSelf: 'center'}]}>No comments have been written yet....</Text>}
+                    </View>
+                </ScrollView>
+            {/* </View> */}
+            
 
         </SafeAreaView>
         
@@ -174,8 +195,9 @@ const style = StyleSheet.create({
         borderWidth: 3,
         borderRadius: 10,
         marginTop: 10,
+        marginHorizontal: 10,
         justifyContent: 'center',
-        paddingVertical: 10
+        paddingVertical: 10,
     },
     ReviewBoxItems:{
         justifyContent: 'center',
