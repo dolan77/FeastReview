@@ -19,7 +19,8 @@ export default function DetailedReviewScreen({route}){
 
     React.useEffect(() => {
         retrieveComments();
-        retrievePhotos();
+        // retrievePhotos();
+        test();
         console.log('Running useEffect')
     }, []);
 
@@ -62,12 +63,17 @@ export default function DetailedReviewScreen({route}){
         await firebase.dbGetReviewComments(reviewID).then(result => {setdbComments([...result])});
     }
 
-    let phos = []
-    const [reviewPhotos, setReviewPhotos] = React.useState([1,2])
-    const retrievePhotos = async () => {
+    var phos = [] 
+    const test = async () => await firebase.dbGetReviewPhotos(reviewData.image_urls).then((result) => {setReviewPhotos(result)})
+    const [reviewPhotos, setReviewPhotos] = React.useState([])
+    async function retrievePhotos() {
         // await firebase.dbGetReviewPhotos(reviewData.image_urls).then(urls => setReviewPhotos(urls));
-        for await(const url of reviewData.image_urls) {
-            await firebase.dbFileGetUrl('ReviewPhotos/' + url).then(db_url => setReviewPhotos([...reviewPhotos, db_url]));
+        for (const url of reviewData.image_urls) {
+            await firebase.dbFileGetUrl('ReviewPhotos/' + url)
+                .then((db_url) => {
+                    setReviewPhotos(prev => [...prev, db_url]);
+                    // console.log(db_url)
+                });
         }
     }
 
@@ -94,7 +100,7 @@ export default function DetailedReviewScreen({route}){
             table.push(
                 <TouchableOpacity style={[style.ReviewBox, {marginHorizontal: 10}]} key={i} onPress={() => [console.log(dbComments[i])]}>
                     <Text style={[style.buttonText, style.ReviewHeader]}>{dbComments[i].username}</Text>
-                    <Text style={[style.buttonText, style.ReviewHeader]}>{dbComments[i].datemade.toDate().toDateString()}</Text>
+                    <Text style={[style.buttonText, style.ReviewHeader]}>{dbComments[i].datemade.toDate().toLocaleString()}</Text>
                     <Text style={[style.ReviewBoxItems, style.ReviewText]}>{dbComments[i].content}</Text>
                 </TouchableOpacity>
             )
