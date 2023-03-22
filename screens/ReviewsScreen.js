@@ -121,6 +121,9 @@ const style = StyleSheet.create({
         flex: 1,
         backgroundColor: '#3d4051',
     },
+    buttonContainer: {
+        alignItems: 'center'
+    },
     buttonText: {
 		color: 'white',
 		fontWeight: '700',

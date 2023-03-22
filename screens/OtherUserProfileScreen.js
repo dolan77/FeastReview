@@ -109,10 +109,6 @@ export default function OtherUserProfileScreen({route}){
     []
     )
     
-    const checkUser = () => {
-        console.log(otherUser)
-    }
-    
     // Saves properties of selected image
     // Written by Kenny Du
     const [avatarPath, setAvatarPath] = React.useState();
@@ -159,7 +155,7 @@ export default function OtherUserProfileScreen({route}){
                         <Text style={styles.buttonText}>{follow}</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={[styles.button]} onPress={checkUser}>
+                    <TouchableOpacity style={[styles.button]} onPress={seeReview}>
                         <Text style={styles.buttonText}>See Reviews</Text>
                     </TouchableOpacity>
                 </View>
