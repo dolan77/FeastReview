@@ -19,6 +19,7 @@ export default function DetailedReviewScreen({route}){
 
     React.useEffect(() => {
         retrieveComments();
+        retrievePhotos();
         console.log('Running useEffect')
     }, []);
 
@@ -58,7 +59,16 @@ export default function DetailedReviewScreen({route}){
 
 
     const retrieveComments = async () => {
-        firebase.dbGetReviewComments(reviewID).then(result => {setdbComments([...result])});
+        await firebase.dbGetReviewComments(reviewID).then(result => {setdbComments([...result])});
+    }
+
+    let phos = []
+    const [reviewPhotos, setReviewPhotos] = React.useState([1,2])
+    const retrievePhotos = async () => {
+        // await firebase.dbGetReviewPhotos(reviewData.image_urls).then(urls => setReviewPhotos(urls));
+        for await(const url of reviewData.image_urls) {
+            await firebase.dbFileGetUrl('ReviewPhotos/' + url).then(db_url => setReviewPhotos([...reviewPhotos, db_url]));
+        }
     }
 
     // Display review images
@@ -130,7 +140,7 @@ export default function DetailedReviewScreen({route}){
             {/* <View> */}
                 <ScrollView style={[{marginTop:5}, , {borderTopWidth:2}, {borderWidth:1}]}>
                     <View>
-                        <Text style={{color:'white'}} onPress={() => {[console.log(reviewID, '\n', reviewData), console.log('\ntypeof ', dbComments)]}}>
+                        <Text style={{color:'white'}} onPress={() => {[console.log('revPho: ', reviewPhotos)]}}>
                             placeholder
                         </Text>
                         {dbComments.length > 0 ? PopulateComments() : <Text style={[style.globalFont, {alignSelf: 'center'}]}>No comments have been written yet....</Text>}
