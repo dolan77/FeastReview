@@ -32,6 +32,7 @@ export default function ReviewPage({route}) {
             console.log('In the upload review function');
             var review_id = restaurantData.data.alias + '_' + user.uid + '_' + String(Date.now());
             await firebase.dbSet('reviews', review_id, {authorid: user.uid,
+                                                        username: user.displayName,
                                                         content: review,
                                                         datemade: new Date(),
                                                         image_urls: Get_Image_URLs(review_id),
