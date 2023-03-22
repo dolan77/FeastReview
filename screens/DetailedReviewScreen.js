@@ -19,8 +19,7 @@ export default function DetailedReviewScreen({route}){
 
     React.useEffect(() => {
         retrieveComments();
-        // retrievePhotos();
-        test();
+        retrievePhotos();
         console.log('Running useEffect')
     }, []);
 
@@ -63,19 +62,11 @@ export default function DetailedReviewScreen({route}){
         await firebase.dbGetReviewComments(reviewID).then(result => {setdbComments([...result])});
     }
 
-    var phos = [] 
-    const test = async () => await firebase.dbGetReviewPhotos(reviewData.image_urls).then((result) => {setReviewPhotos(result)})
     const [reviewPhotos, setReviewPhotos] = React.useState([])
-    async function retrievePhotos() {
-        // await firebase.dbGetReviewPhotos(reviewData.image_urls).then(urls => setReviewPhotos(urls));
-        for (const url of reviewData.image_urls) {
-            await firebase.dbFileGetUrl('ReviewPhotos/' + url)
-                .then((db_url) => {
-                    setReviewPhotos(prev => [...prev, db_url]);
-                    // console.log(db_url)
-                });
-        }
+    const retrievePhotos = async () => {
+        await firebase.dbGetReviewPhotos(reviewData.image_urls).then((result) => {setReviewPhotos(result)});
     }
+    
 
     // Display review images
     const RenderItem = ({image, index}) => {
