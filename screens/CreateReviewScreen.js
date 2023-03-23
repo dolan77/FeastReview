@@ -37,6 +37,7 @@ export default function ReviewPage({route}) {
             //adjectivesSentimentIncrement(review,restaurantData.data.alias).forEach(result => console.log(result));
 
             await firebase.dbSet('reviews', review_id, {authorid: user.uid,
+                                                        username: user.displayName,
                                                         content: review,
                                                         datemade: new Date(),
                                                         image_urls: Get_Image_URLs(review_id),

@@ -72,7 +72,7 @@ function StackScreens(props) {
         <Stack.Navigator  initialRouteName={props.initial_route}>
 				<Stack.Screen name="Home Screen" component={HomeScreen} />
                 <Stack.Screen name='Search Screen' component={SearchScreen} />
-				<Stack.Screen name="Your Profile" component={ProfileScreen} />
+				<Stack.Screen options={{headerShown: false}}name="Your Profile" component={ProfileScreen} />
 				<Stack.Screen options={{headerShown: false}}name="Reviews" component={ReviewsScreen} />
 				<Stack.Screen name="Messages" component={MessagesScreen} />
 				<Stack.Screen name="Followers" component={FollowersScreen} />
@@ -80,7 +80,7 @@ function StackScreens(props) {
 				<Stack.Screen name="RestaurantProfile" component={RestaurantProfileScreen} />
 				<Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen}/>
 				<Stack.Screen name="Create Review" component={CreateReviewScreen} />
-				<Stack.Screen name='FollowersAndFollowing' component={FollowersAndFollowingScreen}/>
+				<Stack.Screen options={{title: ''}}name='FollowersAndFollowing' component={FollowersAndFollowingScreen}/>
                 <Stack.Screen options={{headerShown: false}}name='SavedRestaurants' component = {SavedRestaurantsScreen} />
 			</Stack.Navigator>
     )
