@@ -187,7 +187,6 @@ export default function UserProfileScreen(){
                         width: 120,
                         height: 120,
                         cropping: true,
-                        // includeBase64: true,
                         cropperCircleOverlay: true
                     }).then(image? image => {
                         setAvatarPath(image.path);

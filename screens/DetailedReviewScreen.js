@@ -99,6 +99,15 @@ export default function DetailedReviewScreen({route}){
         return table;        
     }
 
+    const PopulateReviewPhotos = () => {
+        return reviewPhotos.map((photo, i) => {
+            // console.log(photo.offsetHeight)
+            return (
+            <Image style={style.photo} source={{uri:photo}} key={i}/>
+            )
+        })
+    }
+
 
     return(
         <SafeAreaView style={style.container}>
@@ -112,32 +121,29 @@ export default function DetailedReviewScreen({route}){
             </View>
 
             {/* Container for the main review we are viewing comments of */}
-            <TouchableOpacity style={[style.ReviewBox]} onPress={() => [console.log(dbComments)]}>
+            <View style={[style.ReviewBox]}>
                 <Text style={[style.buttonText, style.ReviewHeader]}>{reviewData.username}</Text>
                 <Text style={[style.buttonText, style.ReviewHeader, {color:'#63B8D6'}]}>{reviewData.restaurant_name}</Text>
                 <Text style={[style.buttonText, style.ReviewHeader]}>{reviewData.datemade.toDate().toDateString()}</Text>
                 <Text style={[style.ReviewBoxItems, style.ReviewText]}>{reviewData.content}</Text>
                 
+                {/* Container for the review's photos */}
                 <ScrollView horizontal={true} style={style.photo_container} contentContainerStyle={style.photo_content_container}>
-                {/* <FlatList
-                  data={images}
-                  renderItem={({item}) => <RenderItem image={item}/>}
-                  keyExtractor={item => item.id}
-                  numColumns={5} >
-                </FlatList> */}
+                    {PopulateReviewPhotos()}
                 </ScrollView>
 
+                {/* Button to leave a comment */}
                 <TouchableOpacity style={style.commentButton} onPress={() => [console.log('pressed'), uploadComment()]}>
                     <Ionicons style={[style.globalFont, {color: '#75d9fc'}]} name='chatbox-ellipses-outline'/>
                     <Text style={{color: '#75d9fc'}}>  Leave a comment</Text>
                 </TouchableOpacity>
-            </TouchableOpacity>
+            </View>
 
             {/* Container for all comments made on review */}
             {/* <View> */}
                 <ScrollView style={[{marginTop:5}, , {borderTopWidth:2}, {borderWidth:1}]}>
                     <View>
-                        <Text style={{color:'white'}} onPress={() => {[console.log('revPho: ', reviewPhotos)]}}>
+                        <Text style={{color:'white'}} onPress={() => {[console.log('revPho: ', reviewPhotos[0])]}}>
                             placeholder
                         </Text>
                         {dbComments.length > 0 ? PopulateComments() : <Text style={[style.globalFont, {alignSelf: 'center'}]}>No comments have been written yet....</Text>}
@@ -186,7 +192,9 @@ const style = StyleSheet.create({
 		marginLeft: 5,
 		borderWidth: 1,
 		borderColor: 'gray',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        height: 200,
+        width: 200,
     },
     photo_container: {
         horizontal: 'true',
