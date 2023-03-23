@@ -155,7 +155,7 @@ export default function RestaurantProfileScreen({route}){
     /**
      * method to add a review to the current restaurant
      */
-    const addReview = (hoursData) => {
+    const addReview = () => {
         nagivation.navigate('Create Review', {restaurantData})
     }
 
@@ -182,9 +182,11 @@ export default function RestaurantProfileScreen({route}){
         let table = []
         if (reviews.length != 0){
             for(let i = 0;  i < limit; i++){
+                const reviewAverage = ((reviews[i][1].star_atmos + reviews[i][1].star_foods + reviews[i][1].star_service) /3)
                 table.push(
                 <TouchableOpacity key={i} style={[style.ReviewBox, {marginHorizontal: 10}]}>
                     <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].username}</Text>
+                    <Text style={[style.buttonText, style.ReviewHeader]}>{starRating(0,reviewAverage)}</Text>
                     <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].datemade.toDate().toDateString()}</Text>
                     <Text style={[style.ReviewBoxItems, style.ReviewText]}>{reviews[i][1].content}</Text>
                 </TouchableOpacity>)
