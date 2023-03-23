@@ -56,27 +56,30 @@ function adjectivesSentimentIncrement(review, restaurantAlias){
     let sentences = review.match( /[^\.!\?]+[\.!\?]+/g ); // split review into sentences
 
     let toUpdate = {};
-    sentences.forEach((sentence) => {
-        let sentiment = getSentiment(sentence); // get sentiment score per sentence
-        adjectives.forEach(adjective => {
-            if(sentence.includes(adjective)){
-                adjectivesSentiment[adjective] += sentiment; // sum up per-sentence sentiment score per adjective
-            }
-            
+    if(sentences){
+        sentences.forEach((sentence) => {
+            let sentiment = getSentiment(sentence); // get sentiment score per sentence
+            adjectives.forEach(adjective => {
+                if(sentence.includes(adjective)){
+                    adjectivesSentiment[adjective] += sentiment; // sum up per-sentence sentiment score per adjective
+                }
+                
+            });
+            adjectives.forEach(adjective => { //add up total and sentiment score
+                toUpdate[`adjectives.${adjective}.total`] = 1;
+                if(adjectivesSentiment[adjective] > 0){
+                    toUpdate[`adjectives.${adjective}.positive`] = 1;
+                }
+                else if(adjectivesSentiment[adjective] < 0) {
+                    toUpdate[`adjectives.${adjective}.negative`] = 1;
+                }
+            });
         });
-        adjectives.forEach(adjective => { //add up total and sentiment score
-            toUpdate[`adjectives.${adjective}.total`] = 1;
-            if(adjectivesSentiment[adjective] > 0){
-                toUpdate[`adjectives.${adjective}.positive`] = 1;
-            }
-            else if(adjectivesSentiment[adjective] < 0) {
-                toUpdate[`adjectives.${adjective}.negative`] = 1;
-            }
+        return firebase.dbCreateBlank("restaurants", restaurantAlias).then(() => { // send to database
+            firebase.dbIncrement("restaurants", restaurantAlias, toUpdate);
         });
-    });
-    return firebase.dbCreateBlank("restaurants", restaurantAlias).then(() => { // send to database
-        firebase.dbIncrement("restaurants", restaurantAlias, toUpdate);
-    });
+    }
+    return null;
 }
 
 /**
