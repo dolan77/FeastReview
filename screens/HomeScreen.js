@@ -14,7 +14,8 @@ export default function HomeScreen() {
 	const user = auth().currentUser
 	const [reviews, setReviews] = useState([])
 	const [following, setFollowing] = useState([])
-
+	const [followingPfp, setFollowingPfp] = useState([])
+	const [reviewPhotos, setReviewPhotos] = useState([])
 	const navigation = useNavigation()
 
 	/**
@@ -32,6 +33,8 @@ export default function HomeScreen() {
 
 		setReviews([])
 		setFollowing([])
+		setFollowingPfp([])
+		setReviewPhotos([])
 		getFollowers(user.uid)
 	}, [])
 
@@ -49,17 +52,41 @@ export default function HomeScreen() {
 	
 	/**
 	 * Gets the user's following and sets them to the reviews state
+	 * Gets the following user's profile pic
 	 * @param {*} uid user's unique id
 	 */
 	getFollowers = (uid) => {
 		firebase.dbGet('users', uid)
 		.then(result => {
-			firebase.dbGetFollowed(result.following).then(result => {
+			firebase.dbGetFollowed(result.following)
+			.then(result => {
 				result.forEach( (doc, key) => {
+					// firebase.dbFileGetUrl('ProfilePictures/' + key)
+					// .then(url => {
+                    //     setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}])
+                    // })
+					// .catch((error) => {
+                    //     firebase.dbFileGetUrl('feast_blue.png')
+					// 	.then(url => {
+					// 		setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}])
+					// 	})
+                    // })
+
+					// gets user's reviews
 					firebase.dbGetReviews(key, "authorid")
 					.then(dbReviews => {
 						if (dbReviews.size !== 0) {
 							setReviews(prev => [...prev, ...dbReviews])
+
+							dbReviews.forEach((review, restaurant_alias) => {
+								if (review.image_urls.length !== 0) {
+									firebase.dbGetReviewPhotos(review.image_urls)
+									.then(photos => {
+										setReviewPhotos(prev => [...prev, {[key + restaurant_alias] : photos}])
+									})
+								}
+							})
+							
 						}
 					})
 					setFollowing(prev => [...prev, {"id": key, "name": doc.name}])
@@ -93,11 +120,22 @@ export default function HomeScreen() {
 								</Text>
 							</View>
 
-							{review[1].image_urls && review[1].image_urls.map(image => {
-								return (
-									<Image source={{uri: image}} key={image}/>
-								)
-							})}
+							{review[1].image_urls.length !== 0 && 
+								<ScrollView horizontal={true} style={styles.photo_container} contentContainerStyle={styles.photo_content_container}>
+									{reviewPhotos.map(images => {
+										if (images[review[1].authorid + review[0]]) {
+											return images[review[1].authorid + review[0]].map(image => {
+												return (
+													<Image 
+														source={{uri: image}} 
+														style={{width: 120, height: 120, borderRadius: 10, margin: 2}}
+													/>
+												)
+											})
+										}
+									})}
+								</ScrollView>
+								}
 
 							<View style = {{flexDirection: "row"}}>
 								<Ionicons style={styles.locationIcon} name="location-outline">
@@ -116,6 +154,7 @@ export default function HomeScreen() {
 						<Text style={{color: "white"}}>LOG OUT</Text>
 					</TouchableOpacity>
 				</View>
+				
 			</ScrollView>
 		</View>
 	)
@@ -210,5 +249,17 @@ const styles = StyleSheet.create({
 		borderColor: 'black',
 		alignSelf: 'center',
 		margin: 3,
-	}
+	},
+
+	photo_container: {
+        horizontal: 'true',
+        width: 360,
+        height: 100,
+        margin:5,
+        alignSelf: 'center'
+    },
+	photo_content_container: {
+        alignItems:'center',
+        paddingHorizontal: 5,
+    },
 })
