@@ -14,7 +14,7 @@ import colors from '../utils/colors'
 
 // function that returns the screen for a Restaurant's profile
 export default function RestaurantProfileScreen({route}){
-    const nagivation = useNavigation();
+    const navigation = useNavigation();
     const dayOfTheWeek = [ "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
     const restaurantData = route.params;
     const [saved, setSaved] = React.useState('')
@@ -181,7 +181,7 @@ export default function RestaurantProfileScreen({route}){
      * method to add a review to the current restaurant
      */
     const addReview = (hoursData) => {
-        nagivation.navigate('Create Review', {restaurantData})
+        navigation.navigate('Create Review', {restaurantData})
     }
 
     const handlePress = () => {
