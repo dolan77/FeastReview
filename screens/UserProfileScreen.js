@@ -201,7 +201,7 @@ export default function UserProfileScreen(){
         }
         
     }
-    
+
     // this returns the User Profile Screen onto the application on the mobile device. The screen consists of a picture, user name, biography, expertise, and three
     // buttons to navigate to another screen. The user is also able to edit their bio, which leads to a different screen and updates the bio on the database.
     return(
@@ -238,21 +238,18 @@ export default function UserProfileScreen(){
         </Modal>
         
         <View style= {{flex: 3, backgroundColor: '#171414'}}>
-
-            
             <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
                 <Image style = {[styles.tinyLogo]} source ={{uri:avatarPath}}/>
-                <Text style = {[styles.globalFont, {fontSize: 15}, {color: '#75d9fc'}, {paddingTop: 3}]}
-                    onPress = {() => {console.log('Pressed edit photo'); changePicture()}}>
-                    Edit Photo</Text>
                 <Text style = {[styles.globalFont, {fontSize: 25}]}>{user.displayName}</Text>
                 <Text style = {styles.globalFont} onPress={() => {console.log('avatar: ', avatarPath)}}>Dessert Expert</Text>
             </View> 
 
             <View style = {[{flex: 1}, styles.bioSubscriptContent]}>
                 <Text style={[styles.globalFont]}>{bio}</Text>
-                <Text style = {[styles.editButton, styles.globalFont, {fontSize: 15}, {color: '#75d9fc'}]} onPress={() => setModalVisible(true)}>Edit Bio</Text>
-                
+            </View>
+            
+            <View style = {[{flex: 1}, styles.bioSubscriptContent]}>
+                <Text style = {[styles.editButton, styles.globalFont, {fontSize: 15}, {color: colors.feastBlue}]} onPress = {() => navigation.navigate('EditProfile')}>Edit Profile</Text>
             </View>
 
         </View> 
