@@ -104,18 +104,37 @@ export default function EditProfileScreen(){
     return (
         <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
             <View style = {styles.container}>
-                <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
-                    <Image style = {[styles.tinyLogo]} source ={{uri:avatarPath}}/>
-                    <Text style = {[styles.globalFont, {fontSize: 15}, {color: colors.feastBlue}, {paddingTop: 3}]}
-                        onPress = {() => {console.log('Pressed edit photo'); changePicture()}}>
-                        Edit Photo</Text>
-                    <Text style = {[styles.globalFont, {fontSize: 25}]}>{user.displayName}</Text>
-                    <Text style = {styles.globalFont} onPress={() => {console.log('avatar: ', avatarPath)}}>Dessert Expert</Text>
-                </View> 
+                <View style = {{flexDirection: 'row'}}>
+                    <View style = {{justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={styles.profileLabel}>Profile Picture</Text>
+                        <Image style = {[styles.tinyLogo]} source ={{uri:avatarPath}}/>
+                    </View>
 
-                <View style = {[{flex: 1}, styles.bioSubscriptContent]}>
-                    <Text style={[styles.globalFont]}>{bio}</Text>
-                    <Text style = {[styles.editButton, styles.globalFont, {fontSize: 15}, {color: colors.feastBlue}]} onPress={() => setModalVisible(true)}>Edit Bio</Text>
+                    <View style = {{justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={styles.editButton} onPress = {() => {console.log('Pressed edit photo'); changePicture()}}>Edit</Text>
+                    </View>
+                </View>
+
+                <View>
+                    <View style = {{justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={styles.profileLabel}>Username</Text>
+                    </View>
+                </View>
+
+                <View>
+                    <View style = {{justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={styles.profileLabel}>Title</Text>
+                    </View>
+                </View>
+
+                <View>
+                    <View style = {{justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={styles.profileLabel}>Biography</Text>
+                    </View>
+
+                    <View style = {{justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={styles.editButton} onPress = {() => setModalVisible(true)}>Edit</Text>
+                    </View>
                 </View>
             </View>
         </View>
@@ -134,9 +153,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15
     },
     editButton: {
-        color: colors.white,
+        color: colors.feastBlue,
         fontWeight: 'bold',
-        
     },
     globalFont:{
         color: colors.white,
@@ -151,4 +169,9 @@ const styles = StyleSheet.create({
         borderWidth: 5,
         borderColor: colors.feastBlue
     },
+    profileLabel:{
+        color: colors.gray,
+        fontSize: 14,
+        fontWeight: 'bold'
+    }
 });
