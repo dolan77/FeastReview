@@ -8,5 +8,7 @@ module.exports = {
     goodGreen: '#4fa825',
     badRed: '#ab0000',
     gray: '#B8B8B8',
+    legendGold: '#F8C96E',
+    expertRed: '#FA5252',
     modTransparent: '71' // just add this to the end of something to make it transparent, ex. feastBlue + modTransparent
 }

@@ -15,7 +15,6 @@ import colors from '../utils/colors';
 // function that returns the screen for the current user
 export default function UserProfileScreen(){
     const user = auth().currentUser;
-    const [modalVisible, setModalVisible] = React.useState(false);
     const [bio, setBio] = React.useState('');
     const navigation = useNavigation();
     
@@ -24,19 +23,6 @@ export default function UserProfileScreen(){
         getAvatarDB();
     }, [])
     
-    /**
-     * 
-     * @param {value.nativeEvent.text} newValue - this is the value of the textbox
-     */
-    async function changeBio(newValue) {
-        // push changes to database, backend can do that
-        try {
-            await firebase.dbUpdateOnce('users', user.uid, "bio", newValue);
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     // function that retrieves the bio from the firestore database
     async function getBio() {
         // push changes to database, backend can do that
@@ -46,13 +32,6 @@ export default function UserProfileScreen(){
         } catch (error) {
             console.log(error)
         }
-    }
-
-
-    // function that will update the bio on the user's screen
-    const updateBio = (newValue) => {
-        setBio(newValue)
-        changeBio(newValue)
     }
     
     /**
@@ -176,67 +155,11 @@ export default function UserProfileScreen(){
 			})
 			.catch(error => alert(error.message))
 	}
-    
-    
-    /**
-     * Method that handle the user's ability to change their profile picture
-     * Written by Kenny Du
-     */
-    const changePicture = async() => {
-        try{
-            await ImagePicker.openPicker({
-                        width: 120,
-                        height: 120,
-                        cropping: true,
-                        // includeBase64: true,
-                        cropperCircleOverlay: true
-                    }).then(image? image => {
-                        setAvatarPath(image.path);
-                        console.log('image: ', image);
-                        firebase.dbFileAdd('ProfilePictures/' + user.uid, image.path)
-                    }: console.log('cancelled'));
-        }
-        catch (error){
-            console.log(error)
-        }
-        
-    }
 
     // this returns the User Profile Screen onto the application on the mobile device. The screen consists of a picture, user name, biography, expertise, and three
     // buttons to navigate to another screen. The user is also able to edit their bio, which leads to a different screen and updates the bio on the database.
     return(
     <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-            
-            setModalVisible(!modalVisible);
-            }}>
-            <View style = {styles.modalView}>
-                <View>
-                    <Text style = {[styles.globalFont]}>Your new bio will be...</Text>
-                </View>
-
-                <TextInput
-                style={styles.input}
-                maxLength={100}
-                numberOfLines = {4}
-                onSubmitEditing={(value) => updateBio(value.nativeEvent.text)}
-                />
-                <Button
-                title="go back"
-                onPress={() => setModalVisible(!modalVisible)}
-                />
-                <View style={{alignItems: 'center'}}>
-                    <Text style={styles.modalText}>100 characters max</Text>
-                    <Text style={styles.modalText}>Press Submit before you click the go back button if you want to submit your changes to bio</Text>
-                </View>
-                
-            </View>
-        </Modal>
-        
         <View style= {{flex: 3, backgroundColor: '#171414'}}>
             <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
                 <Image style = {[styles.tinyLogo]} source ={{uri:avatarPath}}/>

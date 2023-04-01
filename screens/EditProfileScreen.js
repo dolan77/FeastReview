@@ -9,6 +9,7 @@ import * as firebase from '../utils/firebase'
 
 import ImagePicker from 'react-native-image-crop-picker';
 import colors from '../utils/colors';
+import expertise from '../utils/expertise'
 
 export default function EditProfileScreen(){
     const user = auth().currentUser;
@@ -17,14 +18,24 @@ export default function EditProfileScreen(){
 
     const [modalVisible, setModalVisible] = React.useState(false);
     const [bio, setBio] = React.useState('');
+    const [title, setTitle] = React.useState('');
+    const [possibleTitles, setPossibleTitles] = React.useState([]);
     const [avatarPath, setAvatarPath] = React.useState();
 
-
     React.useEffect(() => {
-        getBio();
+        getProfile();
         getAvatarDB();
+        loadTitles();
     }, [])
 
+    /**
+     * for loading all possible titles at start of page
+     */
+    function loadTitles(){
+        expertise.getPossibleTitles(user.uid).then(result => {
+            console.log("titles" + result);
+        });
+    }
 
     /**
      * 
@@ -40,11 +51,12 @@ export default function EditProfileScreen(){
     }
 
     // function that retrieves the bio from the firestore database
-    async function getBio() {
+    async function getProfile() {
         // push changes to database, backend can do that
         try {
-            const userBio = await firebase.dbGet('users', user.uid);
-            setBio(userBio.bio)
+            const userProfile = await firebase.dbGet('users', user.uid);
+            setBio(userProfile.bio)
+            setTitle(userProfile.title)
         } catch (error) {
             console.log(error)
         }
@@ -81,30 +93,61 @@ export default function EditProfileScreen(){
      * Method that handle the user's ability to change their profile picture
      * Written by Kenny Du
      */
-        const changePicture = async() => {
-            try{
-                await ImagePicker.openPicker({
-                            width: 120,
-                            height: 120,
-                            cropping: true,
-                            // includeBase64: true,
-                            cropperCircleOverlay: true
-                        }).then(image? image => {
-                            setAvatarPath(image.path);
-                            console.log('image: ', image);
-                            firebase.dbFileAdd('ProfilePictures/' + user.uid, image.path)
-                        }: console.log('cancelled'));
-            }
-            catch (error){
-                console.log(error)
-            }
-            
+    const changePicture = async() => {
+        try{
+            await ImagePicker.openPicker({
+                        width: 120,
+                        height: 120,
+                        cropping: true,
+                        // includeBase64: true,
+                        cropperCircleOverlay: true
+                    }).then(image? image => {
+                        setAvatarPath(image.path);
+                        console.log('image: ', image);
+                        firebase.dbFileAdd('ProfilePictures/' + user.uid, image.path)
+                    }: console.log('cancelled'));
         }
+        catch (error){
+            console.log(error)
+        }
+        
+    }
 
     return (
         <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                
+                setModalVisible(!modalVisible);
+                }}>
+                <View style = {styles.modalView}>
+                    <View>
+                        <Text style = {[styles.globalFont]}>Your new bio will be...</Text>
+                    </View>
+
+                    <TextInput
+                    style={styles.input}
+                    maxLength={100}
+                    numberOfLines = {4}
+                    onSubmitEditing={(value) => updateBio(value.nativeEvent.text)}
+                    />
+                    <Button
+                    title="go back"
+                    onPress={() => setModalVisible(!modalVisible)}
+                    />
+                    <View style={{alignItems: 'center'}}>
+                        <Text style={styles.modalText}>100 characters max</Text>
+                        <Text style={styles.modalText}>Press Submit before you click the go back button if you want to submit your changes to bio</Text>
+                    </View>
+                    
+                </View>
+            </Modal>
+
             <View style = {styles.container}>
-                <View style = {{flexDirection: 'row'}}>
+                <View style = {styles.rowContainer}>
                     <View style = {{justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={styles.profileLabel}>Profile Picture</Text>
                         <Image style = {[styles.tinyLogo]} source ={{uri:avatarPath}}/>
@@ -115,21 +158,24 @@ export default function EditProfileScreen(){
                     </View>
                 </View>
 
-                <View>
+                <View style = {styles.rowContainer}>
                     <View style = {{justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={styles.profileLabel}>Username</Text>
+                        <Text style={styles.globalFont}>{user.displayName}</Text>
                     </View>
                 </View>
 
-                <View>
+                <View style = {styles.rowContainer}>
                     <View style = {{justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={styles.profileLabel}>Title</Text>
+                        <Text style={styles.globalFont}>{title}</Text>
                     </View>
                 </View>
 
-                <View>
+                <View style = {styles.rowContainer}>
                     <View style = {{justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={styles.profileLabel}>Biography</Text>
+                        <Text style={styles.bioFont}>{bio}</Text>
                     </View>
 
                     <View style = {{justifyContent: 'center', alignItems: 'center'}}>
@@ -148,6 +194,9 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 	}, 
+    rowContainer: {
+        flexDirection: 'row'
+    },
     bioSubscriptContent:{
         alignItems: 'center',
         paddingHorizontal: 15
@@ -159,6 +208,11 @@ const styles = StyleSheet.create({
     globalFont:{
         color: colors.white,
         fontSize: 20,
+        fontWeight: '500', 
+    },
+    bioFont:{
+        color: colors.white,
+        fontSize: 14,
         fontWeight: '500', 
     },
     tinyLogo: {

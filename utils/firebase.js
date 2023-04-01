@@ -2,7 +2,7 @@ import firestore, { firebase } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 //import firebase from '@react-native-firebase/app';
 
-module.exports = {dbCreateBlank, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetFollowers, dbGetFollowed, dbIncrement};
+module.exports = {dbCreateBlank, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbIncrement};
 
 
 /**
