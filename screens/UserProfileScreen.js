@@ -9,6 +9,7 @@ import * as firebase from '../utils/firebase'
 
 import ImagePicker from 'react-native-image-crop-picker';
 import colors from '../utils/colors';
+import expertise from '../utils/expertise';
 
 // background color: #3d4051 change for View, bioSubscript, flexbio, flexbutton
 
@@ -16,13 +17,29 @@ import colors from '../utils/colors';
 export default function UserProfileScreen(){
     const user = auth().currentUser;
     const [bio, setBio] = React.useState('');
+    const [title, setTitle] = React.useState('');
     const navigation = useNavigation();
     
     React.useEffect(() => {
         getBio();
         getAvatarDB();
+        getTitle();
     }, [])
     
+
+
+    /**
+     * @returns user title or message
+     */
+    function getTitle(){
+        return firebase.dbGet('users', user.uid).then(userProfile => {
+            if(!Object.hasOwn(userProfile, 'title') || !userProfile.title){
+                setTitle('No title, post more reviews!');
+            }
+            setTitle(userProfile.title);
+        })
+    }
+
     // function that retrieves the bio from the firestore database
     async function getBio() {
         // push changes to database, backend can do that
@@ -164,7 +181,7 @@ export default function UserProfileScreen(){
             <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
                 <Image style = {[styles.tinyLogo]} source ={{uri:avatarPath}}/>
                 <Text style = {[styles.globalFont, {fontSize: 25}]}>{user.displayName}</Text>
-                <Text style = {styles.globalFont} onPress={() => {console.log('avatar: ', avatarPath)}}>Dessert Expert</Text>
+                <Text style = {[styles.globalFont, expertise.titleStyle(title)]} onPress={() => {console.log('avatar: ', avatarPath)}}>{title}</Text>
             </View> 
 
             <View style = {[{flex: 1}, styles.bioSubscriptContent]}>

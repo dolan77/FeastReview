@@ -1,6 +1,7 @@
 module.exports = {
     feastBlue: '#75d9fc',
     feastBlueDark: '#63B8D6',
+    backgroundDarkLight: '#50546b',
     backgroundDark: '#3D4051',
     backgroundDarker: '#262833',
     white: '#ffffff',

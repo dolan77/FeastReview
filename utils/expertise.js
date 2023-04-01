@@ -10,25 +10,22 @@ module.exports = {titleStyle, getPossibleTitles}
  * @param {*} fontSize desired font size to fit anywhere
  * @returns 
  */
-function titleStyle(title, fontSize){
-    switch(title.split(" ").at(-1)){
+function titleStyle(title){
+    switch(title.split(" ").pop()){
         case "Expert":
             return {
                 color: colors.expertRed,
-                fontWeight: 'bold',
-                fontSize: fontSize
+                fontWeight: 'bold'
             }
         case "Legend":
             return {
                 color: colors.legendGold,
                 fontStyle: 'italic',
-                fontWeight: 'bold',
-                fontSize: fontSize
+                fontWeight: 'bold'
             }
         default:
             return {
-                color: colors.white,
-                fontSize: fontSize
+                color: colors.white
             }
         
     }

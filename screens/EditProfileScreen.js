@@ -114,7 +114,7 @@ export default function EditProfileScreen(){
     }
 
     return (
-        <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
+        <View style = {{flex: 1, backgroundColor: colors.backgroundDark}}>
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -148,38 +148,64 @@ export default function EditProfileScreen(){
 
             <View style = {styles.container}>
                 <View style = {styles.rowContainer}>
-                    <View style = {{justifyContent: 'center', alignItems: 'center'}}>
+                    <View style = {styles.leftItem}>
                         <Text style={styles.profileLabel}>Profile Picture</Text>
-                        <Image style = {[styles.tinyLogo]} source ={{uri:avatarPath}}/>
+                        <Image style = {[styles.profilePicture]} source ={{uri:avatarPath}}/>
                     </View>
 
-                    <View style = {{justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={styles.editButton} onPress = {() => {console.log('Pressed edit photo'); changePicture()}}>Edit</Text>
+                    <View style = {styles.rightItem}>
+                        <TouchableOpacity style={styles.editButton} onPress = {() => {console.log('Pressed edit photo'); changePicture()}}>
+                            <Text style={styles.editText}>Edit</Text>        
+                        </TouchableOpacity>
+
                     </View>
                 </View>
 
+                <View style={styles.horizontalLine}></View>
+
                 <View style = {styles.rowContainer}>
-                    <View style = {{justifyContent: 'center', alignItems: 'center'}}>
+                    <View style = {styles.leftItem}>
                         <Text style={styles.profileLabel}>Username</Text>
                         <Text style={styles.globalFont}>{user.displayName}</Text>
                     </View>
+
+                    <View style = {styles.rightItem}>
+                        <TouchableOpacity style={styles.editButton}>
+                            <Text style={styles.editText}>Edit</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
+
+
                 <View style = {styles.rowContainer}>
-                    <View style = {{justifyContent: 'center', alignItems: 'center'}}>
+                    <View style = {styles.leftItem}>
                         <Text style={styles.profileLabel}>Title</Text>
-                        <Text style={styles.globalFont}>{title}</Text>
+                        <Text style={[styles.globalFont, expertise.titleStyle(title)]}>{title}</Text>
+                    </View>
+
+                    <View style = {styles.rightItem}>
+                        <TouchableOpacity style={styles.editButton}>
+                            <Text style={styles.editText}>Edit</Text>
+                        </TouchableOpacity>
+
                     </View>
                 </View>
 
+
+
                 <View style = {styles.rowContainer}>
-                    <View style = {{justifyContent: 'center', alignItems: 'center'}}>
+                    <View style = {styles.leftItem}>
                         <Text style={styles.profileLabel}>Biography</Text>
-                        <Text style={styles.bioFont}>{bio}</Text>
+                        <View style={styles.bioBox}>
+                            <Text style={styles.bioFont}>{bio}</Text>
+                        </View>
                     </View>
 
-                    <View style = {{justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={styles.editButton} onPress = {() => setModalVisible(true)}>Edit</Text>
+                    <View style = {styles.rightItem}>
+                        <TouchableOpacity style={styles.editButton} onPress = {() => setModalVisible(true)}>
+                            <Text style={styles.editText}>Edit</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </View>
@@ -189,43 +215,92 @@ export default function EditProfileScreen(){
 
 const styles = StyleSheet.create({
     container: {
-		backgroundColor: '#3d4051',
+		backgroundColor: colors.backgroundDarker,
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
+        margin:15,
+        borderRadius:10,
+        borderColor: colors.black,
+        borderWidth:2
 	}, 
     rowContainer: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    leftItem: {
+        justifyContent: 'flex-start', 
+        alignItems: 'center', 
+        flexGrow: 1,
+        margin: 10
+    },
+    rightItem: {
+        justifyContent: 'flex-end', 
+        alignItems: 'center', 
+        flexGrow: 1,
+        margin:10
     },
     bioSubscriptContent:{
         alignItems: 'center',
         paddingHorizontal: 15
     },
-    editButton: {
+    editText: {
         color: colors.feastBlue,
+        alignSelf: 'flex-end',
+        textAlign: 'center',
         fontWeight: 'bold',
+    },
+    editButton: {
+        backgroundColor: colors.backgroundDarkLight,
+        alignSelf: 'flex-end',
+        textAlign: 'right',
+        paddingHorizontal:5,
+        paddingVertical: 2,
+        borderRadius:10,
+        borderColor: colors.black,
+        borderWidth:2
     },
     globalFont:{
         color: colors.white,
+        alignSelf: 'flex-start',
         fontSize: 20,
         fontWeight: '500', 
     },
     bioFont:{
         color: colors.white,
+        alignSelf: 'flex-start',
+        textAlign: 'left',
         fontSize: 14,
-        fontWeight: '500', 
+        fontWeight: '500',
+        margin:5 
     },
-    tinyLogo: {
+    bioBox:{
+        color: colors.white,
+        alignSelf: 'flex-start',
+        flewGrow: 1,
+        borderWidth:2,
+        borderColor: colors.gray,
+        marginVertical:5,
+        borderRadius:5
+    },
+    profilePicture: {
         width: 120,
         height: 120,
         borderRadius: 150,
         overflow: 'hidden',
         borderWidth: 5,
-        borderColor: colors.feastBlue
+        borderColor: colors.feastBlue,
+        alignSelf: 'flex-start',
     },
     profileLabel:{
         color: colors.gray,
+        alignSelf: 'flex-start',
+        textAlign: 'left',
         fontSize: 14,
         fontWeight: 'bold'
-    }
+    },
+    horizontalLine:{
+        height: 2, 
+        backgroundColor: colors.white
+    },
 });
