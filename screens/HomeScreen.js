@@ -61,16 +61,6 @@ export default function HomeScreen() {
 			firebase.dbGetFollowed(result.following)
 			.then(result => {
 				result.forEach( (doc, key) => {
-					// firebase.dbFileGetUrl('ProfilePictures/' + key)
-					// .then(url => {
-                    //     setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}])
-                    // })
-					// .catch((error) => {
-                    //     firebase.dbFileGetUrl('feast_blue.png')
-					// 	.then(url => {
-					// 		setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}])
-					// 	})
-                    // })
 
 					// gets user's reviews
 					firebase.dbGetReviews(key, "authorid")
@@ -89,14 +79,50 @@ export default function HomeScreen() {
 							
 						}
 					})
+
+					firebase.dbFileGetUrl('ProfilePictures/' + key)
+					.then(url => {
+                        setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}])
+                    })
+					.catch((error) => {
+                        switch (error.code) {
+                            case 'storage/object-not-found':
+                              //console.log(passedinUID[i] + "File doesn't exist")
+                              firebase.dbFileGetUrl('feast_blue.png').then(
+                                url => {
+                                    setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}])
+                                })
+                            case 'storage/unauthorized':
+                              //console.log(passedinUID[i] + "User doesn't have permission to access the object");
+                              firebase.dbFileGetUrl('feast_blue.png').then(
+                                url => {
+                                    setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}])
+                                })
+                              break;
+
+                            case 'storage/unknown':
+                              console.log("Unknown error occurred, inspect the server response")
+                              break;
+                        }
+					})
 					setFollowing(prev => [...prev, {"id": key, "name": doc.name}])
 				})
 			})
 		})
 	}
 
+	display = (id) => {
+		try {
+			const profile = followingPfp.find(user => user.id === id)
+			return profile.pfp
+		}
+		catch {
+			return undefined
+		}
+	}
+
 	getUserName = (id) => {
-		const followingUser = following.find(user => user.id == id)
+		const followingUser = following.find(user => user.id === id)
 		return followingUser.name
 	}
 	
@@ -110,7 +136,7 @@ export default function HomeScreen() {
 						<View style = {styles.reviewContainer} key={review[0]}>
 							
 							<View style = {{flexDirection: "row"}}>
-								<Image style = {[styles.profileIcon]} source={image}/>
+								<Image style = {[styles.profileIcon]} source={display(review[1].authorid) !== undefined ? {uri: display(review[1].authorid)} : image}/>
 								<Text style = {styles.emailWrap}> {getUserName(review[1].authorid)}</Text>
 							</View>
 
@@ -127,6 +153,7 @@ export default function HomeScreen() {
 											return images[review[1].authorid + review[0]].map(image => {
 												return (
 													<Image 
+														key={image}
 														source={{uri: image}} 
 														style={{width: 120, height: 120, borderRadius: 10, margin: 2}}
 													/>
@@ -135,7 +162,7 @@ export default function HomeScreen() {
 										}
 									})}
 								</ScrollView>
-								}
+							}
 
 							<View style = {{flexDirection: "row"}}>
 								<Ionicons style={styles.locationIcon} name="location-outline">
