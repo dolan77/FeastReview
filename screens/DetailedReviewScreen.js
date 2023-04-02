@@ -95,83 +95,84 @@ export default function DetailedReviewScreen({route}){
                 </TouchableOpacity>
             </View>
 
-            {/* Container for the main review we are viewing comments of */}
-            <View style={[style.ReviewBox]}>
-                <Text style={[style.whiteText, style.ReviewHeader]}>{reviewData.username}</Text>
-                <Text style={[style.whiteText, style.ReviewHeader, {color:'#63B8D6'}]}>{reviewData.restaurant_name}</Text>
-                <Text style={[style.whiteText, style.ReviewHeader]}>{reviewData.datemade.toDate().toDateString()}</Text>
-                <Text style={[style.ReviewBoxItems, style.ReviewText, {paddingBottom: 5}]}>{reviewData.content}</Text>
-                
-                {/* Container for the review's photos */}
-                {reviewPhotos.length > 0 &&
-                <ScrollView horizontal={true} style={style.photo_container} contentContainerStyle={style.photo_content_container}>
-                    {PopulateReviewPhotos()}
-                </ScrollView>
-                }
-                
+            
+            <ScrollView style={[{marginTop:5,}]}>
 
-                {/* Button to leave a comment */}
-                <TouchableOpacity style={style.commentButton} onPress={() => [console.log('pressed'), setModalVisible(true)]}>
-                    <Ionicons style={[style.globalFont, {color: '#75d9fc'}]} name='chatbox-ellipses-outline'/>
-                    <Text style={{color: '#75d9fc'}}>  Leave a comment</Text>
-                </TouchableOpacity>
+                {/* Container for the main review we are viewing comments of */}
+                <View style={[style.ReviewBox, {marginBottom: 15}]}>
+                    <Text style={[style.whiteText, style.ReviewHeader]}>{reviewData.username}</Text>
+                    <Text style={[style.whiteText, style.ReviewHeader, {color:'#63B8D6'}]}>{reviewData.restaurant_name}</Text>
+                    <Text style={[style.whiteText, style.ReviewHeader]}>{reviewData.datemade.toDate().toDateString()}</Text>
+                    <Text style={[style.ReviewBoxItems, style.ReviewText, {paddingBottom: 5}]}>{reviewData.content}</Text>
+                    
+                    {/* Container for the review's photos */}
+                    {reviewPhotos.length > 0 &&
+                    <ScrollView horizontal={true} style={style.photo_container} contentContainerStyle={style.photo_content_container}>
+                        {PopulateReviewPhotos()}
+                    </ScrollView>
+                    }
+                    
 
-                {/* POPUP when user is writing the text for the comment */}
-                <Modal
-                animationType='slide'
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}>
-                    <View style={style.modalView}>
-                        <Text style = {[style.ReviewBoxItems]}>Write a comment:</Text>
-                        <TextInput
-                        style = {style.input}
-                        multiline={true}
-                        onChange={(value) => setComment(value.nativeEvent.text)}
-                        defaultValue = {comment}
-                        maxLength ={1000}
-                        />
-                        <Text style={{color: comment.length < 20? 'red' : "green", textAlign: 'center', paddingBottom: 5}}>
-                            Min 20 Characters{'\n'}{comment.length}/{1000}</Text>
-                        
-                        {/* View that holds the exit buttons in "Add Comment" */}
-                        <View style = {style.filterExitButtonsContainer}>
-                            {/* "Go Back" button */}
-                            <TouchableOpacity
-                                onPress={() => [setModalVisible(false)]}
-                                style={style.exitButtons} >
-                                <Text style={style.buttonText}>Back</Text>
-                            </TouchableOpacity>
-                            {/* Comment "Submit" button */}
-                            <TouchableOpacity
-                                onPress={() => {
-                                    if (comment.length >= 20){
-                                        uploadComment();
-                                        setModalVisible(false);
+                    {/* Button to leave a comment */}
+                    <TouchableOpacity style={style.commentButton} onPress={() => [console.log('pressed'), setModalVisible(true)]}>
+                        <Ionicons style={[style.globalFont, {color: '#75d9fc'}]} name='chatbox-ellipses-outline'/>
+                        <Text style={{color: '#75d9fc'}}>  Leave a comment</Text>
+                    </TouchableOpacity>
+
+                    {/* POPUP when user is writing the text for the comment */}
+                    <Modal
+                    animationType='slide'
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                    }}>
+                        <View style={style.modalView}>
+                            <Text style = {[style.ReviewBoxItems]}>Write a comment:</Text>
+                            <TextInput
+                            style = {style.input}
+                            multiline={true}
+                            onChange={(value) => setComment(value.nativeEvent.text)}
+                            defaultValue = {comment}
+                            maxLength ={1000}
+                            />
+                            <Text style={{color: comment.length < 20? 'red' : "green", textAlign: 'center', paddingBottom: 5}}>
+                                Min 20 Characters{'\n'}{comment.length}/{1000}</Text>
+                            
+                            {/* View that holds the exit buttons in "Add Comment" */}
+                            <View style = {style.filterExitButtonsContainer}>
+                                {/* "Go Back" button */}
+                                <TouchableOpacity
+                                    onPress={() => [setModalVisible(false)]}
+                                    style={style.exitButtons} >
+                                    <Text style={style.buttonText}>Back</Text>
+                                </TouchableOpacity>
+                                {/* Comment "Submit" button */}
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        if (comment.length >= 20){
+                                            uploadComment();
+                                            setModalVisible(false);
+                                            }
+                                        else{
+                                        Alert.alert('Comment too short.') 
                                         }
-                                    else{
-                                       Alert.alert('Comment too short.') 
+                                        }
                                     }
-                                    }
-                                }
-                                style={style.exitButtons} >
-                                <Text style={style.buttonText}>Submit</Text>
-                            </TouchableOpacity>
+                                    style={style.exitButtons} >
+                                    <Text style={style.buttonText}>Submit</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
-                </Modal>
-            </View>
+                    </Modal>
+                </View>
 
-            {/* Container for all comments made on review */}
-            {/* <View> */}
-                <ScrollView style={[{marginTop:5, borderTopWidth:2, borderWidth:1}]}>
-                    <View>
-                        {dbComments.length > 0 ? PopulateComments() : <Text style={[style.globalFont, {alignSelf: 'center'}]}>No comments have been written yet....</Text>}
-                    </View>
+                {/* Container for all comments made on review */}
+                    
+                        <View style={{marginBottom:15}}>
+                            {dbComments.length > 0 ? PopulateComments() : <Text style={[style.globalFont, {alignSelf: 'center'}]}>No comments have been written yet....</Text>}
+                        </View>
                 </ScrollView>
-            {/* </View> */}
             
 
         </SafeAreaView>
