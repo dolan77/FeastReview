@@ -10,6 +10,8 @@ import * as firebase from '../utils/firebase'
 import ImagePicker from 'react-native-image-crop-picker';
 import colors from '../utils/colors';
 import expertise from '../utils/expertise'
+import dropdown from 'react-native-dropdown-picker'
+import DropDownPicker from 'react-native-dropdown-picker';
 
 export default function EditProfileScreen(){
     const user = auth().currentUser;
@@ -18,14 +20,23 @@ export default function EditProfileScreen(){
 
     const [modalVisible, setModalVisible] = React.useState(false);
     const [bio, setBio] = React.useState('');
+
     const [title, setTitle] = React.useState('');
     const [possibleTitles, setPossibleTitles] = React.useState([]);
+    const [titleScroll, setTitleScroll] = React.useState(false);
+
+    const [dropdownOpen, setDropdownOpen] = React.useState(false);
+    const [dropdownValue, setDropdownValue] = React.useState(null);
+
+
+
     const [avatarPath, setAvatarPath] = React.useState();
 
     React.useEffect(() => {
         getProfile();
         getAvatarDB();
         loadTitles();
+        DropDownPicker.setTheme('DARK')
     }, [])
 
     /**
@@ -34,6 +45,15 @@ export default function EditProfileScreen(){
     function loadTitles(){
         expertise.getPossibleTitles(user.uid).then(result => {
             console.log("titles" + result);
+            var formattedTitles = [];
+            result.forEach((possibleTitle) => {
+                formattedTitles.push({
+                    label: possibleTitle, 
+                    value: possibleTitle,
+                    labelStyle: expertise.titleStyle(possibleTitle)
+                })
+            })
+            setPossibleTitles(formattedTitles);
         });
     }
 
@@ -113,6 +133,20 @@ export default function EditProfileScreen(){
         
     }
 
+    const editTitle = () => {
+        console.log(titleScroll)
+        //edit
+        if(!titleScroll){
+            setTitleScroll(true);
+        }
+
+        //submit
+        else {
+            setTitleScroll(false);
+            firebase.dbUpdateOnce("users", user.uid, "title", title ? title: "");
+        }
+    }
+
     return (
         <View style = {{flex: 1, backgroundColor: colors.backgroundDark}}>
             <Modal
@@ -147,6 +181,8 @@ export default function EditProfileScreen(){
             </Modal>
 
             <View style = {styles.container}>
+                <View style={styles.horizontalLine}/>
+
                 <View style = {styles.rowContainer}>
                     <View style = {styles.leftItem}>
                         <Text style={styles.profileLabel}>Profile Picture</Text>
@@ -161,7 +197,7 @@ export default function EditProfileScreen(){
                     </View>
                 </View>
 
-                <View style={styles.horizontalLine}></View>
+                <View style={styles.horizontalLine}/>
 
                 <View style = {styles.rowContainer}>
                     <View style = {styles.leftItem}>
@@ -176,23 +212,33 @@ export default function EditProfileScreen(){
                     </View>
                 </View>
 
-
+                <View style={styles.horizontalLine}/>
 
                 <View style = {styles.rowContainer}>
                     <View style = {styles.leftItem}>
                         <Text style={styles.profileLabel}>Title</Text>
-                        <Text style={[styles.globalFont, expertise.titleStyle(title)]}>{title}</Text>
+                        {!titleScroll && <Text style={[styles.globalFont, expertise.titleStyle(title)]}>{title}</Text>}
+                        {titleScroll && <DropDownPicker 
+                            style={{width:200}}
+                            open={dropdownOpen}
+                            value={title}
+                            items={possibleTitles}
+                            setOpen={setDropdownOpen}
+                            setValue={setTitle}
+                            setItems={setPossibleTitles}
+                        />}
                     </View>
 
                     <View style = {styles.rightItem}>
-                        <TouchableOpacity style={styles.editButton}>
-                            <Text style={styles.editText}>Edit</Text>
+                        <TouchableOpacity style={titleScroll ? styles.submitButton: styles.editButton} onPress={() => {editTitle()}}>
+                            {!titleScroll && <Text style={styles.editText}>Edit</Text>}
+                            {titleScroll && <Text style={styles.submitText}>Submit</Text>}
                         </TouchableOpacity>
 
                     </View>
                 </View>
 
-
+                <View style={styles.horizontalLine}/>
 
                 <View style = {styles.rowContainer}>
                     <View style = {styles.leftItem}>
@@ -208,6 +254,8 @@ export default function EditProfileScreen(){
                         </TouchableOpacity>
                     </View>
                 </View>
+
+                <View style={styles.horizontalLine}/>
             </View>
         </View>
     );
@@ -245,20 +293,38 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15
     },
     editText: {
-        color: colors.feastBlue,
+        color: colors.feastBlueDark,
         alignSelf: 'flex-end',
         textAlign: 'center',
         fontWeight: 'bold',
+        fontSize:20
     },
     editButton: {
         backgroundColor: colors.backgroundDarkLight,
         alignSelf: 'flex-end',
         textAlign: 'right',
-        paddingHorizontal:5,
+        paddingHorizontal:15,
         paddingVertical: 2,
         borderRadius:10,
         borderColor: colors.black,
-        borderWidth:2
+        borderWidth:1,
+    },
+    submitText: {
+        color: colors.white,
+        alignSelf: 'flex-end',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize:20
+    },
+    submitButton: {
+        backgroundColor: colors.feastBlueDark,
+        alignSelf: 'flex-end',
+        textAlign: 'right',
+        paddingHorizontal:15,
+        paddingVertical: 2,
+        borderRadius:10,
+        borderColor: colors.black,
+        borderWidth:1,
     },
     globalFont:{
         color: colors.white,
@@ -288,9 +354,10 @@ const styles = StyleSheet.create({
         height: 120,
         borderRadius: 150,
         overflow: 'hidden',
-        borderWidth: 5,
+        borderWidth: 3,
         borderColor: colors.feastBlue,
         alignSelf: 'flex-start',
+        marginVertical:5
     },
     profileLabel:{
         color: colors.gray,
@@ -300,7 +367,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     horizontalLine:{
-        height: 2, 
-        backgroundColor: colors.white
+        height: 1, 
+        width:250,
+        backgroundColor: colors.gray
     },
 });

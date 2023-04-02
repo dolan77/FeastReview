@@ -59,9 +59,7 @@ async function getPossibleTitles(uid){
         // from all restaurants count up the categories
         for(const restaurantAlias in restaurants){
             await firebase.dbGet("restaurants", restaurants[restaurantAlias]).then(restaurant => {
-                console.log(restaurants[restaurantAlias]);
                 restaurant.categories.forEach((category) => {
-                    console.log(category.title)
                     if(!Object.hasOwn(categoryCounts, category.title)){
                         categoryCounts[category.title] = 0;
                     }
