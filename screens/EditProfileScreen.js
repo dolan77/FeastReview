@@ -241,10 +241,10 @@ export default function EditProfileScreen(){
                 <View style={styles.horizontalLine}/>
 
                 <View style = {styles.rowContainer}>
-                    <View style = {styles.leftItem}>
+                    <View style = {[styles.leftItem]}>
                         <Text style={styles.profileLabel}>Biography</Text>
-                        <View style={styles.bioBox}>
-                            <Text style={styles.bioFont}>{bio}</Text>
+                        <View style={[styles.bioBox]}>
+                            <Text style={[styles.bioFont]}>{bio}</Text>
                         </View>
                     </View>
 
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     container: {
 		backgroundColor: colors.backgroundDarker,
 		flex: 1,
-		justifyContent: 'center',
+		justifyContent: 'space-evenly',
 		alignItems: 'center',
         margin:15,
         borderRadius:10,
@@ -280,13 +280,15 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start', 
         alignItems: 'center', 
         flexGrow: 1,
-        margin: 10
+        margin: 10,
+        
     },
     rightItem: {
         justifyContent: 'flex-end', 
         alignItems: 'center', 
         flexGrow: 1,
-        margin:10
+        margin:10,
+        
     },
     bioSubscriptContent:{
         alignItems: 'center',
@@ -338,16 +340,19 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         fontSize: 14,
         fontWeight: '500',
-        margin:5 
+        margin:5 ,
+        
+       
     },
     bioBox:{
         color: colors.white,
         alignSelf: 'flex-start',
-        flewGrow: 1,
+        flexWrap: 'wrap',
         borderWidth:2,
         borderColor: colors.gray,
         marginVertical:5,
-        borderRadius:5
+        borderRadius:5,
+        width: 250
     },
     profilePicture: {
         width: 120,
@@ -370,5 +375,31 @@ const styles = StyleSheet.create({
         height: 1, 
         width:250,
         backgroundColor: colors.gray
+    },
+    modalView: {
+        margin: 20,
+        height: 500,
+        backgroundColor: colors.feastBlueDark,
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+    },
+    modalText: {
+        color: 'white',
+        fontWeight: '400',
+        fontSize: 16
+    },
+    input: {
+        height: 40,
+        width: 300,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+        color:'white'
     },
 });
