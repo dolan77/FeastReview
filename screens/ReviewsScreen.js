@@ -64,7 +64,7 @@ export default function ReviewsScreen({route}){
         if (reviews.length != 0){
             for(let i = 0;  i < limit; i++){
                 const reviewAverage = ((reviews[i][1].star_atmos + reviews[i][1].star_foods + reviews[i][1].star_service) /3)
-                console.log(reviewAverage)
+                // console.log(reviewAverage)
                 // console.log(reviews[i])
                 table.push(
                 <TouchableOpacity key={i} style={[style.ReviewBox, {marginHorizontal: 10}]}>
