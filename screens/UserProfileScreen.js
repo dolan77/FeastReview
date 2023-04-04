@@ -1,6 +1,6 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, useState, Modal} from 'react-native'
+import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, Modal, SafeAreaView} from 'react-native'
 import auth from '@react-native-firebase/auth';
-
+import { useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import image from "../assets/feast_blue.png"
 
@@ -10,6 +10,7 @@ import * as firebase from '../utils/firebase'
 import ImagePicker from 'react-native-image-crop-picker';
 import colors from '../utils/colors';
 import expertise from '../utils/expertise';
+import { ScrollView } from 'react-native-gesture-handler';
 
 // background color: #3d4051 change for View, bioSubscript, flexbio, flexbutton
 
@@ -25,7 +26,6 @@ export default function UserProfileScreen(){
         getAvatarDB();
         getTitle();
     }, [])
-    
 
 
     /**
@@ -178,7 +178,7 @@ export default function UserProfileScreen(){
     return(
     <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
         <View style= {{flex: 3, backgroundColor: '#171414'}}>
-            <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
+            <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2.5}]}>
                 <Image style = {[styles.tinyLogo]} source ={{uri:avatarPath}}/>
                 <Text style = {[styles.globalFont, {fontSize: 25}]}>{user.displayName}</Text>
                 <Text style = {[styles.globalFont, expertise.titleStyle(title)]} onPress={() => {console.log('avatar: ', avatarPath)}}>{title}</Text>
@@ -188,8 +188,8 @@ export default function UserProfileScreen(){
                 <Text style={[styles.globalFont]}>{bio}</Text>
             </View>
             
-            <View style = {[{flex: 1}, styles.bioSubscriptContent]}>
-                <Text style = {[styles.editButton, styles.globalFont, {fontSize: 15}, {color: colors.feastBlue}]} onPress = {() => navigation.navigate('EditProfile')}>Edit Profile</Text>
+            <View style = {[{flex: 0.5}, styles.bioSubscriptContent]}>
+                <Text style = {[styles.editButton, styles.globalFont, {fontSize: 15}, {color: colors.feastBlue}]} onPress = {() => {navigation.navigate('EditProfile')}}>Edit Profile</Text>
             </View>
 
         </View> 
