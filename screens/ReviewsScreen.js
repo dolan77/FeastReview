@@ -64,8 +64,10 @@ export default function ReviewsScreen({route}){
         if (reviews.length != 0){
             for(let i = 0;  i < limit; i++){
                 table.push(
-                <TouchableOpacity key={i} style={[style.ReviewBox, {marginHorizontal: 10}]}>
-                    <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].authorid}</Text>
+                <TouchableOpacity key={i} style={[style.ReviewBox, {marginHorizontal: 10}]}
+                    onPress={() => navDetailedReview(reviews[i])} >
+                    <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].username}</Text>
+                    <Text style={[style.buttonText, style.ReviewHeader, {color:'#63B8D6'}]}>{reviews[i][1].restaurant_name}</Text>
                     <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].datemade.toDate().toDateString()}</Text>
                     <Text style={[style.ReviewBoxItems, style.ReviewText]}>{reviews[i][1].content}</Text>
                 </TouchableOpacity>)
@@ -79,6 +81,11 @@ export default function ReviewsScreen({route}){
         }
         return(table)
     }
+
+    const navDetailedReview = (params) => {
+        navigation.navigate('Detailed Review Screen', params)
+    }
+
     return(
 
         <SafeAreaView style={style.container}>

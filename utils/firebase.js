@@ -1,8 +1,9 @@
 import firestore, { firebase } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import { CountQueuingStrategy } from 'node:stream/web';
 //import firebase from '@react-native-firebase/app';
 
-module.exports = {dbCreateBlank, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetFollowers, dbGetFollowed, dbIncrement};
+module.exports = {dbCreateBlank, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetFollowers, dbGetFollowed, dbIncrement, dbSetReviewComment, dbGetReviewComments, dbGetReviewPhotos };
 
 
 /**
@@ -233,4 +234,44 @@ async function dbIncrement(collection, doc, fields){
         fields[key] = firestore.FieldValue.increment(1);
     });
     return dbUpdate(collection, doc, fields);
+}
+
+
+/**
+ * 
+ * @param {*} review_id the identifier for the review to be commented on
+ * @param {*} comment_id the identifier for the comment to be uploaded
+ * @param {*} value the fields of the comment 
+ * @returns 
+ */
+async function dbSetReviewComment(review_id, comment_id, value) {
+    const docRef = db.collection('reviews').doc(review_id).collection('comments').doc(comment_id);
+    return docRef.set(value);
+}
+
+/**
+ * 
+ * @param {*} review_id 
+ * @returns array of all comments related to the specified review
+ */
+async function dbGetReviewComments(review_id) {
+    const query = await db.collection('reviews').doc(review_id).collection('comments').get();
+    return query.docs.map(doc => doc.data());
+}
+
+/**
+ * 
+ * @param {*} image_urls an array of the names of each image stored on the db
+ * @returns an array of each photo's full URL which can be used as a 'uri'
+ *          for an <Image/>'s source
+ */
+async function dbGetReviewPhotos(image_urls) {
+    var urls = []
+    for (const url of image_urls) {
+            await dbFileGetUrl('ReviewPhotos/' + url)
+                .then((db_url) => {
+                    urls = [...urls, db_url];
+                })
+        }
+    return urls;
 }
