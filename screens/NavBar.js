@@ -83,7 +83,7 @@ function StackScreens(props) {
 				<Stack.Screen name="Create Review" component={CreateReviewScreen} />
 				<Stack.Screen options={{title: ''}}name='FollowersAndFollowing' component={FollowersAndFollowingScreen}/>
                 <Stack.Screen options={{headerShown: false}} name='SavedRestaurants' component = {SavedRestaurantsScreen} />
-                <Stack.Screen name='EditProfile' component = {EditProfileScreen} />
+                <Stack.Screen options={{headerShown: false}} name='EditProfile' component = {EditProfileScreen} />
 			</Stack.Navigator>
     )
 }
