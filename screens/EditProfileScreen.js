@@ -187,10 +187,11 @@ export default function EditProfileScreen(){
             </Modal>
 
             <View style={styles.header}>
-                <Text style={[styles.globalFont]}>Edit Profile</Text>
+                
                 <TouchableOpacity onPress={() => navigation.replace('Your Profile')}>
                     <Ionicons style={[styles.globalFont, styles.backArrow]} name='arrow-back-outline'/>
                 </TouchableOpacity>
+                <Text style={[styles.globalFont]}>Edit Profile</Text>
             </View>
 
             <View style = {styles.container}>
@@ -215,7 +216,7 @@ export default function EditProfileScreen(){
                 <View style = {styles.rowContainer}>
                     <View style = {styles.leftItem}>
                         <Text style={styles.profileLabel}>Username</Text>
-                        <Text style={styles.globalFont}>{user.displayName}</Text>
+                        <Text style={[styles.globalFont, styles.leftText]}>{user.displayName}</Text>
                     </View>
 
                     <View style = {styles.rightItem}>
@@ -230,7 +231,7 @@ export default function EditProfileScreen(){
                 <View style = {styles.rowContainer}>
                     <View style = {styles.leftItem}>
                         <Text style={styles.profileLabel}>Title</Text>
-                        {!titleScroll && <Text style={[styles.globalFont, expertise.titleStyle(title)]}>{title}</Text>}
+                        {!titleScroll && <Text style={[styles.globalFont, expertise.titleStyle(title), styles.leftText]}>{title}</Text>}
                         {titleScroll && <DropDownPicker 
                             style={{width:200}}
                             open={dropdownOpen}
@@ -295,6 +296,10 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         margin: 10,
         
+    },
+    leftText: {
+        alignSelf: 'flex-start',
+        textAlign: 'left'
     },
     rightItem: {
         justifyContent: 'flex-end', 
@@ -420,7 +425,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingHorizontal: 10,
         borderBottomRightRadius: 15,
-        borderBottomLeftRadius: 15,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
