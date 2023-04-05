@@ -37,9 +37,9 @@ function titleStyle(title){
  */
 async function getPossibleTitles(uid){
     var validTitles = {
-        Casual: 3,
-        Expert: 10,
-        Legend: 20
+        Casual: 1,
+        Expert: 5,
+        Legend: 10
     }
 
 
@@ -59,13 +59,15 @@ async function getPossibleTitles(uid){
         // from all restaurants count up the categories
         for(const restaurantAlias in restaurants){
             await firebase.dbGet("restaurants", restaurants[restaurantAlias]).then(restaurant => {
+                if(!restaurant)
+                    return;
                 restaurant.categories.forEach((category) => {
                     if(!Object.hasOwn(categoryCounts, category.title)){
                         categoryCounts[category.title] = 0;
                     }
                     categoryCounts[category.title] += 1;
                 })
-            })
+            }).catch((errormsg) => console.log(errormsg))
         }
 
         console.log(categoryCounts)

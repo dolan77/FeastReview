@@ -45,7 +45,6 @@ export default function EditProfileScreen(){
      */
     function loadTitles(){
         expertise.getPossibleTitles(user.uid).then(result => {
-            console.log("titles" + result);
             var formattedTitles = [];
             result.forEach((possibleTitle) => {
                 formattedTitles.push({
