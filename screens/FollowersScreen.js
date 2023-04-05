@@ -8,6 +8,7 @@ import * as firebase from '../utils/firebase'
 import * as React from 'react';
 
 import image from "../assets/feast_blue.png"
+import colors from '../utils/colors';
 
 export default function FollowersScreen(props){
     const passedinUID = props.followersUID
@@ -132,8 +133,8 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 50,
         overflow: 'hidden',
-        borderWidth: 2,
-        borderColor: '#EECACA',
+        borderWidth: 2.5,
+        borderColor: colors.feastBlue,
     },
     scrollOuter:{
         flex: 1,
