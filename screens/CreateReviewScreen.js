@@ -12,7 +12,7 @@ export default function ReviewPage({route}) {
     const navigation = useNavigation();
     const user = auth().currentUser;
     const restaurantData = route.params.restaurantData;
-    var userReview = 'Your Review';
+    var userReview = '';
     
 
     const [modalVisible, setModalVisible] = React.useState(false);
@@ -231,12 +231,13 @@ export default function ReviewPage({route}) {
                     setModalVisible(!modalVisible);
                 }}>
                     <View style={styles.modalView}>
-                        <Text style = {styles.whiteText}>Write a review:</Text>
+                        {/* <Text style = {styles.whiteText}>Write a review:</Text> */}
                         <TextInput
                         style = {styles.input}
                         multiline={true}
                         onChange={(value) => changeReview(value.nativeEvent.text)}
-                        defaultValue = {review}
+                        // defaultValue = {review}
+                        placeholder="Write your review here...."
                         maxLength ={1200}
                         />
                         <Text style={{color: review.length < 100? 'red' : "green", textAlign: 'center', paddingBottom: 5}}>
