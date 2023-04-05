@@ -34,9 +34,11 @@ export default function UserProfileScreen(){
     function getTitle(){
         return firebase.dbGet('users', user.uid).then(userProfile => {
             if(!Object.hasOwn(userProfile, 'title') || !userProfile.title){
-                setTitle('No title, post more reviews!');
+                setTitle('No title selected!');
             }
-            setTitle(userProfile.title);
+            else {
+                setTitle(userProfile.title);
+            }
         })
     }
 
@@ -181,7 +183,7 @@ export default function UserProfileScreen(){
             <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2.5}]}>
                 <Image style = {[styles.tinyLogo]} source ={{uri:avatarPath}}/>
                 <Text style = {[styles.globalFont, {fontSize: 25}]}>{user.displayName}</Text>
-                <Text style = {[styles.globalFont, expertise.titleStyle(title)]} onPress={() => {console.log('avatar: ', avatarPath)}}>{title}</Text>
+                <Text style = {[styles.globalFont, expertise.titleStyle(title)]}>{title}</Text>
             </View> 
 
             <View style = {[{flex: 1}, styles.bioSubscriptContent]}>

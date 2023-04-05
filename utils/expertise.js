@@ -23,6 +23,12 @@ function titleStyle(title){
                 fontStyle: 'italic',
                 fontWeight: 'bold'
             }
+        case 'selected!':
+            return {
+                color: colors.gray,
+                fontStyle: 'italic',
+                fontSize: 14
+            }
         default:
             return {
                 color: colors.white
