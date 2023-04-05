@@ -24,7 +24,7 @@ export default function DetailedReviewScreen({route}){
         console.log('Running useEffect')
     }, []);
 
-    var newComment = 'Your comment...';
+    var newComment = '';
     const [comment, setComment] = React.useState(newComment);
     const [modalVisible, setModalVisible] = React.useState(false);
     
@@ -44,7 +44,7 @@ export default function DetailedReviewScreen({route}){
                                                 username: user.displayName,
                                                 });
             retrieveComments()
-            setComment('Your comment...')
+            setComment('')
         }
         catch (error){
             console.log(error)
@@ -133,7 +133,7 @@ export default function DetailedReviewScreen({route}){
                             style = {style.input}
                             multiline={true}
                             onChange={(value) => setComment(value.nativeEvent.text)}
-                            defaultValue = {comment}
+                            placeholder= "Write your comment here...."
                             maxLength ={1000}
                             />
                             <Text style={{color: comment.length < 20? 'red' : "green", textAlign: 'center', paddingBottom: 5}}>
