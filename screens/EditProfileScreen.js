@@ -28,6 +28,7 @@ export default function EditProfileScreen(){
 
     const [dropdownOpen, setDropdownOpen] = React.useState(false);
     const [dropdownValue, setDropdownValue] = React.useState(null);
+    const [newBio, setNewBio] = React.useState('');
 
 
 
@@ -76,6 +77,7 @@ export default function EditProfileScreen(){
         try {
             const userProfile = await firebase.dbGet('users', user.uid);
             setBio(userProfile.bio)
+            setNewBio(userProfile.bio)
             if(!Object.hasOwn(userProfile, 'title') || !userProfile.title || !userProfile.title.length <= 0){
                 setTitle('No title selected!');
             }
@@ -86,13 +88,6 @@ export default function EditProfileScreen(){
         } catch (error) {
             console.log(error)
         }
-    }
-
-
-    // function that will update the bio on the user's screen
-    const updateBio = (newValue) => {
-        setBio(newValue)
-        changeBio(newValue)
     }
 
     // Get user's previously uploaded profile picture from the database
@@ -139,6 +134,9 @@ export default function EditProfileScreen(){
         
     }
 
+    /**
+     * Edit the state of title as well as toggling the button between edit and submit
+     */
     const editTitle = () => {
         console.log(titleScroll)
         //edit
@@ -153,6 +151,17 @@ export default function EditProfileScreen(){
         }
     }
 
+    /**
+     * Updates firebase auth display name with username
+     * @param {*} username to update
+     * @returns promise to update database
+     */
+    const updateUsername = (username) => {
+        return auth().currentUser.updateProfile({
+            displayName: username
+        });
+    };
+
     return (
         <View style = {{flex: 1, backgroundColor: colors.backgroundDark}}>
             <Modal
@@ -164,30 +173,35 @@ export default function EditProfileScreen(){
                 setModalVisible(!modalVisible);
                 }}>
                 <View style = {styles.modalView}>
-                    <View>
-                        <Text style = {[styles.globalFont]}>Your new bio will be...</Text>
+                    <View style={styles.header}>
+                        <TouchableOpacity onPress={() => setModalVisible(false)}>
+                            <Text style={[styles.globalFont]}>Cancel</Text>
+                        </TouchableOpacity>
+                        {bio != newBio && <Text style={styles.globalFont} onPress={() => {setBio(newBio); changeBio(bio); setModalVisible(false);}}>Submit</Text>}
+                        {bio == newBio && <Text style={[styles.globalFont, {color: colors.gray}]}>Submit</Text>}
                     </View>
 
-                    <TextInput
-                    style={styles.input}
-                    maxLength={100}
-                    numberOfLines = {4}
-                    onSubmitEditing={(value) => updateBio(value.nativeEvent.text)}
-                    />
-                    <Button
-                    title="go back"
-                    onPress={() => setModalVisible(!modalVisible)}
-                    />
-                    <View style={{alignItems: 'center'}}>
-                        <Text style={styles.modalText}>100 characters max</Text>
-                        <Text style={styles.modalText}>Press Submit before you click the go back button if you want to submit your changes to bio</Text>
+                    <View style={{padding: 35}}>
+                        <View>
+                            <Text style = {[styles.globalFont]}>Your new bio will be...</Text>
+                        </View>
+
+                        <TextInput
+                        style={styles.input}
+                        maxLength={100}
+                        numberOfLines = {4}
+                        onChangeText={(value) => setNewBio(value)}/>
+                        <View style={{alignItems: 'center'}}>
+                            <Text style={styles.modalText}>/100</Text>
+                        </View>
                     </View>
+
+
                     
                 </View>
             </Modal>
 
             <View style={styles.header}>
-                
                 <TouchableOpacity onPress={() => navigation.replace('Your Profile')}>
                     <Ionicons style={[styles.globalFont, styles.backArrow]} name='arrow-back-outline'/>
                 </TouchableOpacity>
@@ -282,7 +296,9 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-evenly',
 		alignItems: 'center',
         margin:15,
-        borderRadius:10,
+        marginTop: 0,
+        borderBottomLeftRadius:15,
+        borderBottomRightRadius:15,
         borderColor: colors.black,
         borderWidth:2
 	}, 
@@ -394,11 +410,9 @@ const styles = StyleSheet.create({
         backgroundColor: colors.gray
     },
     modalView: {
-        margin: 20,
-        height: 500,
-        backgroundColor: colors.feastBlueDark,
-        borderRadius: 20,
-        padding: 35,
+        height: '100%',
+        backgroundColor: colors.backgroundDark,
+
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
@@ -422,9 +436,9 @@ const styles = StyleSheet.create({
     header: {
         backgroundColor: '#171414',
         height: 50,
+        width: '100%',
         justifyContent: 'center',
         paddingHorizontal: 10,
-        borderBottomRightRadius: 15,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'

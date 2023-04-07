@@ -46,6 +46,9 @@ export default function RestaurantProfileScreen({route}){
 	}, [pressed])
 
     React.useEffect( () => {
+        console.log(restaurantData.data.hours[0])
+
+
         PopulateButton();
         GetReviews();
         PopulateReviews();
