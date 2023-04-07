@@ -148,10 +148,10 @@ const styles = StyleSheet.create({
     },
     FollowingBox: {
         backgroundColor: '#3f3a42',
-        height: 100,
+        height: 120,
         marginTop: 10,
         bordercolor: 'black',
-        borderWidth: 2,
+        borderWidth: 1,
         borderRadius: 15,
         flexDirection: 'row',
         paddingHorizontal: 10,
