@@ -85,6 +85,7 @@ function StackScreens(props) {
 				<Stack.Screen options={{ headerShown: false }}name='FollowersAndFollowing' component={FollowersAndFollowingScreen}/>
                 <Stack.Screen options={{ headerShown: false}}name='SavedRestaurants' component = {SavedRestaurantsScreen} />
                 <Stack.Screen options={{ headerShown: false}}name="Detailed Review Screen" component={DetailedReviewScreen} />
+                <Stack.Screen options={{ headerShown: false}}name="EditProfile" component={EditProfileScreen} />
 			</Stack.Navigator>
     )
 }

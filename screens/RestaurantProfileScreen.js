@@ -184,7 +184,7 @@ export default function RestaurantProfileScreen({route}){
      * method to add a review to the current restaurant
      */
     const addReview = () => {
-        nagivation.navigate('Create Review', {restaurantData})
+        navigation.navigate('Create Review', {restaurantData})
     }
 
     const handlePress = () => {
