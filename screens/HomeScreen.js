@@ -6,6 +6,7 @@ import {Button} from 'react-native'
 import * as firebase from '../utils/firebase'
 import * as yelp from '../utils/yelp'
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import ViewMoreText from 'react-native-view-more-text';
 
 import { requestLocationPermission } from '../utils/locationPermission.js'
 import image from "../assets/feast_blue.png"
@@ -125,6 +126,17 @@ export default function HomeScreen() {
 		const followingUser = following.find(user => user.id === id)
 		return followingUser.name
 	}
+
+	renderReadMore = (onPress) => {
+		return(
+		  <Text onPress={onPress} style={[styles.reviewContent, {color: '#75d9fc', paddingTop: 0}]}>Read more</Text>
+		)
+	}
+	renderReadLess = (onPress) => {
+		return(
+		  <Text onPress={onPress} style={[styles.reviewContent, {color: '#75d9fc', paddingTop: 0}]}>Read less</Text>
+		)
+	}
 	
 	return (
 		<View style = {styles.container}>
@@ -136,15 +148,20 @@ export default function HomeScreen() {
 						<View style = {styles.reviewContainer} key={review[0]}>
 							
 							<View style = {{flexDirection: "row"}}>
-								<Image style = {[styles.profileIcon]} source={display(review[1].authorid) !== undefined ? {uri: display(review[1].authorid)} : image}/>
+								<Image style = {styles.profileIcon} source={display(review[1].authorid) !== undefined ? {uri: display(review[1].authorid)} : image}/>
 								<Text style = {styles.emailWrap}> {getUserName(review[1].authorid)}</Text>
 							</View>
 
-							<View >
-								<Text style = {styles.reviewContent}>
+							<ViewMoreText
+									numberOfLines={5}
+									renderViewMore={renderReadMore}
+									renderViewLess={renderReadLess}
+									textStyle={styles.reviewContent}
+								>
+								<Text>
 									{review[1].content}
 								</Text>
-							</View>
+							</ViewMoreText>
 
 							{review[1].image_urls.length !== 0 && 
 								<ScrollView horizontal={true} style={styles.photo_container} contentContainerStyle={styles.photo_content_container}>
@@ -181,7 +198,6 @@ export default function HomeScreen() {
 						<Text style={{color: "white"}}>LOG OUT</Text>
 					</TouchableOpacity>
 				</View>
-				
 			</ScrollView>
 		</View>
 	)
@@ -220,13 +236,8 @@ const styles = StyleSheet.create({
         color: 'white'
 	},
 	reviewContent: {
-		marginLeft: 10,
-		marginRight: 10,
-		marginBottom: 5,
-		paddingTop: 10,
+		padding: 10,
 		color: 'white',
-		flexWrap: 'wrap',
-		alignSelf: 'center',
 		fontSize: 14
 	},
 	locationIcon: {
@@ -256,15 +267,13 @@ const styles = StyleSheet.create({
 
 	profileIcon: {
 		width: 75,
-		height: 110,
-		flex: 1,
+		height: 75,
 		marginLeft: 5,
 		marginTop: 5,
 		borderRadius: 50,
 		borderWidth: 1,
 		borderColor: 'white',	
 	},
-
 
 	tempPicture: {
 		backgroundColor: '#020878',
