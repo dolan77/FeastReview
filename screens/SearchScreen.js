@@ -52,7 +52,7 @@ export default function SearchScreen() {
 				handleSearch({limit}, filterString, false)
 			}
 			else {
-				handleSearch({limit})
+				handleSearch({limit}, "", false)
 			}
 		}
 	}, [pressed])
@@ -80,6 +80,7 @@ export default function SearchScreen() {
 	 * written by Nathan Lai
 	 */
 	handleSearch = ({limit = 10}, filter = "", newSearch = true) => {
+		console.log(newSearch)
 		if (newSearch) {
 			setFilterString('')
 			setattrSel([])

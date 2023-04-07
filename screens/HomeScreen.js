@@ -6,15 +6,23 @@ import {Button} from 'react-native'
 import * as firebase from '../utils/firebase'
 import * as yelp from '../utils/yelp'
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import ViewMoreText from 'react-native-view-more-text';
 
 import { requestLocationPermission } from '../utils/locationPermission.js'
 import image from "../assets/feast_blue.png"
 
 export default function HomeScreen() {
-	const [user, setUser] = useState({});
-
+	const user = auth().currentUser
+	const [reviews, setReviews] = useState([])
+	const [following, setFollowing] = useState([])
+	const [followingPfp, setFollowingPfp] = useState([])
+	const [reviewPhotos, setReviewPhotos] = useState([])
 	const navigation = useNavigation()
 
+	/**
+	 * Requests the user for their permission to get there location
+	 * Calls teh getFollowers method
+	 */
 	useEffect(() => {
 		const res = requestLocationPermission();
 		res.then(() => {
@@ -23,8 +31,17 @@ export default function HomeScreen() {
 		.catch(() => {
 			console.log("Failed to get location")
 		})
+
+		setReviews([])
+		setFollowing([])
+		setFollowingPfp([])
+		setReviewPhotos([])
+		getFollowers(user.uid)
 	}, [])
 
+	/**
+	 * Logs the user out of the app
+	 */
 	logoff = () => {
 		auth()
 			.signOut()
@@ -33,17 +50,92 @@ export default function HomeScreen() {
 			})
 			.catch(error => alert(error.message))
 	}
-	// navigation.navigate('RestaurantProfile',{data: result})
-	// testing passing in data from a McDonalds. Search must handle passing data of that specific restaurant
-	const nagivateRestaurant = () => {
-		firebase.dbGet('api_keys', 'key')
-		.then(keys => {yelp.businessDetail("mcdonalds-westminster-10", keys.yelp)
-		.then(result => navigation.navigate('RestaurantProfile',{data: result}))});
+	
+	/**
+	 * Gets the user's following and sets them to the reviews state
+	 * Gets the following user's profile pic
+	 * @param {*} uid user's unique id
+	 */
+	getFollowers = (uid) => {
+		firebase.dbGet('users', uid)
+		.then(result => {
+			firebase.dbGetFollowed(result.following)
+			.then(result => {
+				result.forEach( (doc, key) => {
+
+					// gets user's reviews
+					firebase.dbGetReviews(key, "authorid")
+					.then(dbReviews => {
+						if (dbReviews.size !== 0) {
+							setReviews(prev => [...prev, ...dbReviews])
+
+							dbReviews.forEach((review, restaurant_alias) => {
+								if (review.image_urls.length !== 0) {
+									firebase.dbGetReviewPhotos(review.image_urls)
+									.then(photos => {
+										setReviewPhotos(prev => [...prev, {[key + restaurant_alias] : photos}])
+									})
+								}
+							})
+							
+						}
+					})
+
+					firebase.dbFileGetUrl('ProfilePictures/' + key)
+					.then(url => {
+                        setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}])
+                    })
+					.catch((error) => {
+                        switch (error.code) {
+                            case 'storage/object-not-found':
+                              //console.log(passedinUID[i] + "File doesn't exist")
+                              firebase.dbFileGetUrl('feast_blue.png').then(
+                                url => {
+                                    setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}])
+                                })
+                            case 'storage/unauthorized':
+                              //console.log(passedinUID[i] + "User doesn't have permission to access the object");
+                              firebase.dbFileGetUrl('feast_blue.png').then(
+                                url => {
+                                    setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}])
+                                })
+                              break;
+
+                            case 'storage/unknown':
+                              console.log("Unknown error occurred, inspect the server response")
+                              break;
+                        }
+					})
+					setFollowing(prev => [...prev, {"id": key, "name": doc.name}])
+				})
+			})
+		})
 	}
 
-	// testing following this user.
-	const navigateOtherUserProfile = () => {
-		navigation.navigate("OtherUserProfile", {id: "pm6f9wpKmZM9GyEVL2HJuowhEda2"});
+	display = (id) => {
+		try {
+			const profile = followingPfp.find(user => user.id === id)
+			return profile.pfp
+		}
+		catch {
+			return undefined
+		}
+	}
+
+	getUserName = (id) => {
+		const followingUser = following.find(user => user.id === id)
+		return followingUser.name
+	}
+
+	renderReadMore = (onPress) => {
+		return(
+		  <Text onPress={onPress} style={[styles.reviewContent, {color: '#75d9fc', paddingTop: 0}]}>Read more</Text>
+		)
+	}
+	renderReadLess = (onPress) => {
+		return(
+		  <Text onPress={onPress} style={[styles.reviewContent, {color: '#75d9fc', paddingTop: 0}]}>Read less</Text>
+		)
 	}
 	
 	return (
@@ -51,56 +143,63 @@ export default function HomeScreen() {
 
 			{/* ScrollView allows you to scroll down the feed */}
 			<ScrollView style={{flex:1, backgroundColor: '#3d4051'}}>
-				
-				{/* First "review" container */}
-				<View style = {styles.reviewContainer}>
-					{/* Picture and name of the reviewer */}
-					<View style = {{flexDirection: "row"}}>
-						<Image style = {[styles.profileIcon]} source={image}/>
-						<Text style = {styles.emailWrap}> {user.email}</Text>
-					</View>
+				{reviews.map(review => {
+					return (
+						<View style = {styles.reviewContainer} key={review[0]}>
+							
+							<View style = {{flexDirection: "row"}}>
+								<Image style = {styles.profileIcon} source={display(review[1].authorid) !== undefined ? {uri: display(review[1].authorid)} : image}/>
+								<Text style = {styles.emailWrap}> {getUserName(review[1].authorid)}</Text>
+							</View>
 
-					{/* Reviewer's comments on the restaurant. */}
-					<View >
-						<Text style = {styles.reviewContent}>
-							Food here is about average for the pricepoint, but you HAVE to try the Sister Meal Deluxe!! BEST THING EVER 💋💋💅💅'
-						</Text>
-					</View>
+							<ViewMoreText
+									numberOfLines={5}
+									renderViewMore={renderReadMore}
+									renderViewLess={renderReadLess}
+									textStyle={styles.reviewContent}
+								>
+								<Text>
+									{review[1].content}
+								</Text>
+							</ViewMoreText>
 
-					{/* Name of the restaurant reviewed */}
-					<View style = {{flexDirection: "row"}}>
-						<Ionicons style={styles.locationIcon} name="location-outline">
-							<Text> - </Text>
-						</Ionicons>
-						<Text style = {styles.restaurantName}>Hey Sisters LA</Text>
-					</View>
+							{review[1].image_urls.length !== 0 && 
+								<ScrollView horizontal={true} style={styles.photo_container} contentContainerStyle={styles.photo_content_container}>
+									{reviewPhotos.map(images => {
+										if (images[review[1].authorid + review[0]]) {
+											return images[review[1].authorid + review[0]].map(image => {
+												return (
+													<Image 
+														key={image}
+														source={{uri: image}} 
+														style={{width: 120, height: 120, borderRadius: 10, margin: 2}}
+													/>
+												)
+											})
+										}
+									})}
+								</ScrollView>
+							}
 
-				</View>
-				
-				
-
-				<Image style = {[styles.tempPicture]} source={image}/>
-				<Image style = {[styles.tempPicture]} source={image}/>
-				<Image style = {[styles.tempPicture]} source={image}/>
-				
-				
+							<View style = {{flexDirection: "row"}}>
+								<Ionicons style={styles.locationIcon} name="location-outline">
+									<Text> - </Text>
+								</Ionicons>
+								<Text style = {styles.restaurantName}>{review[1].restaurant_name}</Text>
+							</View>
+						</View>
+					)
+				})}
 				<View style={styles.container}>
 					<TouchableOpacity 
 						style={styles.button}
 						onPress={logoff}
 					>
-						<Text style={{color: "white"}}>{user.displayName} LOG OUT </Text>
+						<Text style={{color: "white"}}>LOG OUT</Text>
 					</TouchableOpacity>
-
-					<Button title = "User Profile" onPress={() => navigation.navigate('Your Profile')} />
-					<Button title = "RestaurantProfile" onPress={nagivateRestaurant} />
-            		<Button title = "Matthew's Profile" onPress={navigateOtherUserProfile} />
 				</View>
 			</ScrollView>
 		</View>
-		
-		
-
 	)
 }
 
@@ -137,13 +236,8 @@ const styles = StyleSheet.create({
         color: 'white'
 	},
 	reviewContent: {
-		marginLeft: 10,
-		marginRight: 10,
-		marginBottom: 5,
-		paddingTop: 10,
+		padding: 10,
 		color: 'white',
-		flexWrap: 'wrap',
-		alignSelf: 'center',
 		fontSize: 14
 	},
 	locationIcon: {
@@ -173,15 +267,13 @@ const styles = StyleSheet.create({
 
 	profileIcon: {
 		width: 75,
-		height: 110,
-		flex: 1,
+		height: 75,
 		marginLeft: 5,
 		marginTop: 5,
 		borderRadius: 50,
 		borderWidth: 1,
 		borderColor: 'white',	
 	},
-
 
 	tempPicture: {
 		backgroundColor: '#020878',
@@ -193,5 +285,17 @@ const styles = StyleSheet.create({
 		borderColor: 'black',
 		alignSelf: 'center',
 		margin: 3,
-	}
+	},
+
+	photo_container: {
+        horizontal: 'true',
+        width: 360,
+        height: 100,
+        margin:5,
+        alignSelf: 'center'
+    },
+	photo_content_container: {
+        alignItems:'center',
+        paddingHorizontal: 5,
+    },
 })

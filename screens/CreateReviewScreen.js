@@ -39,7 +39,7 @@ export default function ReviewPage({route}) {
                                                         image_urls: Get_Image_URLs(review_id),
                                                         restaurant_alias: restaurantData.data.alias,
                                                         restaurant_name: restaurantData.data.name,
-                                                        star_atmos: atmosphereDefaultRating,
+														star_atmos: atmosphereDefaultRating,
                                                         star_foods: foodDefaultRating,
                                                         star_service: serviceDefaultRating
                                                         });

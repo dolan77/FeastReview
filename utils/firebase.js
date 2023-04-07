@@ -3,7 +3,7 @@ import storage from '@react-native-firebase/storage';
 import { CountQueuingStrategy } from 'node:stream/web';
 //import firebase from '@react-native-firebase/app';
 
-module.exports = {dbCreateBlank, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetFollowers, dbGetFollowed, dbIncrement, dbSetReviewComment, dbGetReviewComments, dbGetReviewPhotos };
+module.exports = {del, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbDelete, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews, dbSetReviewComment, dbGetReviewComments, dbGetReviewPhotos };
 
 
 /**
@@ -13,15 +13,9 @@ module.exports = {dbCreateBlank, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetRev
 
 const db = firestore();
 
-/**
- * creates a blank document, doesnt do anything to existing documents
- * @param {*} collection 
- * @param {*} doc 
- * @returns 
- */
-async function dbCreateBlank(collection, doc){
-    return db.collection(collection).doc(doc).set({}, {merge:true});
-}
+// allows for deleting
+// dbUpdate(someCollection, someDoc, {someValue: firebase.del});
+const del = firestore.FieldValue.delete();
 
 /**
  * simple getter function
@@ -223,17 +217,15 @@ async function dbGetFollowed(followedList){
 }
 
 /**
- * increments values by 1
- * @param {*} collection 
- * @param {*} doc 
- * @param {*} fields 
+ * 
+ * @param {*} review_id the identifier for the review to be commented on
+ * @param {*} comment_id the identifier for the comment to be uploaded
+ * @param {*} value the fields of the comment 
  * @returns 
  */
-async function dbIncrement(collection, doc, fields){
-    Object.keys(fields).forEach((key) => {
-        fields[key] = firestore.FieldValue.increment(1);
-    });
-    return dbUpdate(collection, doc, fields);
+async function dbSetReviewComment(review_id, comment_id, value) {
+    const docRef = db.collection('reviews').doc(review_id).collection('comments').doc(comment_id);
+    return docRef.set(value);
 }
 
 

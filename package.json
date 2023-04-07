@@ -40,6 +40,7 @@
     "react-native-screens": "^3.19.0",
     "react-native-tab-view": "^3.5.0",
     "react-native-vector-icons": "^9.2.0",
+    "react-native-view-more-text": "^2.2.0",
     "yelp-fusion": "^3.0.0"
   },
   "devDependencies": {
