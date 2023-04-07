@@ -376,7 +376,7 @@ export default function SearchScreen() {
 											fontSize: 17, 
 											flexShrink: 1, 
 											flexWrap: 'wrap', 
-											color: restaurant.is_closed.toString() ? '#26B702' : '#FF0000'
+											color: restaurant.is_closed ? colors.goodGreen: colors.badRed
 										}}>
 											{restaurant.is_closed.toString() ? `Open` : `Closed`}
 										</Text>

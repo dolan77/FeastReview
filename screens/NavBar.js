@@ -17,6 +17,7 @@ import FollowersAndFollowingScreen from './FollowersAndFollowingScreen';
 import SavedRestaurantsScreen from './SavedRestaurantsScreen';
 import DetailedReviewScreen from './DetailedReviewScreen';
 import colors from '../utils/colors'
+import EditProfileScreen from './EditProfileScreen';
 
 // Screen names
 const homeName = 'Home';

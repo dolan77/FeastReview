@@ -10,10 +10,11 @@ import * as firebase from '../utils/firebase'
 import auth from '@react-native-firebase/auth';
 import { Timestamp } from 'react-native-reanimated/lib/types/lib/reanimated2/commonTypes';
 import {getMostUsedAdjectives} from '../utils/tasteometer'
+import colors from '../utils/colors'
 
 // function that returns the screen for a Restaurant's profile
 export default function RestaurantProfileScreen({route}){
-    const nagivation = useNavigation();
+    const navigation = useNavigation();
     const dayOfTheWeek = [ "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
     const restaurantData = route.params;
     const [saved, setSaved] = React.useState('')
@@ -45,6 +46,9 @@ export default function RestaurantProfileScreen({route}){
 	}, [pressed])
 
     React.useEffect( () => {
+        console.log(restaurantData.data.hours[0])
+
+
         PopulateButton();
         GetReviews();
         PopulateReviews();
@@ -87,13 +91,13 @@ export default function RestaurantProfileScreen({route}){
             if (Object.hasOwn(currentUser.saved_restaurants, restaurantData.data.alias)){
                 
                 setSaved('Remove Restaurant');
-                setColor('#636362');
+                setColor(colors.backgroundDarker);
                 
             }
             // we are not following the restaurant, prompt the follow button
             else{
                 setSaved('Save Restaurant');
-                setColor('#0782F9');
+                setColor(colors.feastBlueDark);
             }
         } catch (error) {
             console.log(error)
@@ -255,7 +259,7 @@ export default function RestaurantProfileScreen({route}){
 
                 
                 
-                <View style = {{backgroundColor: '#161414'}}>
+                <View style = {{backgroundColor: colors.black}}>
                 
                 <View style = {style.container}>
                     <TouchableOpacity onPress={toggleHoursCollapsed} style={style.buttonContainer}>
@@ -263,7 +267,7 @@ export default function RestaurantProfileScreen({route}){
                             <Text style={restaurantData.data.hours[0].is_open_now ? style.openText: style.closedText}> {restaurantData.data.hours[0].is_open_now ? "Open" : "Closed"} </Text>
                             <Text style={style.hoursButtonText}> until </Text>
                             <Text style={style.hoursButtonText}> {restaurantData.data.hours[0].is_open_now ? todayEnd : todayStart} </Text>
-                            <Ionicons style= {{paddingLeft: 25}} name={hoursCollapsed ? "add-circle-outline" : "remove-circle-outline"} size={40} color='white'/>
+                            <Ionicons style= {{paddingLeft: 25}} name={hoursCollapsed ? "add-circle-outline" : "remove-circle-outline"} size={40} color={colors.white}/>
                         </View>
                     </TouchableOpacity>
                     <HoursExpandible expanded={hoursCollapsed} />
@@ -274,18 +278,18 @@ export default function RestaurantProfileScreen({route}){
                     <View style={[style.IconContainer]}>
                         <TouchableOpacity
                         onPress={triggerCall}>
-                            <Ionicons style= {{padding: 5}} name='call-outline' size={40} color='white'/>
+                            <Ionicons style= {{padding: 5}} name='call-outline' size={40} color={colors.white}/>
                             
                         </TouchableOpacity>
 
                         <TouchableOpacity
                         onPress={openSite}>
-                            <Ionicons style= {{padding: 5}} name='globe-outline' size={40} color='white'/>
+                            <Ionicons style= {{padding: 5}} name='globe-outline' size={40} color={colors.white}/>
                         </TouchableOpacity>
 
                         <TouchableOpacity 
                         onPress={createOpenLink({ end: restaurantData.data.location.address1})}>
-                        <Ionicons style = {{padding: 5}} name = 'compass-outline' color='white' size = {40}/>
+                        <Ionicons style = {{padding: 5}} name = 'compass-outline' color={colors.white} size = {40}/>
                         </TouchableOpacity>
 
                     </View>
@@ -305,15 +309,15 @@ export default function RestaurantProfileScreen({route}){
                                     <Text style={style.centerText}>{adjective[0]}</Text>
                                     <View style={{flexDirection:'row'}}>
                                         <Text style={style.rightText}>{adjective[1]}</Text>
-                                        <Ionicons name="chatbubbles" color='white' size = {20}></Ionicons>
+                                        <Ionicons name="chatbubbles" color={colors.white} size = {20}></Ionicons>
                                     </View>
                                     <View style={{flexDirection:'row'}}>
                                         <Text style={style.rightText}>{adjective[2]}</Text>
-                                        <Ionicons name="thumbs-up" color='green' size = {20}></Ionicons>
+                                        <Ionicons name="thumbs-up" color={colors.goodGreen} size = {20}></Ionicons>
                                     </View>
                                     <View style={{flexDirection:'row'}}>
                                         <Text style={style.rightText}>{adjective[3]}</Text>
-                                        <Ionicons name="thumbs-down" color='red' size = {20}></Ionicons>
+                                        <Ionicons name="thumbs-down" color={colors.badRed} size = {20}></Ionicons>
                                     </View>
                                 </View>
                             )) : ""}
@@ -339,7 +343,7 @@ export default function RestaurantProfileScreen({route}){
 
                 </View>
 
-                <View style={{backgroundColor: '#161414'}}>
+                <View style={{backgroundColor: colors.black}}>
                     <View style={style.horizontalLine} />
                     <Text style={style.ReviewTop}>Restaurant Reviews</Text>
                     <View style={style.horizontalLine} />
@@ -376,7 +380,7 @@ const style = StyleSheet.create({
         borderRadius: 130
     },
     ReviewTop: {
-        color: 'white',
+        color: colors.white,
         fontWeight: '700',
         fontSize: 25,
         marginVertical: 10,
@@ -384,11 +388,11 @@ const style = StyleSheet.create({
     },
     horizontalLine:{
         height: 2, 
-        backgroundColor: '#ffffff'
+        backgroundColor: colors.white
     },
     container:{
         flex: 1,
-        backgroundColor: '#3d4051',
+        backgroundColor: colors.backgroundDark,
     },
     IconContainer:{
         flexDirection: 'row',
@@ -397,55 +401,55 @@ const style = StyleSheet.create({
     },
 
     headerCover: {
-		backgroundColor: '#17202ac0',
+		backgroundColor: colors.backgroundDarker + colors.modTransparent,
 		width: '100%',
 		padding: 15,
 		justifyContent: 'center',
-        color: 'white',
+        color: colors.white,
         flex: 1,
         height: 150,
 	},
     text:{
-        color: 'white',
+        color: colors.white,
         fontSize: 20
     },
     scheduleContainer:{
         flexDirection: 'row',
         justifyContent:'space-between',
         marginHorizontal:10,
-        backgroundColor:'#262833',
+        backgroundColor: colors.backgroundDarker,
         borderBottomLeftRadius:25,
         borderBottomRightRadius:25
     },
     hoursButton:{
         flexDirection: 'row',
-        backgroundColor: '#342B2B51',
+        backgroundColor: colors.backgroundDarker,
 		width: '100%',
 		padding: 15,
 		alignItems: 'center',
         justifyContent: 'center',
-        borderColor: '#000000',
+        borderColor: colors.black,
         borderWidth: 1,
         height: 75,
         marginTop: 20
     },
     hoursButtonText:{
-        color: 'white',
+        color: colors.white,
         textAlign:'center',
         fontSize: 30
     },
     openText:{
-        color: 'green',
+        color: colors.goodGreen,
         textAlign:'center',
         fontSize: 30
     },
     closedText:{
-        color: 'red',
+        color: colors.badRed,
         textAlign:'center',
         fontSize: 30
     },
     leftText:{
-        color: 'white',
+        color: colors.white,
         fontSize: 20,
         textTransform: 'capitalize',
         textAlign: 'left',
@@ -454,7 +458,7 @@ const style = StyleSheet.create({
         
     },
     todayLeftText:{
-        color: 'cornflowerblue',
+        color: colors.feastBlue,
         fontSize: 20,
         textTransform: 'capitalize',
         textAlign: 'left',
@@ -463,21 +467,21 @@ const style = StyleSheet.create({
         
     },
     rightText:{
-        color: 'white',
+        color: colors.white,
         fontSize: 20,
         textAlign: 'right',
         marginHorizontal:15,
         lineHeight:30
     },
     todayRightText:{
-        color: 'cornflowerblue',
+        color: colors.feastBlue,
         fontSize: 20,
         textAlign: 'right',
         marginHorizontal:15,
         lineHeight:30
     },
     centerText:{
-        color: 'white',
+        color: colors.white,
         fontSize: 20,
         textTransform: 'capitalize',
         textAlign: 'center',
@@ -488,7 +492,7 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         marginHorizontal:10,
         justifyContent:'space-evenly',
-        backgroundColor:'#262833',
+        backgroundColor: colors.backgroundDarker,
         borderBottomLeftRadius:25,
         borderBottomRightRadius:25
     },
@@ -500,12 +504,12 @@ const style = StyleSheet.create({
     },
 
     button: {
-		backgroundColor: '#342B2B51',
+		backgroundColor: colors.backgroundDarker,
 		width: '100%',
 		padding: 15,
 		alignItems: 'center',
         justifyContent: 'center',
-        borderColor: '#000000',
+        borderColor: colors.black,
         borderWidth: 1,
         height: 75,
         marginTop: 20
@@ -513,31 +517,31 @@ const style = StyleSheet.create({
         
 	},
 	buttonText: {
-		color: 'white',
+		color: colors.white,
 		fontWeight: '700',
 		fontSize: 16,
 	},
 
     buttonOutline: {
-        backgroundColor: 'white',
+        backgroundColor: colors.white,
         marginTop: 5,
-        borderColor: '#0782F9',
+        borderColor: colors.feastBlue,
         borderWidth: 2
     },
     buttonText: {
-        color: 'white',
+        color: colors.white,
         fontWeight: '700',
         fontSize: 16
     },
     buttonOutlineText: {
-        color: '#0782F9',
+        color: colors.feastBlue,
         fontWeight: '700',
         fontSize: 16
     },
     ReviewBox: {
-        backgroundColor: '#3f3a42',
+        backgroundColor: colors.backgroundDarker,
         
-        bordercolor: 'black',
+        bordercolor: colors.black,
         borderWidth: 3,
         borderRadius: 10,
         marginTop: 10,
@@ -550,7 +554,7 @@ const style = StyleSheet.create({
         paddingHorizontal: 15
     },
     ReviewText: {
-        color: 'white',
+        color: colors.white,
         fontsize: 12,
         fontWeight: '650'
     },

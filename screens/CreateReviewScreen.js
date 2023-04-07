@@ -44,6 +44,9 @@ export default function ReviewPage({route}) {
                                                         star_service: serviceDefaultRating
                                                         });
             uploadPhotos();
+
+            // updates the cache for the category of each restaurant for later finding expertise
+            firebase.dbUpdate('restaurants', restaurantData.data.alias, {categories: restaurantData.data.categories})
         }
         catch (error){
             console.log(error)

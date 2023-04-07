@@ -1,6 +1,6 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, useState, Modal} from 'react-native'
+import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, Modal, SafeAreaView} from 'react-native'
 import auth from '@react-native-firebase/auth';
-
+import { useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import image from "../assets/feast_blue.png"
 
@@ -8,32 +8,38 @@ import * as React from 'react';
 import * as firebase from '../utils/firebase'
 
 import ImagePicker from 'react-native-image-crop-picker';
+import colors from '../utils/colors';
+import expertise from '../utils/expertise';
+import { ScrollView } from 'react-native-gesture-handler';
 
 // background color: #3d4051 change for View, bioSubscript, flexbio, flexbutton
 
 // function that returns the screen for the current user
 export default function UserProfileScreen(){
     const user = auth().currentUser;
-    const [modalVisible, setModalVisible] = React.useState(false);
     const [bio, setBio] = React.useState('');
+    const [title, setTitle] = React.useState('');
     const navigation = useNavigation();
     
     React.useEffect(() => {
         getBio();
         getAvatarDB();
+        getTitle();
     }, [])
-    
+
+
     /**
-     * 
-     * @param {value.nativeEvent.text} newValue - this is the value of the textbox
+     * @returns user title or message
      */
-    async function changeBio(newValue) {
-        // push changes to database, backend can do that
-        try {
-            await firebase.dbUpdateOnce('users', user.uid, "bio", newValue);
-        } catch (error) {
-            console.log(error)
-        }
+    function getTitle(){
+        return firebase.dbGet('users', user.uid).then(userProfile => {
+            if(!Object.hasOwn(userProfile, 'title') || !userProfile.title){
+                setTitle('No title selected!');
+            }
+            else {
+                setTitle(userProfile.title);
+            }
+        })
     }
 
     // function that retrieves the bio from the firestore database
@@ -45,13 +51,6 @@ export default function UserProfileScreen(){
         } catch (error) {
             console.log(error)
         }
-    }
-
-
-    // function that will update the bio on the user's screen
-    const updateBio = (newValue) => {
-        setBio(newValue)
-        changeBio(newValue)
     }
     
     /**
@@ -175,82 +174,24 @@ export default function UserProfileScreen(){
 			})
 			.catch(error => alert(error.message))
 	}
-    
-    
-    /**
-     * Method that handle the user's ability to change their profile picture
-     * Written by Kenny Du
-     */
-    const changePicture = async() => {
-        try{
-            await ImagePicker.openPicker({
-                        width: 120,
-                        height: 120,
-                        cropping: true,
-                        cropperCircleOverlay: true
-                    }).then(image? image => {
-                        setAvatarPath(image.path);
-                        console.log('image: ', image);
-                        firebase.dbFileAdd('ProfilePictures/' + user.uid, image.path)
-                    }: console.log('cancelled'));
-        }
-        catch (error){
-            console.log(error)
-        }
-        
-    }
-    
+
     // this returns the User Profile Screen onto the application on the mobile device. The screen consists of a picture, user name, biography, expertise, and three
     // buttons to navigate to another screen. The user is also able to edit their bio, which leads to a different screen and updates the bio on the database.
     return(
     <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-            
-            setModalVisible(!modalVisible);
-            }}>
-            <View style = {styles.modalView}>
-                <View>
-                    <Text style = {[styles.globalFont]}>Your new bio will be...</Text>
-                </View>
-
-                <TextInput
-                style={styles.input}
-                maxLength={100}
-                numberOfLines = {4}
-                onSubmitEditing={(value) => updateBio(value.nativeEvent.text)}
-                />
-                <Button
-                title="go back"
-                onPress={() => setModalVisible(!modalVisible)}
-                />
-                <View style={{alignItems: 'center'}}>
-                    <Text style={styles.modalText}>100 characters max</Text>
-                    <Text style={styles.modalText}>Press Submit before you click the go back button if you want to submit your changes to bio</Text>
-                </View>
-                
-            </View>
-        </Modal>
-        
         <View style= {{flex: 3, backgroundColor: '#171414'}}>
-
-            
-            <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2}]}>
+            <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2.5}]}>
                 <Image style = {[styles.tinyLogo]} source ={{uri:avatarPath}}/>
-                <Text style = {[styles.globalFont, {fontSize: 15}, {color: '#75d9fc'}, {paddingTop: 3}]}
-                    onPress = {() => {console.log('Pressed edit photo'); changePicture()}}>
-                    Edit Photo</Text>
                 <Text style = {[styles.globalFont, {fontSize: 25}]}>{user.displayName}</Text>
-                <Text style = {styles.globalFont} onPress={() => {console.log('avatar: ', avatarPath)}}>Dessert Expert</Text>
+                <Text style = {[styles.globalFont, expertise.titleStyle(title)]}>{title}</Text>
             </View> 
 
             <View style = {[{flex: 1}, styles.bioSubscriptContent]}>
                 <Text style={[styles.globalFont]}>{bio}</Text>
-                <Text style = {[styles.editButton, styles.globalFont, {fontSize: 15}, {color: '#75d9fc'}]} onPress={() => setModalVisible(true)}>Edit Bio</Text>
-                
+            </View>
+            
+            <View style = {[{flex: 0.5}, styles.bioSubscriptContent]}>
+                <Text style = {[styles.editButton, styles.globalFont, {fontSize: 15}, {color: colors.feastBlue}]} onPress = {() => {navigation.navigate('EditProfile')}}>Edit Profile</Text>
             </View>
 
         </View> 
@@ -298,7 +239,7 @@ const styles = StyleSheet.create({
         borderRadius: 150,
         overflow: 'hidden',
         borderWidth: 5,
-        borderColor: 'white'
+        borderColor: colors.feastBlue
     },
 
     bioSubscriptContent:{
@@ -307,7 +248,7 @@ const styles = StyleSheet.create({
     },
 
     button: {
-		backgroundColor: '#342B2B51',
+		backgroundColor: colors.backgroundDarker,
 		width: '100%',
 		padding: 15,
 		alignItems: 'center',
@@ -319,7 +260,7 @@ const styles = StyleSheet.create({
         
 	},
 	buttonText: {
-		color: 'white',
+		color: colors.white,
 		fontWeight: '700',
 		fontSize: 16,
 	},
@@ -336,7 +277,7 @@ const styles = StyleSheet.create({
     modalView: {
         margin: 20,
         height: 500,
-        backgroundColor: '#3D4051',
+        backgroundColor: colors.feastBlue,
         borderRadius: 20,
         padding: 35,
         alignItems: 'center',
@@ -352,13 +293,13 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     editButton: {
-        color: 'white',
+        color: colors.white,
         fontWeight: 'bold',
         
     },
 
     globalFont:{
-        color: 'white',
+        color: colors.white,
         fontSize: 20,
         fontWeight: '500',
         
