@@ -12,7 +12,6 @@ import { searchBusinesses, businessDetail} from '../utils/yelp.js';
 import { dbGet, dbSet } from '../utils/firebase.js';
 import { requestLocationPermission } from '../utils/locationPermission.js'
 import { SearchBar} from '../components/SearchBar.js';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors from '../utils/colors'
 
 export default function SearchScreen() {
