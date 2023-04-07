@@ -24,6 +24,22 @@ export default function SavedRestaurantsScreen({route}){
         })
     }
     /**
+     * method that checks to see if the restaurant is open
+     * @param {*} current_restaurant current restaurant we want to check
+     * @param {*} date the date we want to check the restaurant 
+     * @param {*} hours_and_min the hours and minutes 
+     * @returns a boolean value that represents if the restaurant is opened or closed
+     */
+    const isOpen = (current_restaurant, date, hours_and_min) => {
+        if (current_restaurant.hours[0].open[date.getDay()].is_overnight){
+            return ((Number(current_restaurant.hours[0].open[date.getDay()].end) < Number(hours_and_min)) && 
+            (Number(hours_and_min) < Number(current_restaurant.hours[0].open[date.getDay()].start))) ? false : true
+        }
+        return ((Number(current_restaurant.hours[0].open[date.getDay()].start) < Number(hours_and_min)) && 
+            (Number(hours_and_min) < Number(current_restaurant.hours[0].open[date.getDay()].end))) ? true : false
+    }
+
+    /**
      * method that populates the screen
      * @returns a list of Touchable Opacities that contain the user's saved restaurants
      */
@@ -36,6 +52,7 @@ export default function SavedRestaurantsScreen({route}){
             var hours = date.getHours(); //To get the Current Hours
             var min = date.getMinutes(); //Current Minutes
             
+            
             // help visualize time better
             var hours_and_min = `${hours}${min}`
             if (min < 10){
@@ -43,60 +60,54 @@ export default function SavedRestaurantsScreen({route}){
             }
             //console.log(restaurant_data[i].hours[0].open)
             //console.log(hours_and_min)
-            // if we are working with an overnight restaurant, determining closing hours is start > curr_time > end
-            if (restaurant_data[i].hours[0].open[date.getDay()].is_overnight){
+            //console.log(restaurant_data[i].image_url)
+            
+            // if (restaurant_data[i].hours[0].open[date.getDay()].is_overnight){
                 // if start > curr_hrs > end. we are within the range where the restaurant is closed
                 // example: end - 0100 start - 0900. if it is 0700. 0700 > 0100 and 0700 < 0900. so we are closed
-                if((Number(restaurant_data[i].hours[0].open[date.getDay()].end) < Number(hours_and_min)) && 
-                (Number(hours_and_min) < Number(restaurant_data[i].hours[0].open[date.getDay()].start))){
-
-                    table.push(<TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.RestaurantBox, styles.RestaurantBoxItems]}>
-                        <Text style={styles.globalFont}>{restaurant_data[i].name} :
-                            <Text style={styles.closedColor}>Closed</Text>
+                table.push(
+                    <TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.RestaurantBox, styles.RestaurantBoxItems]}>
+                    <Image style={{width: 100, height: 100, borderRadius: 20, marginHorizontal: 10}} source={{ uri: restaurant_data[i].image_url}}/>
+                    <View>
+                        <Text style={styles.globalFontHeader}>{restaurant_data[i].name}</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center', alignContent: 'baseline'}}>
+                            <Ionicons name="time" size={20} color="white"/>
+                            <Text style = {isOpen(restaurant_data[i], date, hours_and_min) ?  styles.openColor: styles.closedColor}>
+                            {isOpen(restaurant_data[i], date, hours_and_min) ? "Open": "Close"}
                         </Text>
+                        <Text style={[styles.globalFont]}> until </Text>
+                        <Text style={[styles.globalFont]}>{isOpen(restaurant_data[i], date, hours_and_min) ? timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end) : timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)}</Text>
+                        
+                        </View>
+                        
                         <Text>{starRating(restaurant_data[i].id, restaurant_data[i].rating)}</Text>
-                        <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}
-                        </Text>
-                    </TouchableOpacity>)
-                }
-                // we are within the hours the restaurant is open
-                else{
-
-                    table.push(<TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.RestaurantBox, styles.RestaurantBoxItems]}>
-                        <Text style={styles.globalFont}>{restaurant_data[i].name} :
-                            <Text style={styles.openColor}> Open</Text>
-                        </Text>
-                        <Text>{starRating(restaurant_data[i].id, restaurant_data[i].rating)}</Text>
-                        <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}
-                        </Text>
-                    </TouchableOpacity>)
-                }
-            }
+                        {/* <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}</Text> */}
+                        <View style={{}}>
+                            
+                            <Text style={styles.globalFont}><Ionicons name="pin" size={20} color="white"/> {restaurant_data[i].location.address1}, </Text>
+                            <Text style={styles.globalFont}>{restaurant_data[i].location.city} {restaurant_data[i].location.state}, {restaurant_data[i].location.country}</Text>
+                        </View>
+                        
+                    </View>
+                    
+                </TouchableOpacity>)
+                
+            // }
             // we are not working with an overnight restaurant. we can do start < curr time < end
-            else{
-                // if the current time is > start_time and < end_time. we are within the hours of openning
-                if((Number(restaurant_data[i].hours[0].open[date.getDay()].start) < Number(hours_and_min)) && 
-                (Number(hours_and_min) < Number(restaurant_data[i].hours[0].open[date.getDay()].end))){
-                    table.push(<TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.RestaurantBox, styles.RestaurantBoxItems]}>
-                        <Text style={styles.globalFont}>{restaurant_data[i].name} :
-                            <Text style={styles.openColor}>Open</Text>
-                        </Text>
-                        <Text>{starRating(restaurant_data[i].id, restaurant_data[i].rating)}</Text>
-                        <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}</Text>
-                    </TouchableOpacity>)
-                }
-                // current time is within closing time
-                else{
-                    table.push(<TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.RestaurantBox, styles.RestaurantBoxItems]}>
-                        <Text style={styles.globalFont}>{restaurant_data[i].name} :
-                            <Text style={styles.closedColor}> Closed</Text>
-                        </Text>
-                        <Text>{starRating(restaurant_data[i].id, restaurant_data[i].rating)}</Text>
-                        <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}
-                        </Text>
-                    </TouchableOpacity>)
-                }
-            }
+            // else{
+            //     // if the current time is > start_time and < end_time. we are within the hours of openning
+            //     table.push(<TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.RestaurantBox, styles.RestaurantBoxItems]}>
+            //         <Image style={{width: 100, height: 100}} source={{ uri: restaurant_data[i].image_url}}/>
+            //         <Text style={styles.globalFont}>{restaurant_data[i].name} :
+            //             <Text style={(Number(restaurant_data[i].hours[0].open[date.getDay()].start) < Number(hours_and_min)) && 
+            //             (Number(hours_and_min) < Number(restaurant_data[i].hours[0].open[date.getDay()].end))? styles.openColor: styles.closedColor}>{(Number(restaurant_data[i].hours[0].open[date.getDay()].start) < Number(hours_and_min)) && 
+            //             (Number(hours_and_min) < Number(restaurant_data[i].hours[0].open[date.getDay()].end))? "Open": "Close"}
+            //             </Text>
+            //         </Text>
+            //         <Text>{starRating(restaurant_data[i].id, restaurant_data[i].rating)}</Text>
+            //         <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}</Text>
+            //     </TouchableOpacity>)
+            // }
         }
         return table
     };
@@ -104,9 +115,9 @@ export default function SavedRestaurantsScreen({route}){
     return(
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <Text style={[styles.globalFont]}>Saved Restaurants</Text>
+                <Text style={[styles.globalFontHeader]}>Saved Restaurants</Text>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons style={[styles.globalFont, styles.backArrow]} name='arrow-back-outline'/>
+                    <Ionicons style={[styles.globalFontHeader, styles.backArrow]} name='arrow-back-outline'/>
                 </TouchableOpacity>
             </View>
 
@@ -138,36 +149,44 @@ const styles = StyleSheet.create({
     backArrow: {
         fontSize: 40
     },
-    globalFont: {
+    globalFontHeader: {
         color: 'white',
         fontSize: 20,
+        fontWeight: '500',
+    },
+    globalFont: {
+        color: 'white',
+        fontSize: 18,
         fontWeight: '500',
     },
     container: {
         backgroundColor: '#3d4051',
         flex:1
     },
+    // 3f3a42, 363838
     RestaurantBox: {
         backgroundColor: '#3f3a42',
-        height: 120,
+        height: 150,
         bordercolor: 'black',
-        borderWidth: 3,
+        borderWidth: 1,
         borderRadius: 10,
         marginTop: 10,
+        flexDirection: 'row',
         
     },
     RestaurantBoxItems:{
-        justifyContent: 'center',
-        paddingLeft: 10
+        
+        alignItems: 'center',
+        
     },
     openColor:{
         color:'#4CF439',
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: '500',
     },
     closedColor:{
         color:'#E80F13',
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: '500',
     },
     restaurantContainer:{

@@ -10,6 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import image from "../assets/feast_blue.png"
+import colors from '../utils/colors';
 
 export default function FollowingScreen(props){
     const passedInFollowingUID = props.followingUID
@@ -144,11 +145,11 @@ const styles = StyleSheet.create({
     },
     FollowingBox: {
         backgroundColor: '#3f3a42',
-        height: 100,
+        height: 120,
         marginTop: 10,
         bordercolor: 'black',
-        borderWidth: 3,
-        borderRadius: 10,
+        borderWidth: 1,
+        borderRadius: 15,
         flexDirection: 'row',
         paddingHorizontal: 10,
     },
@@ -171,8 +172,8 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 50,
         overflow: 'hidden',
-        borderWidth: 2,
-        borderColor: '#EECACA',
+        borderWidth: 2.5,
+        borderColor: colors.feastBlue,
     },
 
 })

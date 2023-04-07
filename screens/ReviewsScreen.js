@@ -9,11 +9,11 @@ import * as React from 'react';
 import * as firebase from '../utils/firebase'
 import { ScrollView } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import { starRating } from '../methods/star';
 export default function ReviewsScreen({route}){
     // dbID is the ID of a restaurant/Feaster. type = where we pull the info from
     const dbID = route.params.dbID;
-    const reviewType = route.params.type
+    // const reviewType = route.params.type
     const navigation = useNavigation();
 
     const [reviews, setReviews] = React.useState('')
@@ -63,6 +63,9 @@ export default function ReviewsScreen({route}){
         let table = []
         if (reviews.length != 0){
             for(let i = 0;  i < limit; i++){
+                const reviewAverage = ((reviews[i][1].star_atmos + reviews[i][1].star_foods + reviews[i][1].star_service) /3)
+                // console.log(reviewAverage)
+                // console.log(reviews[i])
                 table.push(
                 <TouchableOpacity key={i} style={[style.ReviewBox, {marginHorizontal: 10}]}
                     onPress={() => navDetailedReview(reviews[i])} >
@@ -73,7 +76,8 @@ export default function ReviewsScreen({route}){
                 </TouchableOpacity>)
 
                 // console.log(reviews[i][1].authorid)
-            }  
+            }
+            
         }
 
         else{
@@ -127,6 +131,9 @@ const style = StyleSheet.create({
     container:{
         flex: 1,
         backgroundColor: '#3d4051',
+    },
+    buttonContainer: {
+        alignItems: 'center'
     },
     buttonText: {
 		color: 'white',

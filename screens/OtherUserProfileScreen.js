@@ -7,6 +7,7 @@ import * as firebase from '../utils/firebase'
 import * as yelp from '../utils/yelp'
 
 import * as React from 'react';
+import colors from '../utils/colors';
 
 
 
@@ -109,10 +110,6 @@ export default function OtherUserProfileScreen({route}){
     []
     )
     
-    const checkUser = () => {
-        console.log(otherUser)
-    }
-    
     // Saves properties of selected image
     // Written by Kenny Du
     const [avatarPath, setAvatarPath] = React.useState();
@@ -136,17 +133,18 @@ export default function OtherUserProfileScreen({route}){
         <View style = {styles.container}>
                 <View style = {styles.UserBackground}>
 
-                    <View style = {[{alignItems: 'center', flex: 3, justifyContent: 'space-evenly'}]}>
+                    <View style = {[{alignItems: 'center', flex: 1.5, justifyContent: 'space-evenly'}]}>
                         <Image style = {[styles.tinyLogo]} source ={avatarPath? {uri:avatarPath} : image}/>
-                        <Text style={styles.globalText}>{name}</Text>
+                        
                         
                     </View>
-                    <View style={{flex:0}}>
+                    <View style={[{alignItems: 'center', flex:1, justifyContent: 'center'}]}>
+                    <Text style={styles.globalText}>{name}</Text>
                     <Text style={[styles.globalText, {alignSelf: 'center'}]}>Japanese Food Expert</Text>
 
                     </View>
                     
-                    <View style={[{flex: 1, alignSelf: 'center'}]}>
+                    <View style={[{flex: 1.5, alignSelf: 'center'}]}>
                     <Text style={styles.globalText}>{bio}</Text>
                     </View>
                 </View>
@@ -159,7 +157,7 @@ export default function OtherUserProfileScreen({route}){
                         <Text style={styles.buttonText}>{follow}</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={[styles.button]} onPress={checkUser}>
+                    <TouchableOpacity style={[styles.button]} onPress={seeReview}>
                         <Text style={styles.buttonText}>See Reviews</Text>
                     </TouchableOpacity>
                 </View>
@@ -186,23 +184,27 @@ const styles = StyleSheet.create({
         
         overflow: 'hidden',
         borderWidth: 5,
-        borderColor: '#EECACA',
+        borderColor: colors.feastBlue,
         alignSelf: 'center',
         marginTop: 20
     },
     button: {
-        backgroundColor: '#0782F9',
-        padding: 15,
-        borderRadius: 10,
-        alignItems: 'center',
+		backgroundColor: '#342B2B51',
+		width: '100%',
+		padding: 15,
+		alignItems: 'center',
         justifyContent: 'center',
-        width: 200
-    },
-    buttonText: {
-        color: 'white',
-        fontWeight: '700',
-        fontSize: 16
-    },
+        borderColor: '#000000',
+        borderWidth: 1,
+        height: 75
+        
+        
+	},
+	buttonText: {
+		color: 'white',
+		fontWeight: '700',
+		fontSize: 16,
+	},
     buttonContainer: {
         flex: 2,
         alignItems: 'center',
