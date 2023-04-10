@@ -98,7 +98,12 @@ export default function SearchScreen() {
 					filter
 				)
 				.then(result => {
-					setRestaurants([...result])
+					if (result.length !== 0) {
+						setRestaurants([...result])
+					}
+					else {
+						setRestaurants(["No results"])
+					}
 				})
 				.catch(() => console.log("Error, searching YELP businesses"));
 		})
@@ -208,7 +213,7 @@ export default function SearchScreen() {
 					onChangeText={text => setSearchText(text)}
 					onSubmitEditing={handleSearch}
 				/>
-				{restaurants.length !== 0 && 
+				{(restaurants.length !== 0 || restaurants[0] === "No results") && 
 					<Ionicons 
 						style={styles.filter} 
 						name="filter" 
@@ -328,8 +333,8 @@ export default function SearchScreen() {
 				</Modal>
 			}
 
-			{(restaurants.length !== 0 && displayMap) ? map(restaurants, location) : <></>}
-			{restaurants.length !== 0 &&
+			{(restaurants[0] !== "No results" && restaurants.length !== 0 && displayMap) ? map(restaurants, location) : <></>}
+			{(restaurants[0] !== "No results" && restaurants.length !== 0) &&
 				<View style={{marginBottom: -27, marginLeft: 100, marginRight: 100, margin: 10}}>
 					<TouchableOpacity
 						onPress={() => setDisplayMap(!displayMap)}
@@ -340,10 +345,23 @@ export default function SearchScreen() {
 				</View>
 			}
 
-			{restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20, padding: 10}}>Results</Text> : <></>}
+			{restaurants[0] === "No results" && 
+				<>
+					<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+						<Text style={[styles.noResultsText,{fontSize: 30,paddingLeft: 100, paddingRight: 100, paddingTop: 200}]}>
+							No Results
+						</Text>
+						<Text style={styles.noResultsText}>Please search for another term or remove</Text>
+						<Text style={styles.noResultsText}>some filters</Text>
+					</View>
+					
+				</>
+			}
+
+			{restaurants[0] !== "No results" && restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20, padding: 10}}>Results</Text> : <></>}
 			
 			<ScrollView style={styles.restaurantContainer} keyboardShouldPersistTaps={'handled'}>
-				{restaurants !== [] &&
+				{restaurants[0] !== "No results" &&
 					restaurants.map((restaurant, index) => {
 						return (
 							<Pressable 
@@ -386,7 +404,7 @@ export default function SearchScreen() {
 						)
 					})
 				}
-				{restaurants.length !== 0 && 
+				{restaurants[0] !== "No results" && restaurants.length !== 0 && 
 					<View style={styles.buttonContainer}>
 						<TouchableOpacity
 							onPress={() => setPressed(pressed + 1)}
@@ -452,6 +470,14 @@ const styles = StyleSheet.create({
 		width: 125,
 		height: 115,
 		borderRadius: 15,
+	},
+	noResultsText: {
+		color: 'white',
+		flexWrap: 'wrap',
+		paddingLeft: 50, 
+		paddingRight: 50, 
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 	buttonContainer: {
 		flex: 1,
