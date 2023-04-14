@@ -75,10 +75,16 @@ export default function HomeScreen() {
 									.then(photos => {
 										setReviewPhotos(prev => [...prev, {[key + restaurant_alias] : photos}])
 									})
+									.catch((error) => {
+										console.log("Error with getting review photos: ", error)
+									})
 								}
 							})
 							
 						}
+					})
+					.catch((error) => {
+						console.log("Error with getting reviews: ", error)
 					})
 
 					firebase.dbFileGetUrl('ProfilePictures/' + key)
@@ -109,6 +115,12 @@ export default function HomeScreen() {
 					setFollowing(prev => [...prev, {"id": key, "name": doc.name}])
 				})
 			})
+			.catch((error) => {
+				console.log("Error with getting following: ", error)
+			})
+		})
+		.catch((error) => {
+			console.log("Error with getting user info: ", error)
 		})
 	}
 
@@ -167,10 +179,10 @@ export default function HomeScreen() {
 								<ScrollView horizontal={true} style={styles.photo_container} contentContainerStyle={styles.photo_content_container}>
 									{reviewPhotos.map(images => {
 										if (images[review[1].authorid + review[0]]) {
-											return images[review[1].authorid + review[0]].map(image => {
+											return images[review[1].authorid + review[0]].map((image, i) => {
 												return (
 													<Image 
-														key={image}
+														key={image + i}
 														source={{uri: image}} 
 														style={{width: 120, height: 120, borderRadius: 10, margin: 2}}
 													/>
