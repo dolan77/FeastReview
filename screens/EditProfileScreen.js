@@ -27,8 +27,8 @@ export default function EditProfileScreen(){
     const [titleScroll, setTitleScroll] = React.useState(false);
 
     const [dropdownOpen, setDropdownOpen] = React.useState(false);
-    const [dropdownValue, setDropdownValue] = React.useState(null);
     const [newBio, setNewBio] = React.useState('');
+    const [editName, setEditName] = React.useState('');
 
 
 
@@ -143,7 +143,10 @@ export default function EditProfileScreen(){
      * @param {*} username to update
      * @returns promise to update database
      */
-    const updateUsername = (username) => {
+    const submitUsername = (username) => {
+        
+
+
         return auth().currentUser.updateProfile({
             displayName: username
         });
@@ -238,13 +241,19 @@ export default function EditProfileScreen(){
 
                 <View style = {styles.rowContainer}>
                     <View style = {styles.leftItem}>
-                        <Text style={styles.profileLabel}>Username</Text>
-                        <Text style={[styles.globalFont, styles.leftText]}>{user.displayName}</Text>
+                    <Text style={styles.profileLabel}>Username</Text>
+                        {!editName && <Text style={[styles.globalFont, styles.leftText]}>{user.displayName}</Text>}
+                        {editName && <View style = {[styles.bioBox, {borderColor: colors.white}]}>
+                            <TextInput>
+                                
+                            </TextInput>
+                        </View>}
                     </View>
 
                     <View style = {styles.rightItem}>
-                        <TouchableOpacity style={styles.editButton}>
-                            <Text style={styles.editText}>Edit</Text>
+                        <TouchableOpacity style={editName ? styles.submitButton: styles.editButton} onPress={() => {setEditName(!editName)}}>
+                            {!editName && <Text style={styles.editText}>Edit</Text>}
+                            {editName && <Text style={styles.submitText}>Submit</Text>}
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -280,9 +289,9 @@ export default function EditProfileScreen(){
                 <View style = {styles.rowContainer}>
                     <View style = {[styles.leftItem]}>
                         <Text style={styles.profileLabel}>Biography</Text>
-                        <View style={[styles.bioBox]}>
-                            <Text style={[styles.bioFont]}>{bio}</Text>
-                        </View>
+
+                        <Text style={[styles.bioFont]}>{bio}</Text>
+
                     </View>
 
                     <View style = {styles.rightItem}>
@@ -391,10 +400,11 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         flexWrap: 'wrap',
         borderWidth:2,
-        borderColor: colors.gray,
+        borderColor: colors.backgroundDarker,
         marginVertical:5,
         borderRadius:5,
-        width: 250
+        width: 200,
+        padding:5
     },
     profilePicture: {
         width: 120,
