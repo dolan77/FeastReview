@@ -54,9 +54,8 @@ function adjectivesSentimentIncrement(review, restaurantAlias){
         adjectivesSentiment[adjective] = 0;
     });
     let sentences = review.match( /[^\.!\?]+[\.!\?]+/g ); // split review into sentences
-
     let toUpdate = {};
-    if(sentences){
+    if(sentences != null){
         sentences.forEach((sentence) => {
             let sentiment = getSentiment(sentence); // get sentiment score per sentence
             adjectives.forEach(adjective => {
