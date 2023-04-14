@@ -63,8 +63,8 @@ export default function EditProfileScreen(){
         // push changes to database, backend can do that
         try {
             const userProfile = await firebase.dbGet('users', user.uid);
-            setBio(userProfile.bio)
-            setNewBio(userProfile.bio)
+            setBio(userProfile.bio ? userProfile.bio: "")
+            setNewBio(userProfile.bio ? userProfile.bio: "")
             if(!Object.hasOwn(userProfile, 'title') || !userProfile.title || !userProfile.title.length <= 0){
                 setTitle('No title selected!');
             }
@@ -196,10 +196,12 @@ export default function EditProfileScreen(){
                         numberOfLines = {4}
                         onChangeText={(value) => setNewBio(value)}
                         placeholder="Write your biography here..."
-                        placeholderTextColor={colors.white}/>
+                        placeholderTextColor={colors.white}>
+                            {bio}
+                        </TextInput>
                         
                         <View style={{alignItems: 'center'}}>
-                            <Text style={styles.modalText}>/100</Text>
+                            <Text style={styles.modalText}>{newBio.length}/100</Text>
                         </View>
                     </View>
 
@@ -284,7 +286,7 @@ export default function EditProfileScreen(){
                     </View>
 
                     <View style = {styles.rightItem}>
-                        <TouchableOpacity style={styles.editButton} onPress = {() => setModalVisible(true)}>
+                        <TouchableOpacity style={styles.editButton} onPress = {() => {setModalVisible(true); setNewBio(bio)}}>
                             <Text style={styles.editText}>Edit</Text>
                         </TouchableOpacity>
                     </View>
