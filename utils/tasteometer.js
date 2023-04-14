@@ -19,7 +19,7 @@ function getAdjectives(review){
     console.log(adjectivesData)
     adjectivesData.forEach(adjective => {
         if(!adjectives.includes(adjective.text.replace(/\W/g, ''))){
-            adjectives.push(adjective.text.replace(/\W/g, ''));
+            adjectives.push(adjective.text.replace(/\W/g, '').toLowerCase());
         }
     });
     return adjectives;
@@ -55,11 +55,14 @@ function adjectivesSentimentIncrement(review, restaurantAlias){
     });
     let sentences = review.match( /[^\.!\?]+[\.!\?]+/g ); // split review into sentences
     let toUpdate = {};
+    if(sentences != null) {
+        sentences = [review]
+    }
     if(sentences != null){
         sentences.forEach((sentence) => {
             let sentiment = getSentiment(sentence); // get sentiment score per sentence
             adjectives.forEach(adjective => {
-                if(sentence.includes(adjective)){
+                if(sentence.toLowerCase().includes(adjective)){
                     adjectivesSentiment[adjective] += sentiment; // sum up per-sentence sentiment score per adjective
                 }
                 
