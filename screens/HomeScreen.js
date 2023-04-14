@@ -184,7 +184,7 @@ export default function HomeScreen() {
 													<Image 
 														key={image + i}
 														source={{uri: image}} 
-														style={{width: 120, height: 120, borderRadius: 10, margin: 2}}
+														style={{width: 100, height: 100, borderRadius: 10, margin: 2}}
 													/>
 												)
 											})
@@ -195,7 +195,7 @@ export default function HomeScreen() {
 
 							<View style = {{flexDirection: "row"}}>
 								<Ionicons style={styles.locationIcon} name="location-outline">
-									<Text> - </Text>
+									<Text style={{color: 'white'}}> - </Text>
 								</Ionicons>
 								<Text style = {styles.restaurantName}>{review[1].restaurant_name}</Text>
 							</View>
@@ -225,8 +225,7 @@ const styles = StyleSheet.create({
 	reviewContainer: {
 		backgroundColor: '#5b628a',
 		flex: 1,
-		width: 380,
-		length: 200,
+		width: 360,
 		justifyContent: 'center',
 		alignSelf: 'center',
 		margin: 5,
@@ -253,7 +252,7 @@ const styles = StyleSheet.create({
 		fontSize: 14
 	},
 	locationIcon: {
-		color: 'white', 
+		color: '#DF1616', 
 		fontSize: 30, 
 		marginLeft: 20, 
 		marginBottom: 10,
@@ -301,9 +300,9 @@ const styles = StyleSheet.create({
 
 	photo_container: {
         horizontal: 'true',
-        width: 360,
+        width: 340,
         height: 100,
-        margin:5,
+        margin: 5,
         alignSelf: 'center'
     },
 	photo_content_container: {
