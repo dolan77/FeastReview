@@ -212,7 +212,7 @@ export default function RestaurantProfileScreen({route}){
             for(let i = 0;  i < limit; i++){
                 const reviewAverage = ((reviews[i][1].star_atmos + reviews[i][1].star_foods + reviews[i][1].star_service) /3)
                 table.push(
-                <TouchableOpacity key={i} style={[style.ReviewBox, {marginHorizontal: 10}]}>
+                <TouchableOpacity key={i} style={[style.ReviewBox, {marginHorizontal: 10}]} onPress={() => {navigation.navigate('Detailed Review Screen', reviews[i])}}>
                     <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].username}</Text>
                     <Text style={[style.buttonText, style.ReviewHeader]}>{starRating(0,reviewAverage)}</Text>
                     <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].datemade.toDate().toDateString()}</Text>

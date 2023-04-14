@@ -112,6 +112,13 @@ export default function SavedRestaurantsScreen({route}){
         return table
     };
 
+    if (restaurant_data.length == 0) {
+        return(
+            <View>
+                <Text style={styles.globalFont}>You did not save a restaurant</Text>
+            </View>
+        )
+    }
     return(
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
