@@ -114,7 +114,7 @@ async function dbGetReviews(keyword, field="restaurant_alias"){
  */
 async function dbUpdate(collection, doc, field){
     const docRef = db.collection(collection).doc(doc);
-    return docRef.update(field);
+    return docRef.set(field, {merge:true});
 }
 
 /**
@@ -129,7 +129,7 @@ async function dbUpdate(collection, doc, field){
 async function dbUpdateOnce(collection, doc, field, value){
     const docRef = db.collection(collection).doc(doc);
     let updatedField = {[field]: value};
-    return docRef.update(updatedField);
+    return docRef.set(updatedField, {merge:true});
 }
 
 
