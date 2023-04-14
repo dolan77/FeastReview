@@ -58,19 +58,6 @@ export default function EditProfileScreen(){
         });
     }
 
-    /**
-     * 
-     * @param {value.nativeEvent.text} newValue - this is the value of the textbox
-     */
-    async function changeBio(newValue) {
-        // push changes to database, backend can do that
-        try {
-            await firebase.dbUpdateOnce('users', user.uid, "bio", newValue);
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     // function that retrieves the bio from the firestore database
     async function getProfile() {
         // push changes to database, backend can do that
@@ -162,6 +149,23 @@ export default function EditProfileScreen(){
         });
     };
 
+    /**
+     * Sets the current bio to the edited bio and syncs to database
+     */
+    const submitBiography = () => {
+        setBio(newBio); 
+        setModalVisible(false);
+
+        console.log(bio);
+        console.log(newBio);
+        // push changes to database, backend can do that
+        try {
+            firebase.dbUpdateOnce('users', user.uid, "bio", newBio);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <View style = {{flex: 1, backgroundColor: colors.backgroundDark}}>
             <Modal
@@ -177,7 +181,7 @@ export default function EditProfileScreen(){
                         <TouchableOpacity onPress={() => setModalVisible(false)}>
                             <Text style={[styles.globalFont]}>Cancel</Text>
                         </TouchableOpacity>
-                        {bio != newBio && <Text style={styles.globalFont} onPress={() => {setBio(newBio); changeBio(bio); setModalVisible(false);}}>Submit</Text>}
+                        {bio != newBio && <Text style={styles.globalFont} onPress={() => submitBiography()}>Submit</Text>}
                         {bio == newBio && <Text style={[styles.globalFont, {color: colors.gray}]}>Submit</Text>}
                     </View>
 
@@ -190,7 +194,10 @@ export default function EditProfileScreen(){
                         style={styles.input}
                         maxLength={100}
                         numberOfLines = {4}
-                        onChangeText={(value) => setNewBio(value)}/>
+                        onChangeText={(value) => setNewBio(value)}
+                        placeholder="Write your biography here..."
+                        placeholderTextColor={colors.white}/>
+                        
                         <View style={{alignItems: 'center'}}>
                             <Text style={styles.modalText}>/100</Text>
                         </View>
