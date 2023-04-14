@@ -14,7 +14,6 @@ export default function ReviewPage({route}) {
     const user = auth().currentUser;
     const restaurantData = route.params.restaurantData;
     var userReview = '';
-    
 
     const [modalVisible, setModalVisible] = React.useState(false);
     const [review, setReview] = React.useState(userReview);
@@ -28,9 +27,7 @@ export default function ReviewPage({route}) {
         try{
             console.log('In the upload review function');
             var review_id = restaurantData.data.alias + '_' + user.uid + '_' + String(Date.now());
-            //incrementAdjectives(review, restaurantData.data.alias);
-            adjectivesSentimentIncrement(review,restaurantData.data.alias);
-            //adjectivesSentimentIncrement(review,restaurantData.data.alias).forEach(result => console.log(result));
+            //adjectivesSentimentIncrement(review,restaurantData.data.alias);
 
             await firebase.dbSet('reviews', review_id, {authorid: user.uid,
                                                         username: user.displayName,
@@ -284,7 +281,8 @@ export default function ReviewPage({route}) {
                     onPress={() => 
                         {if (review.length >= 100){
                             uploadReview();
-                            navigation.goBack(null);
+                            navigation.replace('RestaurantProfile', {data: restaurantData.data});
+                            //navigation.goBack(null)
                             }
                         else {
                             console.warn('Review length too short: ', review.length)
