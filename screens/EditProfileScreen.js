@@ -27,8 +27,9 @@ export default function EditProfileScreen(){
     const [titleScroll, setTitleScroll] = React.useState(false);
 
     const [dropdownOpen, setDropdownOpen] = React.useState(false);
-    const [dropdownValue, setDropdownValue] = React.useState(null);
     const [newBio, setNewBio] = React.useState('');
+    const [editName, setEditName] = React.useState('');
+    const [newName, setNewName] = React.useState('');
 
 
 
@@ -58,26 +59,13 @@ export default function EditProfileScreen(){
         });
     }
 
-    /**
-     * 
-     * @param {value.nativeEvent.text} newValue - this is the value of the textbox
-     */
-    async function changeBio(newValue) {
-        // push changes to database, backend can do that
-        try {
-            await firebase.dbUpdateOnce('users', user.uid, "bio", newValue);
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     // function that retrieves the bio from the firestore database
     async function getProfile() {
         // push changes to database, backend can do that
         try {
             const userProfile = await firebase.dbGet('users', user.uid);
-            setBio(userProfile.bio)
-            setNewBio(userProfile.bio)
+            setBio(userProfile.bio ? userProfile.bio: "")
+            setNewBio(userProfile.bio ? userProfile.bio: "")
             if(!Object.hasOwn(userProfile, 'title') || !userProfile.title || !userProfile.title.length <= 0){
                 setTitle('No title selected!');
             }
@@ -152,15 +140,37 @@ export default function EditProfileScreen(){
     }
 
     /**
-     * Updates firebase auth display name with username
-     * @param {*} username to update
-     * @returns promise to update database
+     * functions as the edit and submit button depending on state for username
      */
-    const updateUsername = (username) => {
-        return auth().currentUser.updateProfile({
-            displayName: username
-        });
-    };
+    const toggleEditName = () => {
+        if(!editName){ //edit
+            setEditName(true);
+            setNewName(user.displayName);
+        }
+        else { //submit
+            setEditName(false);
+            auth().currentUser.updateProfile({
+                displayName: newName
+            })
+        }
+    }
+
+    /**
+     * Sets the current bio to the edited bio and syncs to database
+     */
+    const submitBiography = () => {
+        setBio(newBio); 
+        setModalVisible(false);
+
+        console.log(bio);
+        console.log(newBio);
+        // push changes to database, backend can do that
+        try {
+            firebase.dbUpdateOnce('users', user.uid, "bio", newBio);
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <View style = {{flex: 1, backgroundColor: colors.backgroundDark}}>
@@ -177,7 +187,7 @@ export default function EditProfileScreen(){
                         <TouchableOpacity onPress={() => setModalVisible(false)}>
                             <Text style={[styles.globalFont]}>Cancel</Text>
                         </TouchableOpacity>
-                        {bio != newBio && <Text style={styles.globalFont} onPress={() => {setBio(newBio); changeBio(bio); setModalVisible(false);}}>Submit</Text>}
+                        {bio != newBio && <Text style={styles.globalFont} onPress={() => submitBiography()}>Submit</Text>}
                         {bio == newBio && <Text style={[styles.globalFont, {color: colors.gray}]}>Submit</Text>}
                     </View>
 
@@ -190,9 +200,14 @@ export default function EditProfileScreen(){
                         style={styles.input}
                         maxLength={100}
                         numberOfLines = {4}
-                        onChangeText={(value) => setNewBio(value)}/>
+                        onChangeText={(value) => setNewBio(value)}
+                        placeholder="Write your biography here..."
+                        placeholderTextColor={colors.white}>
+                            {bio}
+                        </TextInput>
+                        
                         <View style={{alignItems: 'center'}}>
-                            <Text style={styles.modalText}>/100</Text>
+                            <Text style={styles.modalText}>{newBio.length}/100</Text>
                         </View>
                     </View>
 
@@ -229,13 +244,19 @@ export default function EditProfileScreen(){
 
                 <View style = {styles.rowContainer}>
                     <View style = {styles.leftItem}>
-                        <Text style={styles.profileLabel}>Username</Text>
-                        <Text style={[styles.globalFont, styles.leftText]}>{user.displayName}</Text>
+                    <Text style={styles.profileLabel}>Username</Text>
+                        {!editName && <Text style={[styles.globalFont, styles.leftText]}>{user.displayName}</Text>}
+                        {editName && <View style = {[styles.bioBox, {borderColor: colors.white}]}>
+                            <TextInput style={styles.globalFont} maxLength={20} numberOfLines={1} onChangeText={(value) => setNewName(value)}>
+                                {newName}
+                            </TextInput>
+                        </View>}
                     </View>
 
                     <View style = {styles.rightItem}>
-                        <TouchableOpacity style={styles.editButton}>
-                            <Text style={styles.editText}>Edit</Text>
+                        <TouchableOpacity style={editName ? styles.submitButton: styles.editButton} onPress={() => {toggleEditName()}}>
+                            {!editName && <Text style={styles.editText}>Edit</Text>}
+                            {editName && <Text style={styles.submitText}>Submit</Text>}
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -271,13 +292,13 @@ export default function EditProfileScreen(){
                 <View style = {styles.rowContainer}>
                     <View style = {[styles.leftItem]}>
                         <Text style={styles.profileLabel}>Biography</Text>
-                        <View style={[styles.bioBox]}>
-                            <Text style={[styles.bioFont]}>{bio}</Text>
-                        </View>
+
+                        <Text style={[styles.bioFont]}>{bio}</Text>
+
                     </View>
 
                     <View style = {styles.rightItem}>
-                        <TouchableOpacity style={styles.editButton} onPress = {() => setModalVisible(true)}>
+                        <TouchableOpacity style={styles.editButton} onPress = {() => {setModalVisible(true); setNewBio(bio)}}>
                             <Text style={styles.editText}>Edit</Text>
                         </TouchableOpacity>
                     </View>
@@ -382,10 +403,11 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         flexWrap: 'wrap',
         borderWidth:2,
-        borderColor: colors.gray,
+        borderColor: colors.backgroundDarker,
         marginVertical:5,
         borderRadius:5,
-        width: 250
+        width: 200,
+        padding:5
     },
     profilePicture: {
         width: 120,
