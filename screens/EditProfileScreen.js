@@ -29,6 +29,7 @@ export default function EditProfileScreen(){
     const [dropdownOpen, setDropdownOpen] = React.useState(false);
     const [newBio, setNewBio] = React.useState('');
     const [editName, setEditName] = React.useState('');
+    const [newName, setNewName] = React.useState('');
 
 
 
@@ -139,18 +140,20 @@ export default function EditProfileScreen(){
     }
 
     /**
-     * Updates firebase auth display name with username
-     * @param {*} username to update
-     * @returns promise to update database
+     * functions as the edit and submit button depending on state for username
      */
-    const submitUsername = (username) => {
-        
-
-
-        return auth().currentUser.updateProfile({
-            displayName: username
-        });
-    };
+    const toggleEditName = () => {
+        if(!editName){ //edit
+            setEditName(true);
+            setNewName(user.displayName);
+        }
+        else { //submit
+            setEditName(false);
+            auth().currentUser.updateProfile({
+                displayName: newName
+            })
+        }
+    }
 
     /**
      * Sets the current bio to the edited bio and syncs to database
@@ -244,14 +247,14 @@ export default function EditProfileScreen(){
                     <Text style={styles.profileLabel}>Username</Text>
                         {!editName && <Text style={[styles.globalFont, styles.leftText]}>{user.displayName}</Text>}
                         {editName && <View style = {[styles.bioBox, {borderColor: colors.white}]}>
-                            <TextInput>
-                                
+                            <TextInput style={styles.globalFont} maxLength={20} numberOfLines={1} onChangeText={(value) => setNewName(value)}>
+                                {newName}
                             </TextInput>
                         </View>}
                     </View>
 
                     <View style = {styles.rightItem}>
-                        <TouchableOpacity style={editName ? styles.submitButton: styles.editButton} onPress={() => {setEditName(!editName)}}>
+                        <TouchableOpacity style={editName ? styles.submitButton: styles.editButton} onPress={() => {toggleEditName()}}>
                             {!editName && <Text style={styles.editText}>Edit</Text>}
                             {editName && <Text style={styles.submitText}>Submit</Text>}
                         </TouchableOpacity>
