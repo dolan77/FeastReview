@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/core';
 import * as React from 'react';
 import * as firebase from '../utils/firebase'
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
+import { starRating } from '../methods/star';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function DetailedReviewScreen({route}){
@@ -83,6 +84,8 @@ export default function DetailedReviewScreen({route}){
         })
     }
 
+    const reviewAverage = ((reviewData.star_atmos + reviewData.star_foods + reviewData.star_service) /3)
+
 
     return(
         <SafeAreaView style={style.container}>
@@ -101,6 +104,7 @@ export default function DetailedReviewScreen({route}){
                 {/* Container for the main review we are viewing comments of */}
                 <View style={[style.ReviewBox, {marginBottom: 15}]}>
                     <Text style={[style.whiteText, style.ReviewHeader]}>{reviewData.username}</Text>
+                    <Text style={[style.buttonText, style.ReviewHeader]}>{starRating(0, reviewAverage)}</Text>
                     <Text style={[style.whiteText, style.ReviewHeader, {color:'#63B8D6'}]}>{reviewData.restaurant_name}</Text>
                     <Text style={[style.whiteText, style.ReviewHeader]}>{reviewData.datemade.toDate().toDateString()}</Text>
                     <Text style={[style.ReviewBoxItems, style.ReviewText, {paddingBottom: 5}]}>{reviewData.content}</Text>

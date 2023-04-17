@@ -10,6 +10,8 @@ import * as firebase from '../utils/firebase'
 import { ScrollView } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { starRating } from '../methods/star';
+import ViewMoreText from 'react-native-view-more-text';
+
 export default function ReviewsScreen({route}){
     // dbID is the ID of a restaurant/Feaster. type = where we pull the info from
     const dbID = route.params.dbID;
@@ -57,7 +59,16 @@ export default function ReviewsScreen({route}){
         setPressed(pressed + 1)
     }
 
-
+    renderReadMore = (onPress) => {
+		return(
+		  <Text onPress={onPress} style={{color: '#75d9fc', padding: 5, marginLeft:10, borderWidth: 0}}>Read more</Text>
+		)
+	}
+	renderReadLess = (onPress) => {
+		return(
+		  <Text onPress={onPress} style={{color: '#75d9fc', padding: 5, marginLeft:10}}>Read less</Text>
+		)
+	}
 
     const PopulateReviews = () => {
         let table = []
@@ -73,7 +84,16 @@ export default function ReviewsScreen({route}){
                     <Text style={[style.buttonText, style.ReviewHeader]}>{starRating(0, reviewAverage)}</Text>
                     <Text style={[style.buttonText, style.ReviewHeader, {color:'#63B8D6'}]}>{reviews[i][1].restaurant_name}</Text>
                     <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].datemade.toDate().toDateString()}</Text>
-                    <Text style={[style.ReviewBoxItems, style.ReviewText]}>{reviews[i][1].content}</Text>
+                    <ViewMoreText
+									numberOfLines={5}
+									renderViewMore={renderReadMore}
+									renderViewLess={renderReadLess}
+									textStyle={[style.ReviewBoxItems, style.ReviewText]}
+								>
+								<Text>
+									{reviews[i][1].content}
+								</Text>
+							</ViewMoreText>
                 </TouchableOpacity>)
 
                 // console.log(reviews[i][1].authorid)
