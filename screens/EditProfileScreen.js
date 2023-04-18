@@ -66,7 +66,8 @@ export default function EditProfileScreen(){
             const userProfile = await firebase.dbGet('users', user.uid);
             setBio(userProfile.bio ? userProfile.bio: "")
             setNewBio(userProfile.bio ? userProfile.bio: "")
-            if(!Object.hasOwn(userProfile, 'title') || !userProfile.title || !userProfile.title.length <= 0){
+            console.log(userProfile.title)
+            if(!Object.hasOwn(userProfile, 'title') || userProfile.title == null || userProfile.title.length <= 0){
                 setTitle('No title selected!');
             }
             else {
