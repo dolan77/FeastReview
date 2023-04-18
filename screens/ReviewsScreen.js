@@ -102,10 +102,10 @@ export default function ReviewsScreen({route}){
             for(let i = 0;  i < limit; i++){
                 const reviewAverage = ((reviews[i][1].star_atmos + reviews[i][1].star_foods + reviews[i][1].star_service) /3)
                 // console.log(reviewAverage)
-                //console.log(reviews[i][1].authorid)
+                // console.log(reviews[i][1])
                 table.push(
                 <TouchableOpacity key={i} style={[style.ReviewBox, {marginHorizontal: 10}]}
-                    onPress={() => navDetailedReview(reviews[i][1])} >
+                    onPress={() => navDetailedReview(reviews[i])} >
                     {/* <Image style = {[style.tinyLogo]} source ={{uri: pfps}}/> */}
                     <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].username}</Text>
                     <Text style={[style.buttonText, style.ReviewHeader]}>{starRating(0, reviewAverage)}</Text>
