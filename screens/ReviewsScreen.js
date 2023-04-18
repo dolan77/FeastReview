@@ -19,18 +19,18 @@ export default function ReviewsScreen({route}){
     const navigation = useNavigation();
 
     const [reviews, setReviews] = React.useState('')
-    const [limit, setLimit] = React.useState(1);
+    const [limit, setLimit] = React.useState(10);
     const [pressed, setPressed] = React.useState(1)
 
     const user = auth().currentUser;
 
     React.useEffect(() => {
 		if (pressed !== 1) {
-            if (10 * limit > reviews.length){
+            if (10 + limit > reviews.length){
                 setLimit(reviews.length)
             }
             else{
-                setLimit(10 * limit)
+                setLimit(10 + limit)
             }
 		}
 	}, [pressed])
