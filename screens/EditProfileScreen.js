@@ -66,7 +66,6 @@ export default function EditProfileScreen(){
             const userProfile = await firebase.dbGet('users', user.uid);
             setBio(userProfile.bio ? userProfile.bio: "")
             setNewBio(userProfile.bio ? userProfile.bio: "")
-            console.log(userProfile.title)
             if(!Object.hasOwn(userProfile, 'title') || userProfile.title == null || userProfile.title.length <= 0){
                 setTitle('No title selected!');
             }
@@ -163,8 +162,6 @@ export default function EditProfileScreen(){
         setBio(newBio); 
         setModalVisible(false);
 
-        console.log(bio);
-        console.log(newBio);
         // push changes to database, backend can do that
         try {
             firebase.dbUpdateOnce('users', user.uid, "bio", newBio);
