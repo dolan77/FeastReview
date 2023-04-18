@@ -99,7 +99,7 @@ export default function FollowingScreen(props){
 
     
     // the user is following at least one person
-    if (passedInFollowingUID.length > 0){
+    if (passedInFollowingDoc.length > 0){
         const following = PopulateFollowing();
         return(
         <SafeAreaView style = {styles.container}>

@@ -11,7 +11,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { starRating } from '../methods/star';
 import ViewMoreText from 'react-native-view-more-text';
-import colors from '../utils/colors'
 
 export default function ReviewsScreen({route}){
     // dbID is the ID of a restaurant/Feaster. type = where we pull the info from

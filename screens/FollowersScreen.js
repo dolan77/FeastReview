@@ -94,7 +94,7 @@ export default function FollowersScreen(props){
     }
     
     // the user is followed by at least one person
-    if (passedinUID.length > 0){
+    if (passedinFollowersDoc.length > 0){
         return(
             <SafeAreaView style = {styles.container}>
                 <ScrollView contentContainerStyle = {styles.scrollOuter}>
