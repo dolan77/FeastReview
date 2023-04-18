@@ -10,6 +10,7 @@ import * as firebase from '../utils/firebase'
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { starRating } from '../methods/star';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { FeastHeader } from '../utils/components';
 
 export default function DetailedReviewScreen({route}){
     const user = auth().currentUser;
@@ -91,12 +92,7 @@ export default function DetailedReviewScreen({route}){
         <SafeAreaView style={style.container}>
 
             {/* Header of the page that contains "Review" and the back arrow. */}
-            <View style={style.header}>
-                <Text style={[style.globalFont]}>Review</Text>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons style={[style.globalFont, style.backArrow]} name='arrow-back-outline'/>
-                </TouchableOpacity>
-            </View>
+            <FeastHeader title={"Review"} onPress={() => navigation.goBack()}/>
 
             
             <ScrollView style={[{marginTop:5,}]}>
@@ -217,17 +213,6 @@ const style = StyleSheet.create({
         color: 'white',
         fontSize: 20,
         fontWeight: '500',
-    },
-    header: {
-        backgroundColor: '#171414',
-        height: 50,
-        justifyContent: 'center',
-        paddingHorizontal: 10,
-        borderBottomRightRadius: 15,
-        borderBottomLeftRadius: 15,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
     },
     input: {
         textAlignVertical: 'top',

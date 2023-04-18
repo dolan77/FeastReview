@@ -11,6 +11,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { starRating } from '../methods/star';
 import ViewMoreText from 'react-native-view-more-text';
+import { FeastHeader } from '../utils/components';
 
 export default function ReviewsScreen({route}){
     // dbID is the ID of a restaurant/Feaster. type = where we pull the info from
@@ -154,12 +155,8 @@ export default function ReviewsScreen({route}){
     return(
 
         <SafeAreaView style={style.container}>
-            <View style={style.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons style={[style.globalFont, style.backArrow]} name='arrow-back-outline'/>
-                </TouchableOpacity>
-                <Text style={[style.globalFont]}>Your Reviews</Text>
-            </View>
+            <FeastHeader title={"Your Reviews"} onPress={() => navigation.goBack()}/>
+
             <ScrollView>
 
 
@@ -244,20 +241,6 @@ const style = StyleSheet.create({
     },
     ReviewHeader: {
         paddingHorizontal: 10
-    },
-    header: {
-        backgroundColor: colors.black,
-        height: 50,
-        justifyContent: 'center',
-        paddingHorizontal: 10,
-        borderBottomRightRadius: 15,
-        borderBottomLeftRadius: 15,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-    },
-    backArrow: {
-        fontSize: 40
     },
     globalFont: {
         color: colors.white,

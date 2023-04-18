@@ -13,6 +13,7 @@ import expertise from '../utils/expertise'
 import dropdown from 'react-native-dropdown-picker'
 import DropDownPicker from 'react-native-dropdown-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { FeastHeader } from '../utils/components';
 
 export default function EditProfileScreen(){
     const user = auth().currentUser;
@@ -214,12 +215,7 @@ export default function EditProfileScreen(){
                 </View>
             </Modal>
 
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.replace('Your Profile')}>
-                    <Ionicons style={[styles.globalFont, styles.backArrow]} name='arrow-back-outline'/>
-                </TouchableOpacity>
-                <Text style={[styles.globalFont]}>Edit Profile</Text>
-            </View>
+            <FeastHeader title={"Edit Profile"} onPress={() => navigation.replace('Your Profile')}/>
 
             <View style = {styles.container}>
                 <View style={styles.horizontalLine}/>
@@ -452,18 +448,5 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 10,
         color:'white'
-    },
-    header: {
-        backgroundColor: colors.black,
-        height: 50,
-        width: '100%',
-        justifyContent: 'center',
-        paddingHorizontal: 10,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-    },
-    backArrow: {
-        fontSize: 40
     },
 });
