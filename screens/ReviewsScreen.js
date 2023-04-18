@@ -3,8 +3,8 @@ import auth from '@react-native-firebase/auth';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/core';
-
-
+import colors from '../utils/colors';
+import {businessDetail} from '../utils/yelp.js';
 import * as React from 'react';
 import * as firebase from '../utils/firebase'
 import { ScrollView } from 'react-native-gesture-handler';
@@ -19,6 +19,7 @@ export default function ReviewsScreen({route}){
     const navigation = useNavigation();
 
     const [reviews, setReviews] = React.useState('')
+    const [pfps, setpfps] = React.useState('')
     const [limit, setLimit] = React.useState(1);
     const [pressed, setPressed] = React.useState(1)
 
@@ -36,11 +37,36 @@ export default function ReviewsScreen({route}){
 	}, [pressed])
 
     React.useEffect( () => {
+        // getProfilePics();
         GetReviews();
+        
         PopulateReviews();
+        
     }, 
     [])
 
+    
+
+    // const getProfilePics = () => {
+    //     try{
+    //         firebase.firebase.dbFileGetUrl('ProfilePictures/' + dbID).then(
+                
+    //             url => {
+    //                 console.log(url)
+    //                 setpfps(url)
+    //             })
+            
+    //     }
+    //     catch(error){
+    //         firebase.dbFileGetUrl('feast_blue.png').then(
+    //         url => {
+    //             console.log(url)
+    //             setpfps(url)
+    //             }
+    //         )
+    //     }   
+
+    // }
     const GetReviews = () => {
         try {
             firebase.dbGetReviews(dbID, field="authorid").then(result => {
@@ -76,13 +102,27 @@ export default function ReviewsScreen({route}){
             for(let i = 0;  i < limit; i++){
                 const reviewAverage = ((reviews[i][1].star_atmos + reviews[i][1].star_foods + reviews[i][1].star_service) /3)
                 // console.log(reviewAverage)
-                // console.log(reviews[i])
+                //console.log(reviews[i][1].authorid)
                 table.push(
                 <TouchableOpacity key={i} style={[style.ReviewBox, {marginHorizontal: 10}]}
-                    onPress={() => navDetailedReview(reviews[i])} >
+                    onPress={() => navDetailedReview(reviews[i][1])} >
+                    {/* <Image style = {[style.tinyLogo]} source ={{uri: pfps}}/> */}
                     <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].username}</Text>
                     <Text style={[style.buttonText, style.ReviewHeader]}>{starRating(0, reviewAverage)}</Text>
-                    <Text style={[style.buttonText, style.ReviewHeader, {color:'#63B8D6'}]}>{reviews[i][1].restaurant_name}</Text>
+                    <TouchableOpacity
+                    onPress={(() => {
+                        try {
+                            firebase.dbGet('api_keys', 'key').then(keys => {
+                                businessDetail(reviews[i][1].restaurant_alias, keys.yelp).then(result => {navigation.navigate('RestaurantProfile', {data: result})})
+                            })
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    })}
+                    >
+                        <Text style={[style.buttonText, style.ReviewHeader, {color:'#63B8D6'}]}>{reviews[i][1].restaurant_name}</Text>
+                    </TouchableOpacity>
+                    
                     <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].datemade.toDate().toDateString()}</Text>
                     <ViewMoreText
 									numberOfLines={5}
@@ -153,6 +193,15 @@ const style = StyleSheet.create({
         flex: 1,
         backgroundColor: '#3d4051',
     },
+    tinyLogo: {
+        width: 50,
+        height: 50,
+        borderRadius: 50,
+        overflow: 'hidden',
+        borderWidth: 2.5,
+        borderColor: colors.feastBlue,
+    },
+
     buttonContainer: {
         alignItems: 'center'
     },
