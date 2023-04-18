@@ -11,6 +11,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { starRating } from '../methods/star';
 import ViewMoreText from 'react-native-view-more-text';
+import colors from '../utils/colors'
 
 export default function ReviewsScreen({route}){
     // dbID is the ID of a restaurant/Feaster. type = where we pull the info from
@@ -20,18 +21,18 @@ export default function ReviewsScreen({route}){
 
     const [reviews, setReviews] = React.useState('')
     const [pfps, setpfps] = React.useState('')
-    const [limit, setLimit] = React.useState(1);
+    const [limit, setLimit] = React.useState(5);
     const [pressed, setPressed] = React.useState(1)
 
     const user = auth().currentUser;
 
     React.useEffect(() => {
 		if (pressed !== 1) {
-            if (10 * limit > reviews.length){
+            if (5 + limit > reviews.length){
                 setLimit(reviews.length)
             }
             else{
-                setLimit(10 * limit)
+                setLimit(5 + limit)
             }
 		}
 	}, [pressed])
@@ -155,10 +156,10 @@ export default function ReviewsScreen({route}){
 
         <SafeAreaView style={style.container}>
             <View style={style.header}>
-                <Text style={[style.globalFont]}>Your Reviews</Text>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons style={[style.globalFont, style.backArrow]} name='arrow-back-outline'/>
                 </TouchableOpacity>
+                <Text style={[style.globalFont]}>Your Reviews</Text>
             </View>
             <ScrollView>
 
@@ -174,7 +175,7 @@ export default function ReviewsScreen({route}){
                                 onPress={handlePress}
                                 style={style.button}
                             >
-                                <Text style={style.buttonText}>See More Results</Text>
+                            {limit != reviews.length && <Text style={[style.buttonText, {marginVertical:20, color: colors.feastBlue}]}>See More Results</Text>}
                             </TouchableOpacity>
                         </View>
                     }
@@ -191,7 +192,7 @@ export default function ReviewsScreen({route}){
 const style = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: '#3d4051',
+        backgroundColor: colors.backgroundDark,
     },
     tinyLogo: {
         width: 50,
@@ -206,31 +207,26 @@ const style = StyleSheet.create({
         alignItems: 'center'
     },
     buttonText: {
-		color: 'white',
+		color: colors.white,
 		fontWeight: '700',
 		fontSize: 16,
 	},
 
     buttonOutline: {
-        backgroundColor: 'white',
+        backgroundColor: colors.white,
         marginTop: 5,
-        borderColor: '#0782F9',
+        borderColor: colors.feastBlueDark,
         borderWidth: 2
     },
-    buttonText: {
-        color: 'white',
-        fontWeight: '700',
-        fontSize: 16
-    },
     buttonOutlineText: {
-        color: '#0782F9',
+        color: colors.feastBlueDark,
         fontWeight: '700',
         fontSize: 16
     },
     ReviewBox: {
-        backgroundColor: '#3f3a42',
+        backgroundColor: colors.backgroundDarker,
         
-        bordercolor: 'black',
+        bordercolor: colors.black,
         borderWidth: 3,
         borderRadius: 10,
         marginTop: 10,
@@ -243,7 +239,7 @@ const style = StyleSheet.create({
         paddingHorizontal: 15
     },
     ReviewText: {
-        color: 'white',
+        color: colors.white,
         fontsize: 12,
         fontWeight: '650'
     },
@@ -251,7 +247,7 @@ const style = StyleSheet.create({
         paddingHorizontal: 10
     },
     header: {
-        backgroundColor: '#171414',
+        backgroundColor: colors.black,
         height: 50,
         justifyContent: 'center',
         paddingHorizontal: 10,
@@ -265,7 +261,7 @@ const style = StyleSheet.create({
         fontSize: 40
     },
     globalFont: {
-        color: 'white',
+        color: colors.white,
         fontSize: 20,
         fontWeight: '500',
     },

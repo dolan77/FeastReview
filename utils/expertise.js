@@ -61,7 +61,6 @@ async function getPossibleTitles(uid){
             }
         }
 
-        console.log(restaurants)
         // from all restaurants count up the categories
         for(const restaurantAlias in restaurants){
             await firebase.dbGet("restaurants", restaurants[restaurantAlias]).then(restaurant => {
