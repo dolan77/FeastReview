@@ -19,18 +19,18 @@ export default function ReviewsScreen({route}){
     const navigation = useNavigation();
 
     const [reviews, setReviews] = React.useState('')
-    const [limit, setLimit] = React.useState(10);
+    const [limit, setLimit] = React.useState(5);
     const [pressed, setPressed] = React.useState(1)
 
     const user = auth().currentUser;
 
     React.useEffect(() => {
 		if (pressed !== 1) {
-            if (10 + limit > reviews.length){
+            if (5 + limit > reviews.length){
                 setLimit(reviews.length)
             }
             else{
-                setLimit(10 + limit)
+                setLimit(5 + limit)
             }
 		}
 	}, [pressed])
@@ -115,10 +115,10 @@ export default function ReviewsScreen({route}){
 
         <SafeAreaView style={style.container}>
             <View style={style.header}>
-                <Text style={[style.globalFont]}>Your Reviews</Text>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons style={[style.globalFont, style.backArrow]} name='arrow-back-outline'/>
                 </TouchableOpacity>
+                <Text style={[style.globalFont]}>Your Reviews</Text>
             </View>
             <ScrollView>
 
@@ -134,7 +134,7 @@ export default function ReviewsScreen({route}){
                                 onPress={handlePress}
                                 style={style.button}
                             >
-                                <Text style={style.buttonText}>See More Results</Text>
+                            {limit != reviews.length && <Text style={style.buttonText}>See More Results</Text>}
                             </TouchableOpacity>
                         </View>
                     }
