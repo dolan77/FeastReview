@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
         color:'white'
     },
     header: {
-        backgroundColor: '#171414',
+        backgroundColor: colors.black,
         height: 50,
         width: '100%',
         justifyContent: 'center',
