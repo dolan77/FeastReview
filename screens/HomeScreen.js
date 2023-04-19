@@ -13,6 +13,7 @@ import image from "../assets/feast_blue.png"
 
 export default function HomeScreen() {
 	const user = auth().currentUser
+	const [isFollowing, setIsFollowing] = useState(true)
 	const [reviews, setReviews] = useState([])
 	const [following, setFollowing] = useState([])
 	const [followingPfp, setFollowingPfp] = useState([])
@@ -80,11 +81,11 @@ export default function HomeScreen() {
 									})
 								}
 							})
-							
 						}
 					})
 					.catch((error) => {
 						console.log("Error with getting reviews: ", error)
+						
 					})
 
 					firebase.dbFileGetUrl('ProfilePictures/' + key)
@@ -117,6 +118,7 @@ export default function HomeScreen() {
 			})
 			.catch((error) => {
 				console.log("Error with getting following: ", error)
+				setIsFollowing(false)
 			})
 		})
 		.catch((error) => {
@@ -152,65 +154,72 @@ export default function HomeScreen() {
 	
 	return (
 		<View style = {styles.container}>
+			{!isFollowing && 
+				<Text style={{color: 'white', fontSize: 18}}>
+					Start following Feasters to get started!!!
+				</Text>
+			}
 
 			{/* ScrollView allows you to scroll down the feed */}
-			<ScrollView style={{flex:1, backgroundColor: '#3d4051'}}>
-				{reviews.map(review => {
-					return (
-						<View style = {styles.reviewContainer} key={review[0]}>
-							
-							<View style = {{flexDirection: "row"}}>
-								<Image style = {styles.profileIcon} source={display(review[1].authorid) !== undefined ? {uri: display(review[1].authorid)} : image}/>
-								<Text style = {styles.emailWrap}> {getUserName(review[1].authorid)}</Text>
+			{isFollowing && 
+				<ScrollView style={{flex:1, backgroundColor: '#3d4051'}}>
+					{reviews.map(review => {
+						return (
+							<View style = {styles.reviewContainer} key={review[0]}>
+								
+								<View style = {{flexDirection: "row"}}>
+									<Image style = {styles.profileIcon} source={display(review[1].authorid) !== undefined ? {uri: display(review[1].authorid)} : image}/>
+									<Text style = {styles.emailWrap}> {getUserName(review[1].authorid)}</Text>
+								</View>
+
+								<ViewMoreText
+										numberOfLines={5}
+										renderViewMore={renderReadMore}
+										renderViewLess={renderReadLess}
+										textStyle={styles.reviewContent}
+									>
+									<Text>
+										{review[1].content}
+									</Text>
+								</ViewMoreText>
+
+								{review[1].image_urls.length !== 0 && 
+									<ScrollView horizontal={true} style={styles.photo_container} contentContainerStyle={styles.photo_content_container}>
+										{reviewPhotos.map(images => {
+											if (images[review[1].authorid + review[0]]) {
+												return images[review[1].authorid + review[0]].map((image, i) => {
+													return (
+														<Image 
+															key={image + i}
+															source={{uri: image}} 
+															style={{width: 100, height: 100, borderRadius: 10, margin: 2}}
+														/>
+													)
+												})
+											}
+										})}
+									</ScrollView>
+								}
+
+								<View style = {{flexDirection: "row"}}>
+									<Ionicons style={styles.locationIcon} name="location-outline">
+										<Text style={{color: 'white'}}> - </Text>
+									</Ionicons>
+									<Text style = {styles.restaurantName}>{review[1].restaurant_name}</Text>
+								</View>
 							</View>
-
-							<ViewMoreText
-									numberOfLines={5}
-									renderViewMore={renderReadMore}
-									renderViewLess={renderReadLess}
-									textStyle={styles.reviewContent}
-								>
-								<Text>
-									{review[1].content}
-								</Text>
-							</ViewMoreText>
-
-							{review[1].image_urls.length !== 0 && 
-								<ScrollView horizontal={true} style={styles.photo_container} contentContainerStyle={styles.photo_content_container}>
-									{reviewPhotos.map(images => {
-										if (images[review[1].authorid + review[0]]) {
-											return images[review[1].authorid + review[0]].map((image, i) => {
-												return (
-													<Image 
-														key={image + i}
-														source={{uri: image}} 
-														style={{width: 100, height: 100, borderRadius: 10, margin: 2}}
-													/>
-												)
-											})
-										}
-									})}
-								</ScrollView>
-							}
-
-							<View style = {{flexDirection: "row"}}>
-								<Ionicons style={styles.locationIcon} name="location-outline">
-									<Text style={{color: 'white'}}> - </Text>
-								</Ionicons>
-								<Text style = {styles.restaurantName}>{review[1].restaurant_name}</Text>
-							</View>
-						</View>
-					)
-				})}
-				<View style={styles.container}>
-					<TouchableOpacity 
-						style={styles.button}
-						onPress={logoff}
-					>
-						<Text style={{color: "white"}}>LOG OUT</Text>
-					</TouchableOpacity>
-				</View>
-			</ScrollView>
+						)
+					})}
+					<View style={styles.container}>
+						<TouchableOpacity 
+							style={styles.button}
+							onPress={logoff}
+						>
+							<Text style={{color: "white"}}>LOG OUT</Text>
+						</TouchableOpacity>
+					</View>
+				</ScrollView>
+			}
 		</View>
 	)
 }
