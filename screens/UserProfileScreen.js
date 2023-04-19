@@ -79,32 +79,40 @@ export default function UserProfileScreen(){
                 result.forEach( (doc, key) => {
                     followers.push(key)
                     followers_doc.push(doc)
-                    // console.log(key + ":" + JSON.stringify(doc))
                 })
-                // console.log('followers: ' + followers)
-                // console.log('followerNames: ' + followers_names)
             
             // after getting the followers, get the user and who they are following
             })
             .then(result2 => {
                 firebase.dbGet('users', user.uid).then(result => {
-                    firebase.dbGetFollowed(result.following).then(result => {
-                        result.forEach( (doc, key) => {
-                            following.push(key)
-                            following_doc.push(doc)
+                    console.log('before dbGetFollowed')
+                    // check if the user's following list is not 0
+                    if(result.following.length != 0){
+                        firebase.dbGetFollowed(result.following).then(result => {
+                            result.forEach( (doc, key) => {
+                                following.push(key)
+                                following_doc.push(doc)
+                            })
+                        // wait to get who the user is following, then navigate to the Followers and Following Screen
                         })
-                    // wait to get who the user is following, then navigate to the Followers and Following Screen
-                    })
-                    .then(result3 => {
-                        //console.log(followers)
-                        //console.log(followers_doc)
+                        .then(result3 => {
+                            navigation.navigate('FollowersAndFollowing', {
+                                followers : followers,
+                                followers_doc : followers_doc,
+                                following: following,
+                                following_doc: following_doc
+                            })
+                        })
+                    }
+                    else{
                         navigation.navigate('FollowersAndFollowing', {
                             followers : followers,
                             followers_doc : followers_doc,
                             following: following,
                             following_doc: following_doc
                         })
-                    })
+                    }
+
                 })
             })            
             
