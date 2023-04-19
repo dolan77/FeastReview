@@ -115,8 +115,10 @@ export default function SavedRestaurantsScreen({route}){
 
     if (restaurant_data.length == 0) {
         return(
-            <View>
-                <Text style={styles.globalFont}>You did not save a restaurant</Text>
+            <View style={styles.container}>
+                <View style={styles.noRestaurant}>
+                    <Text style = {[styles.globalFont, {textAlign: 'center'}]}>You did not save a restaurant, please save one note at a later time</Text>
+                </View>
             </View>
         )
     }
@@ -153,6 +155,12 @@ const styles = StyleSheet.create({
         
         
 
+    },
+    noRestaurant:{
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: '50%',
+        paddingHorizontal: 10,
     },
     restaurantImage:{
         width: 100, 
