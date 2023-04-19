@@ -151,8 +151,8 @@ export default function RestaurantProfileScreen({route}){
           <Animated.View style={{height}}>
             <View style={style.scheduleContainer}>   
                 <View>
-                    {restaurantData.data.hours[0].open.map(hoursData => (
-                        <Text key={hoursData.day} style={hoursData.day == today ? style.todayLeftText : style.leftText}>{dayOfTheWeek[hoursData.day]}</Text>
+                    {restaurantData.data.hours[0].open.map((hoursData, index) => (
+                        <Text key={hoursData.day + index} style={hoursData.day == today ? style.todayLeftText : style.leftText}>{dayOfTheWeek[hoursData.day]}</Text>
                     ))}
 
                     <Text>
@@ -160,8 +160,8 @@ export default function RestaurantProfileScreen({route}){
                     </Text>
                 </View>
                 <View>
-                    {restaurantData.data.hours[0].open.map(hoursData => (
-                        <Text key={hoursData.day} style={hoursData.day == today ? style.todayRightText : style.rightText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
+                    {restaurantData.data.hours[0].open.map((hoursData, index) => (
+                        <Text key={hoursData.day + index} style={hoursData.day == today ? style.todayRightText : style.rightText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
 					))}
                     <Text>
                         
