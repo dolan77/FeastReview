@@ -3,7 +3,7 @@ import storage from '@react-native-firebase/storage';
 import { CountQueuingStrategy } from 'node:stream/web';
 //import firebase from '@react-native-firebase/app';
 
-module.exports = {del, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbDelete, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews, dbSetReviewComment, dbGetReviewComments, dbGetReviewPhotos };
+module.exports = {del, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateCreate, dbDelete, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews, dbSetReviewComment, dbGetReviewComments, dbGetReviewPhotos };
 
 
 /**
@@ -127,6 +127,22 @@ async function dbUpdate(collection, doc, field){
  * @param {*} value you want to change to
  */
 async function dbUpdateOnce(collection, doc, field, value){
+    const docRef = db.collection(collection).doc(doc);
+    let updatedField = {[field]: value};
+    return docRef.update(updatedField);
+}
+
+/**
+ * simpler adder that updates only one field but is much easier to use
+ * creates a new field if one doesnt exist already
+ * @param {*} collection 
+ * @param {*} doc 
+ * @param {string} field to update
+ *               also works with dot notation
+ *                 example => "field.nestField"
+ * @param {*} value you want to change to
+ */
+async function dbUpdateCreate(collection, doc, field, value){
     const docRef = db.collection(collection).doc(doc);
     let updatedField = {[field]: value};
     return docRef.set(updatedField, {merge:true});
