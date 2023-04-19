@@ -114,7 +114,7 @@ async function dbGetReviews(keyword, field="restaurant_alias"){
  */
 async function dbUpdate(collection, doc, field){
     const docRef = db.collection(collection).doc(doc);
-    return docRef.set(field, {merge:true});
+    return docRef.update(field);
 }
 
 /**
