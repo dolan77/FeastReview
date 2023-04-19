@@ -136,7 +136,7 @@ export default function EditProfileScreen(){
         //submit
         else {
             setTitleScroll(false);
-            firebase.dbUpdateOnce("users", user.uid, "title", title ? title: "");
+            firebase.dbUpdateCreate("users", user.uid, "title", title ? title: "");
         }
     }
 
