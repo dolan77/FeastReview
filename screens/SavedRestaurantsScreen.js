@@ -10,6 +10,7 @@ import { starRating } from '../methods/star';
 import { timeConvert } from '../methods/time';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import colors from '../utils/colors';
 
 // if a user clicks on their saved restaurants. navigate them to the restaurant screen
 export default function SavedRestaurantsScreen({route}){
@@ -67,9 +68,9 @@ export default function SavedRestaurantsScreen({route}){
                 // example: end - 0100 start - 0900. if it is 0700. 0700 > 0100 and 0700 < 0900. so we are closed
                 table.push(
                     <TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.RestaurantBox, styles.RestaurantBoxItems]}>
-                    <Image style={{width: 100, height: 100, borderRadius: 20, marginHorizontal: 10}} source={{ uri: restaurant_data[i].image_url}}/>
+                    <Image style={styles.restaurantImage} source={{ uri: restaurant_data[i].image_url}}/>
                     <View>
-                        <Text style={styles.globalFontHeader}>{restaurant_data[i].name}</Text>
+                        <Text style={[styles.globalFontHeader, {width: '85%'}]}>{restaurant_data[i].name}</Text>
                         <View style={{flexDirection: 'row', alignItems: 'center', alignContent: 'baseline'}}>
                             <Ionicons name="time" size={20} color="white"/>
                             <Text style = {isOpen(restaurant_data[i], date, hours_and_min) ?  styles.openColor: styles.closedColor}>
@@ -114,8 +115,10 @@ export default function SavedRestaurantsScreen({route}){
 
     if (restaurant_data.length == 0) {
         return(
-            <View>
-                <Text style={styles.globalFont}>You did not save a restaurant</Text>
+            <View style={styles.container}>
+                <View style={styles.noRestaurant}>
+                    <Text style = {[styles.globalFont, {textAlign: 'center'}]}>You did not save a restaurant, please save one note at a later time</Text>
+                </View>
             </View>
         )
     }
@@ -153,6 +156,18 @@ const styles = StyleSheet.create({
         
 
     },
+    noRestaurant:{
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: '50%',
+        paddingHorizontal: 10,
+    },
+    restaurantImage:{
+        width: 100, 
+        height: 100, 
+        borderRadius: 20, 
+        marginHorizontal: 10,
+    },
     backArrow: {
         fontSize: 40
     },
@@ -173,7 +188,7 @@ const styles = StyleSheet.create({
     // 3f3a42, 363838
     RestaurantBox: {
         backgroundColor: '#3f3a42',
-        height: 150,
+        height: 175,
         bordercolor: 'black',
         borderWidth: 1,
         borderRadius: 10,
