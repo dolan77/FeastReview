@@ -11,6 +11,18 @@ import auth from '@react-native-firebase/auth';
 import { Timestamp } from 'react-native-reanimated/lib/types/lib/reanimated2/commonTypes';
 import {getMostUsedAdjectives} from '../utils/tasteometer'
 
+function createHoursToArray(data) {
+	let hours = []
+	let prev = -1
+	data.map(item => {
+		if (item.day === prev) {
+			item.day = item.day + 'repeat'
+		}
+		hours.push(item)
+		prev = item.day
+	})
+}
+
 // function that returns the screen for a Restaurant's profile
 export default function RestaurantProfileScreen({route}){
     const nagivation = useNavigation();
@@ -49,6 +61,7 @@ export default function RestaurantProfileScreen({route}){
         GetReviews();
         PopulateReviews();
         loadMostUsedAdjectives();
+		createHoursToArray(restaurantData.data.hours[0].open)
     }, 
     [])
 
@@ -124,7 +137,9 @@ export default function RestaurantProfileScreen({route}){
       
         useEffect(() => {
           Animated.timing(height, {
-            toValue: !expanded ? 250 : 0,
+            toValue: !expanded ? (restaurantData.data.hours[0].open.length > 7 
+				? (25 * (restaurantData.data.hours[0].open.length - 7)) + 250 : 250) 
+				: 0,
             duration: 300,
             useNativeDriver: false
           }).start();
@@ -147,12 +162,11 @@ export default function RestaurantProfileScreen({route}){
                 <View>
                     {restaurantData.data.hours[0].open.map(hoursData => (
                         <Text key={hoursData.day} style={hoursData.day == today ? style.todayRightText : style.rightText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
-                    ))}
+					))}
                     <Text>
                         
                     </Text>
                 </View>
-
             </View>
           </Animated.View>
         );
