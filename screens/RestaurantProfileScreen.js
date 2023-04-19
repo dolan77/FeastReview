@@ -11,7 +11,7 @@ import auth from '@react-native-firebase/auth';
 import { Timestamp } from 'react-native-reanimated/lib/types/lib/reanimated2/commonTypes';
 import {getMostUsedAdjectives} from '../utils/tasteometer'
 import colors from '../utils/colors'
-
+import { FeastHeader } from '../utils/components';
 // function that returns the screen for a Restaurant's profile
 export default function RestaurantProfileScreen({route}){
     const navigation = useNavigation();
@@ -233,6 +233,7 @@ export default function RestaurantProfileScreen({route}){
     // hours, name, rating, reviews, directions, phone number, and website to the restaurant
     return(
         <SafeAreaView style={style.container}>
+            <FeastHeader title={'Restaurant'} onPress={() => navigation.goBack()}/>
             <ScrollView>
                 <View stlye={{flex: 3}}>
                 <View>

@@ -11,6 +11,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 import image from "../assets/feast_blue.png"
 import colors from '../utils/colors';
+import { FeastHeader } from '../utils/components';
 
 export default function FollowingScreen(props){
     const passedInFollowingUID = props.followingUID
@@ -103,6 +104,7 @@ export default function FollowingScreen(props){
         const following = PopulateFollowing();
         return(
         <SafeAreaView style = {styles.container}>
+            <FeastHeader title={"Following"} onPress={() => navigation.goBack()} />
             <ScrollView contentContainerStyle = {styles.scrollOuter}>
                 <View>
                     <View>
@@ -117,7 +119,9 @@ export default function FollowingScreen(props){
     // the user is not following anyone
     else{
         return(
-            <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
+            
+            <View style = {{flex: 1, backgroundColor: colors.backgroundDark}}>
+                <FeastHeader title={"Following"} onPress={() => navigation.goBack()} />
                 <View>
                     <Text style = {styles.globalText}>You are not following anyone</Text>
                 </View>
