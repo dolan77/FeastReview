@@ -11,7 +11,7 @@ import auth from '@react-native-firebase/auth';
 import { Timestamp } from 'react-native-reanimated/lib/types/lib/reanimated2/commonTypes';
 import {getMostUsedAdjectives} from '../utils/tasteometer'
 
-function createHoursToArray(data) {
+function fixHoursRepeated(data) {
 	let hours = []
 	let prev = -1
 	data.map(item => {
