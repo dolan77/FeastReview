@@ -8,7 +8,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MultipleImagePicker from 'react-native-image-crop-picker';
 import { FlatList } from 'react-native-gesture-handler';
 import {incrementAdjectives, adjectivesSentimentIncrement} from '../utils/tasteometer'
-
+import { FeastHeader } from '../utils/components';
 export default function ReviewPage({route}) {
     const navigation = useNavigation();
     const user = auth().currentUser;
@@ -201,6 +201,7 @@ export default function ReviewPage({route}) {
     
       return(
         <View style={styles.container1}>
+            <FeastHeader title={"Create Review"} onPress={() => navigation.goBack()} />
             {/* Restaurant Name */}
             <Text style={styles.restaurantName}>
                     {restaurantData.data.name}
