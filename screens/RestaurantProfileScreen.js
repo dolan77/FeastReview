@@ -61,7 +61,7 @@ export default function RestaurantProfileScreen({route}){
         GetReviews();
         PopulateReviews();
         loadMostUsedAdjectives();
-		createHoursToArray(restaurantData.data.hours[0].open)
+		fixHoursRepeated(restaurantData.data.hours[0].open)
     }, 
     [])
 
