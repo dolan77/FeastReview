@@ -137,7 +137,7 @@ export default function RestaurantProfileScreen({route}){
             <View style={style.scheduleContainer}>   
                 <View>
                     {restaurantData.data.hours[0].open.map(hoursData => (
-                        <Text key={hoursData.day} style={hoursData.day == today ? style.todayLeftText : style.leftText}>{dayOfTheWeek[hoursData.day]}</Text>
+                        <Text key={hoursData.day + 'day'} style={hoursData.day == today ? style.todayLeftText : style.leftText}>{dayOfTheWeek[hoursData.day]}</Text>
                     ))}
 
                     <Text>
@@ -146,7 +146,7 @@ export default function RestaurantProfileScreen({route}){
                 </View>
                 <View>
                     {restaurantData.data.hours[0].open.map(hoursData => (
-                        <Text key={hoursData.day} style={hoursData.day == today ? style.todayRightText : style.rightText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
+                        <Text key={hoursData.day + 'hour'} style={hoursData.day == today ? style.todayRightText : style.rightText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
                     ))}
                     <Text>
                         
