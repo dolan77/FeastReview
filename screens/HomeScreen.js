@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, RefreshControl } from 'react-native'
+import React, { useState, useEffect, useCallback } from 'react'
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import {Button} from 'react-native'
@@ -18,6 +18,7 @@ export default function HomeScreen() {
 	const [following, setFollowing] = useState([])
 	const [followingPfp, setFollowingPfp] = useState([])
 	const [reviewPhotos, setReviewPhotos] = useState([])
+	const [refreshing, setRefreshing] = React.useState(false);
 	const navigation = useNavigation()
 
 	/**
@@ -39,6 +40,20 @@ export default function HomeScreen() {
 		setReviewPhotos([])
 		getFollowers(user.uid)
 	}, [])
+
+	const onRefresh = useCallback(() => {
+		setRefreshing(true);
+
+		setReviews([])
+		setFollowing([])
+		setFollowingPfp([])
+		setReviewPhotos([])
+		getFollowers(user.uid)
+
+		setTimeout(() => {
+		  setRefreshing(false);
+		}, 2000);
+	  }, []);
 
 	/**
 	 * Logs the user out of the app
@@ -162,7 +177,12 @@ export default function HomeScreen() {
 
 			{/* ScrollView allows you to scroll down the feed */}
 			{isFollowing && 
-				<ScrollView style={{flex:1, backgroundColor: '#3d4051'}}>
+				<ScrollView 
+					style={{flex:1, backgroundColor: '#3d4051'}}
+					refreshControl={
+						<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+					}
+				>
 					{reviews.map(review => {
 						return (
 							<View style = {styles.reviewContainer} key={review[0]}>
