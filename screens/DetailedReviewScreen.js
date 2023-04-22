@@ -69,7 +69,11 @@ export default function DetailedReviewScreen({route}){
 
         for (let i = 0; i < dbComments.length; i++){
             table.push(
-                <TouchableOpacity style={[style.ReviewBox, {marginHorizontal: 10}]} key={i} onPress={() => [console.log(dbComments[i])]}>
+                <TouchableOpacity style={[style.ReviewBox, {marginHorizontal: 10}]} key={i} 
+                onPress={() => navigation.navigate('OtherUserProfile', 
+                {
+                    otherID: dbComments[i].authorid
+                })}>
                     <Text style={[style.whiteText, style.ReviewHeader]}>{dbComments[i].username}</Text>
                     <Text style={[style.whiteText, style.ReviewHeader]}>{dbComments[i].datemade.toDate().toLocaleString()}</Text>
                     <Text style={[style.ReviewBoxItems, style.ReviewText]}>{dbComments[i].content}</Text>
