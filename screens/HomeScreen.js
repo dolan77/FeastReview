@@ -237,14 +237,6 @@ export default function HomeScreen() {
 							</View>
 						)
 					})}
-					<View style={styles.container}>
-						<TouchableOpacity 
-							style={styles.button}
-							onPress={logoff}
-						>
-							<Text style={{color: "white"}}>LOG OUT</Text>
-						</TouchableOpacity>
-					</View>
 				</ScrollView>
 			}
 		</View>
