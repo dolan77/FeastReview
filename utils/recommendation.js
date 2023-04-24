@@ -49,7 +49,7 @@ export async function reviewHistory(uid){
  * @param {*} uid user id
  * @returns restaurant details that is random weighted by category count
  */
-export async function randomRecommendation(reviewHistoryData, uid, locationData, apiKey){
+export async function randomRecommendation(reviewHistoryData, locationData, apiKey){
     console.log("start recommendation")
     const [restaurants, categoryCounts] = reviewHistoryData;
     console.log(restaurants);

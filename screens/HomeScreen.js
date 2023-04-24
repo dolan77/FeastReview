@@ -40,7 +40,7 @@ export default function HomeScreen() {
 		setFollowing([])
 		setFollowingPfp([])
 		setReviewPhotos([])
-		setLoading(true)
+		setLoading(false)
 		getFollowers(user.uid)
 	}, [])
 
@@ -76,23 +76,31 @@ export default function HomeScreen() {
 	 * @param {*} uid user's unique id
 	 */
 	getFollowers = (uid) => {
+		//get user data
 		firebase.dbGet('users', uid)
-		.then(result => {
-			firebase.dbGetFollowed(result.following)
-			.then(result => {
-				result.forEach( (doc, key) => {
+		.then(userData => {
 
-					// gets user's reviews
+			//get list of users being followed
+			firebase.dbGetFollowed(userData.following)
+			.then(followingList => {
+
+				//get individual users being followed
+				followingList.forEach( (doc, key) => {
+
+					// gets all user's reviews
 					firebase.dbGetReviews(key, "authorid")
 					.then(dbReviews => {
-						if (dbReviews.size !== 0) {
-							setReviews(prev => [...prev, ...dbReviews])
 
+						// if there are reviews
+						if (dbReviews.size !== 0) {
+							setReviews(prev => [...prev, ...dbReviews]) //add users reviews to overall reviews list
+
+							//individual reviews from user
 							dbReviews.forEach((review, restaurant_alias) => {
 								if (review.image_urls.length !== 0) {
-									firebase.dbGetReviewPhotos(review.image_urls)
+									firebase.dbGetReviewPhotos(review.image_urls) //get all photos for the review
 									.then(photos => {
-										setReviewPhotos(prev => [...prev, {[key + restaurant_alias] : photos}])
+										setReviewPhotos(prev => [...prev, {[key + restaurant_alias] : photos}]) // adds photo to list of all photos
 									})
 									.catch((error) => {
 										console.log("Error with getting review photos: ", error)
@@ -108,7 +116,7 @@ export default function HomeScreen() {
 
 					firebase.dbFileGetUrl('ProfilePictures/' + key)
 					.then(url => {
-                        setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}])
+                        setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}]) // add pfp to all pfp list
                     })
 					.catch((error) => {
                         switch (error.code) {
@@ -131,7 +139,7 @@ export default function HomeScreen() {
                               break;
                         }
 					})
-					setFollowing(prev => [...prev, {"id": key, "name": doc.name}])
+					setFollowing(prev => [...prev, {"id": key, "name": doc.name}]) // add user to following list
 
 					setTimeout(() => {
 						setLoading(false);
