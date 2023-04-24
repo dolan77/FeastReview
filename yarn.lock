@@ -6153,7 +6153,7 @@
     "kleur" "^3.0.3"
     "sisteransi" "^1.0.5"
 
-"prop-types@^15.7.2", "prop-types@^15.8.1":
+"prop-types@^15.5.7", "prop-types@^15.7.2", "prop-types@^15.8.1":
   "integrity" "sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg=="
   "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   "version" "15.8.1"
@@ -6360,6 +6360,13 @@
   dependencies:
     "prop-types" "^15.7.2"
     "yargs" "^16.1.1"
+
+"react-native-view-more-text@^2.2.0":
+  "integrity" "sha512-8l/HhIieWA13Fg1Vt5eNNcicykqZ1IbmD/ozrejg5HtB9D/yluW/dCjapGwU/Wt+fLlT43MPBAxrEGPO/g+Aug=="
+  "resolved" "https://registry.npmjs.org/react-native-view-more-text/-/react-native-view-more-text-2.2.0.tgz"
+  "version" "2.2.0"
+  dependencies:
+    "prop-types" "^15.5.7"
 
 "react-native@*", "react-native@>= 0.64.3", "react-native@>=0.40.0", "react-native@>=0.46", "react-native@>=0.57", "react-native@0.70.6":
   "integrity" "sha512-xtQdImPHnwgraEx3HIZFOF+D1hJ9bC5mfpIdUGoMHRws6OmvHAjmFpO6qfdnaQ29vwbmZRq7yf14sbury74R/w=="

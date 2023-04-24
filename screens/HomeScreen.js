@@ -10,6 +10,7 @@ import ViewMoreText from 'react-native-view-more-text';
 
 import { requestLocationPermission } from '../utils/locationPermission.js'
 import image from "../assets/feast_blue.png"
+import Loader from '../methods/Loader';
 
 export default function HomeScreen() {
 	const user = auth().currentUser
@@ -18,7 +19,8 @@ export default function HomeScreen() {
 	const [following, setFollowing] = useState([])
 	const [followingPfp, setFollowingPfp] = useState([])
 	const [reviewPhotos, setReviewPhotos] = useState([])
-	const [refreshing, setRefreshing] = React.useState(false);
+	const [refreshing, setRefreshing] = useState(false);
+	const [loading, setLoading] = useState(false)
 	const navigation = useNavigation()
 
 	/**
@@ -38,6 +40,7 @@ export default function HomeScreen() {
 		setFollowing([])
 		setFollowingPfp([])
 		setReviewPhotos([])
+		setLoading(true)
 		getFollowers(user.uid)
 	}, [])
 
@@ -51,7 +54,7 @@ export default function HomeScreen() {
 		getFollowers(user.uid)
 
 		setTimeout(() => {
-		  setRefreshing(false);
+		  setRefreshing(false)
 		}, 2000);
 	  }, []);
 
@@ -129,6 +132,10 @@ export default function HomeScreen() {
                         }
 					})
 					setFollowing(prev => [...prev, {"id": key, "name": doc.name}])
+
+					setTimeout(() => {
+						setLoading(false);
+					}, 1000);
 				})
 			})
 			.catch((error) => {
@@ -174,7 +181,7 @@ export default function HomeScreen() {
 					Start following Feasters to get started!!!
 				</Text>
 			}
-
+			{(loading && isFollowing) && <Loader />}
 			{/* ScrollView allows you to scroll down the feed */}
 			{isFollowing && 
 				<ScrollView 
