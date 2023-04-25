@@ -15,6 +15,7 @@ import { SearchBar} from '../components/SearchBar.js';
 import colors from '../utils/colors'
 import {reviewHistory, randomRecommendation} from '../utils/recommendation.js'
 import auth from '@react-native-firebase/auth';
+import { FeastReview } from '../utils/components.js';
 
 export default function SearchScreen() {
 	const defaultLocation = {"coords": {"accuracy": 5, "altitude": 5, "altitudeAccuracy": 0.5, "heading": 0, "latitude": 33.78383050167186, "longitude": -118.11367992726652, "speed": 0}, "mocked": false, "provider": "fused", "timestamp": 1676767775647}
@@ -354,7 +355,6 @@ export default function SearchScreen() {
 					</TouchableOpacity>
 				</View>
 			}
-
 			{restaurants[0] === "No results" && 
 				<>
 					<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -374,43 +374,7 @@ export default function SearchScreen() {
 				{restaurants[0] !== "No results" &&
 					restaurants.map((restaurant, index) => {
 						return (
-							<Pressable 
-								key={restaurant.id} 
-								onPress={() => {
-									// Dylan Huynh: allows the user to be redirected to the restaurant profile of the restaurant they selected.
-									try {
-										dbGet('api_keys', 'key').then(keys => {
-											businessDetail(restaurant.alias, keys.yelp).then(result => {navigation.navigate('RestaurantProfile', {data: result})})
-										})
-									} catch (error) {
-										console.log(error)
-									}
-
-									
-								}}
-							>
-								<View style={styles.restaurant}>
-									<Image 
-										style={styles.logo}
-										source={{uri: restaurant.image_url}} 
-									/>
-									<View style={{flex: 1, marginLeft: 5}}>
-										<Text style={styles.restaurantText}>{index + 1}. {restaurant.name}</Text>
-										<Text style={styles.restaurantText}>
-											{starRating(restaurant.id, restaurant.rating)} {restaurant.rating}
-										</Text>
-										<Text style={{
-											fontSize: 17, 
-											flexShrink: 1, 
-											flexWrap: 'wrap', 
-											color: restaurant.is_closed ? colors.goodGreen: colors.badRed
-										}}>
-											{restaurant.is_closed.toString() ? `Open` : `Closed`}
-										</Text>
-										<Text style={styles.restaurantText}>{restaurant.location.address1}</Text>
-									</View>
-								</View>
-							</Pressable>
+							<FeastReview restaurant={restaurant} yelpKey={yelpKey} navigation={navigation} index={index}/>
 						)
 					})
 				}
