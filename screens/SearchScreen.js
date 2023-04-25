@@ -25,6 +25,7 @@ export default function SearchScreen() {
 	const [searchText, setSearchText] = useState('')
 	const [location, setLocation] = useState(defaultLocation)
 	const [restaurants, setRestaurants] = useState([])
+	const [restaurantRecs, setRestaurantRecs] = useState([])
 	const [pressed, setPressed] = useState(1)
 	const [displayMap, setDisplayMap] = useState(false)
 	const [modalVisible, setModalVisible] = useState(false);
@@ -45,7 +46,8 @@ export default function SearchScreen() {
 		dbGet('api_keys','key').then(key => {
 			setYelpKey(key.yelp);
 			reviewHistory(user.uid).then((reviewData) => {
-				randomRecommendation(reviewData, {lat: location.coords.latitude, long: location.coords.longitude}, yelpKey)
+				console.log
+				randomRecommendation(reviewData, {lat: location.coords.latitude, long: location.coords.longitude}, yelpKey).then(rec => setRestaurantRecs(rec))
 			});
 		})
 		.catch(error => console.log("Error getting yelp key"));
@@ -102,7 +104,8 @@ export default function SearchScreen() {
 			limit = 10
 		}
 
-
+		if(searchText.length == 0)
+			return;
 		searchBusinesses(
 			searchText, 
 			{lat: location.coords.latitude, long: location.coords.longitude},
@@ -388,6 +391,12 @@ export default function SearchScreen() {
 						</TouchableOpacity>
 					</View>
 				}
+				<Text style={styles.recommendationText}>Restaurant Recommendations</Text>
+				{restaurantRecs.map((restaurant, index) => {
+					return (
+						<FeastReview restaurant={restaurant} yelpKey={yelpKey} navigation={navigation} index={index}/>
+					)
+				})}
 			</ScrollView>
         </View>
     )
@@ -424,32 +433,17 @@ const styles = StyleSheet.create({
 		padding: 10,
 		marginBottom: 5
     },
-	restaurant: {
-		width: '100%',
-		backgroundColor: colors.backgroundDarker,
-		borderRadius: 25,
-		height: 150,
-		marginBottom: 20,
-		padding: 20,
-		flexDirection:'row',
-		flexWrap: 'wrap',
-	},
-	restaurantText: {
-		color: 'white',
-		fontSize: 17,
-		flexShrink: 1,
-		flexWrap: 'wrap',
-	},
-	logo: {
-		width: 125,
-		height: 115,
-		borderRadius: 15,
-	},
 	noResultsText: {
 		color: 'white',
 		flexWrap: 'wrap',
 		paddingLeft: 50, 
 		paddingRight: 50, 
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	recommendationText: {
+		color: 'white',
+		fontSize:20,
 		justifyContent: 'center',
 		alignItems: 'center'
 	},

@@ -12,7 +12,7 @@ import {searchBusinesses}from './yelp'
  * @return tuple of two items: array of past restaurants, object counting categories
  */
 export async function reviewHistory(uid){
-    console.log("start review history")
+
     // acquire all reviews so we can see what restaurants user is reviewing
     return firebase.dbGetReviews(uid, field="authorid").then(async (resultMap) => {
         var restaurants = [];
@@ -37,7 +37,7 @@ export async function reviewHistory(uid){
                 })
             }).catch((errormsg) => console.log(errormsg))
         }
-        console.log("review history clear")
+
         return [restaurants, categoryCounts];
     });
 }
@@ -46,11 +46,12 @@ export async function reviewHistory(uid){
  * just get a random restaurant based on category counts unweighted
  * basically top 5 categories are searched
  * will not use restaurants the user has already been to
+ * 1 single yelp api call
  * @param {*} uid user id
  * @returns restaurant details that is random weighted by category count
  */
 export async function randomRecommendation(reviewHistoryData, locationData, apiKey){
-    console.log("start recommendation")
+
     const [restaurants, categoryCounts] = reviewHistoryData;
     console.log(restaurants);
     console.log(categoryCounts);
@@ -61,12 +62,12 @@ export async function randomRecommendation(reviewHistoryData, locationData, apiK
         categoryCountsSorted.push([category, categoryCounts[category]])
     }
     categoryCountsSorted.sort((a, b) => a[1] - b[1]);
-    var topFiveCategories = categoryCountsSorted.slice(0, 5)
+    var topFiveCategories = []
+    categoryCountsSorted.slice(0, 5).forEach(category => topFiveCategories.push(category[0]))
+    console.log(topFiveCategories)
 
-    // continue until either a result or failure :)
-    //while(true){
-        var search = await searchBusinesses("", locationData, 20, apiKey, [], categories=topFiveCategories);
-        console.log(search)
-    //}
+
+    return await searchBusinesses(" ", locationData, 20, apiKey, [], categories=topFiveCategories);
+
 }
 
