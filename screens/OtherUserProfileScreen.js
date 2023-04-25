@@ -128,7 +128,41 @@ export default function OtherUserProfileScreen({route}){
             console.log(name, 'does not have a profile picture on db')
         }
     }
+    if (otherID.localeCompare(user.uid) == 0) {
+        return (
+            <View style = {styles.container}>
+                    <View style = {styles.UserBackground}>
     
+                        <View style = {[{alignItems: 'center', flex: 1.5, justifyContent: 'space-evenly'}]}>
+                            <Image style = {[styles.tinyLogo]} source ={avatarPath? {uri:avatarPath} : image}/>
+                            
+                            
+                        </View>
+                        <View style={[{alignItems: 'center', flex:1, justifyContent: 'center'}]}>
+                        <Text style={styles.globalText}>{name}</Text>
+                        <Text style={[styles.globalText, {alignSelf: 'center'}]}>Japanese Food Expert</Text>
+    
+                        </View>
+                        
+                        <View style={[{flex: 1.5, alignSelf: 'center'}]}>
+                        <Text style={styles.globalText}>{bio}</Text>
+                        </View>
+                    </View>
+    
+    
+                    <View style={styles.space}></View>
+    
+                    <View style={styles.buttonContainer}>
+    
+                        <TouchableOpacity style={[styles.button]} onPress={seeReview}>
+                            <Text style={styles.buttonText}>See Reviews</Text>
+                        </TouchableOpacity>
+                    </View>
+    
+            </View>
+        )
+    }
+    else{
     return (
         <View style = {styles.container}>
                 <View style = {styles.UserBackground}>
@@ -164,6 +198,7 @@ export default function OtherUserProfileScreen({route}){
 
         </View>
     )
+}
 }
 
 
