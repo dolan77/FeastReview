@@ -20,7 +20,7 @@ export default function HomeScreen() {
 	const [followingPfp, setFollowingPfp] = useState([])
 	const [reviewPhotos, setReviewPhotos] = useState([])
 	const [refreshing, setRefreshing] = useState(false);
-	const [loading, setLoading] = useState(false)
+	const [loading, setLoading] = useState(true)
 	const navigation = useNavigation()
 
 	/**
