@@ -95,7 +95,7 @@ export default function OtherUserProfileScreen({route}){
     // try to navigate to the reviews screen.
     const seeReview = async () => {
         
-        navigation.navigate('Reviews', {
+        navigation.replace('Reviews', {
             dbID: otherID,
             type: 'user'
         })

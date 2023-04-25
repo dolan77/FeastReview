@@ -76,6 +76,7 @@ export default function FollowersScreen(props){
      * Method that will populate the screen of Feasters that follow the user
      * @returns TouchableOpacity of another user
      */
+    console.log(passedinUID)
     const PopulateFollowers = () => {
         let table = []
 
