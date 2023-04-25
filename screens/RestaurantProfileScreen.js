@@ -59,9 +59,7 @@ export default function RestaurantProfileScreen({route}){
 	}, [pressed])
 
     React.useEffect( () => {
-        console.log(restaurantData.data.hours[0])
-
-
+        console.log(restaurantData.data.categories)
         PopulateButton();
         GetReviews();
         PopulateReviews();
@@ -244,6 +242,28 @@ export default function RestaurantProfileScreen({route}){
         return(table)
     }
 
+	const publicDemoGraphics = () => {
+		if (restaurantData.data.categories) {
+			const firstLetter = restaurantData.data.categories[0].alias.charAt(0)
+
+			const firstLetterCap = firstLetter.toUpperCase()
+
+			const remainingLetters = restaurantData.data.categories[0].alias.slice(1)
+
+			const capitalizedWord = firstLetterCap + remainingLetters
+
+			const iconText = capitalizedWord + ' lovers'
+
+			return (
+				<View style={[style.icon, {width: iconText.length * 10}]}>
+					<Text style={{"color": 'red'}}>{iconText}</Text>
+				</View>
+			)
+		} 
+		
+		return;
+	}
+
     // returns the screen of the restaurant that the current user is looking at. This contains information about the restaurant's
     // hours, name, rating, reviews, directions, phone number, and website to the restaurant
     return(
@@ -254,10 +274,9 @@ export default function RestaurantProfileScreen({route}){
                 <View>
                     
                     <ImageBackground
-                    source = {{uri: restaurantData.data.image_url}}
-                    resizeMode='cover'>
-
-                        
+						source = {{uri: restaurantData.data.image_url}}
+						resizeMode='cover'
+					>
                         <View style={[style.headerCover]}>
                             <Text style={style.text}>
                                 {restaurantData.data.name}
@@ -265,9 +284,8 @@ export default function RestaurantProfileScreen({route}){
                             <View>
                                 <Text>{starRating(restaurantData.data.id, restaurantData.data.rating)}</Text>
                                 <Text style={[style.text]}>{reviews.length} reviews</Text>
-                                
                             </View>
-                            
+                            {publicDemoGraphics()}
                         </View>
                     </ImageBackground>
                 
@@ -293,25 +311,26 @@ export default function RestaurantProfileScreen({route}){
                 
                     <View style={[style.IconContainer]}>
                         <TouchableOpacity
-                        onPress={triggerCall}>
+                        	onPress={triggerCall}
+						>
                             <Ionicons style= {{padding: 5}} name='call-outline' size={40} color={colors.white}/>
                             
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                        onPress={openSite}>
+                        	onPress={openSite}
+						>
                             <Ionicons style= {{padding: 5}} name='globe-outline' size={40} color={colors.white}/>
                         </TouchableOpacity>
 
                         <TouchableOpacity 
-                        onPress={createOpenLink({ end: restaurantData.data.location.address1})}>
-                        <Ionicons style = {{padding: 5}} name = 'compass-outline' color={colors.white} size = {40}/>
+                        	onPress={createOpenLink({ end: restaurantData.data.location.address1})}
+						>
+                        	<Ionicons style = {{padding: 5}} name = 'compass-outline' color={colors.white} size = {40}/>
                         </TouchableOpacity>
 
                     </View>
-                    <View style={style.horizontalLine} />
-
-                    </View>
+                    <View style={style.horizontalLine} /></View>
                 </View>
 
                 <View>
@@ -345,10 +364,10 @@ export default function RestaurantProfileScreen({route}){
                 <View style={[style.buttonContainer]}>
 
                    <TouchableOpacity
-                   onPress={addReview}
-                   style={style.button}
-                >
-                    <Text style={style.buttonText}>Add Review</Text>
+					onPress={addReview}
+					style={style.button}
+					>
+                    	<Text style={style.buttonText}>Add Review</Text>
                    </TouchableOpacity>
 
 
@@ -576,5 +595,11 @@ const style = StyleSheet.create({
     },
     ReviewHeader: {
         paddingHorizontal: 10
-    }
+    },
+	icon: {
+		backgroundColor: 'white',
+		padding: 5,
+		borderRadius: 10,
+		alignItems: 'center'
+	}
 })
