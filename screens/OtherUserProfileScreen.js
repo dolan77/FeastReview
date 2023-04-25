@@ -128,7 +128,6 @@ export default function OtherUserProfileScreen({route}){
             console.log(name, 'does not have a profile picture on db')
         }
     }
-    
     return (
         <View style = {styles.container}>
                 <View style = {styles.UserBackground}>
@@ -153,9 +152,12 @@ export default function OtherUserProfileScreen({route}){
                 <View style={styles.space}></View>
 
                 <View style={styles.buttonContainer}>
+                    {otherID.localeCompare(user.uid) != 0 && 
                     <TouchableOpacity style={[styles.button, {backgroundColor: color}]} onPress={clickFollow}>
                         <Text style={styles.buttonText}>{follow}</Text>
                     </TouchableOpacity>
+                    }
+                    
 
                     <TouchableOpacity style={[styles.button]} onPress={seeReview}>
                         <Text style={styles.buttonText}>See Reviews</Text>
@@ -165,6 +167,7 @@ export default function OtherUserProfileScreen({route}){
         </View>
     )
 }
+
 
 
 
