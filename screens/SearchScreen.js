@@ -13,10 +13,14 @@ import { dbGet, dbSet } from '../utils/firebase.js';
 import { requestLocationPermission } from '../utils/locationPermission.js'
 import { SearchBar} from '../components/SearchBar.js';
 import colors from '../utils/colors'
+import {reviewHistory, randomRecommendation} from '../utils/recommendation.js'
+import auth from '@react-native-firebase/auth';
 
 export default function SearchScreen() {
 	const defaultLocation = {"coords": {"accuracy": 5, "altitude": 5, "altitudeAccuracy": 0.5, "heading": 0, "latitude": 33.78383050167186, "longitude": -118.11367992726652, "speed": 0}, "mocked": false, "provider": "fused", "timestamp": 1676767775647}
+	const user = auth().currentUser;
 
+	const [yelpKey, setYelpKey] = useState('')
 	const [searchText, setSearchText] = useState('')
 	const [location, setLocation] = useState(defaultLocation)
 	const [restaurants, setRestaurants] = useState([])
@@ -36,7 +40,15 @@ export default function SearchScreen() {
 	 * written by Matthew Hirai
 	 */
 	useEffect(() => {
-		getLocation()
+		getLocation();
+		dbGet('api_keys','key').then(key => {
+			setYelpKey(key.yelp);
+			reviewHistory(user.uid).then((reviewData) => {
+				randomRecommendation(reviewData, {lat: location.coords.latitude, long: location.coords.longitude}, yelpKey)
+			});
+		})
+		.catch(error => console.log("Error getting yelp key"));
+
 	}, [])
 
 	/**
@@ -89,26 +101,24 @@ export default function SearchScreen() {
 			limit = 10
 		}
 
-		dbGet('api_keys','key')
-			.then(keys => {
-				searchBusinesses(
-					searchText, 
-					{lat: location.coords.latitude, long: location.coords.longitude},
-					limit, 
-					keys.yelp,
-					filter
-				)
-				.then(result => {
-					if (result.length !== 0) {
-						setRestaurants([...result])
-					}
-					else {
-						setRestaurants(["No results"])
-					}
-				})
-				.catch(() => console.log("Error, searching YELP businesses"));
+
+		searchBusinesses(
+			searchText, 
+			{lat: location.coords.latitude, long: location.coords.longitude},
+			limit, 
+			yelpKey,
+			filter
+		)
+		.then(result => {
+			if (result.length !== 0) {
+				setRestaurants([...result])
+			}
+			else {
+				setRestaurants(["No results"])
+			}
 		})
-		.catch(() => console.log("Error, getting YELP api key"));
+		.catch(() => console.log("Error, searching YELP businesses"));
+
 	}
 
 	/**
