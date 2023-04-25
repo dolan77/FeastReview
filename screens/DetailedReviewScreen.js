@@ -64,16 +64,22 @@ export default function DetailedReviewScreen({route}){
     }
     
 
+    const navCommentAuthor = (commentUID) => {
+        console.log("Going to comment author's profile: ", commentUID)
+        navigation.replace('OtherUserProfile', 
+        {
+            otherID: commentUID
+        })
+    }
+
+    console.log(dbComments)
     const PopulateComments = () => {
         let table = [];
 
         for (let i = 0; i < dbComments.length; i++){
             table.push(
                 <TouchableOpacity style={[style.ReviewBox, {marginHorizontal: 10}]} key={i} 
-                onPress={() => navigation.navigate('OtherUserProfile', 
-                {
-                    otherID: dbComments[i].authorid
-                })}>
+                onPress={() => navCommentAuthor(dbComments[i].authorid)}>
                     <Text style={[style.whiteText, style.ReviewHeader]}>{dbComments[i].username}</Text>
                     <Text style={[style.whiteText, style.ReviewHeader]}>{dbComments[i].datemade.toDate().toLocaleString()}</Text>
                     <Text style={[style.ReviewBoxItems, style.ReviewText]}>{dbComments[i].content}</Text>
