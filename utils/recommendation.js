@@ -67,7 +67,7 @@ export async function randomRecommendation(reviewHistoryData, locationData, apiK
     console.log(topFiveCategories)
 
 
-    return await searchBusinesses(" ", locationData, 20, apiKey, [], categories=topFiveCategories);
+    return await searchBusinesses("", locationData, 20, apiKey, [], categories=topFiveCategories);
 
 }
 

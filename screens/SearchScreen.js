@@ -48,7 +48,8 @@ export default function SearchScreen() {
 			reviewHistory(user.uid).then((reviewData) => {
 				console.log
 				randomRecommendation(reviewData, {lat: location.coords.latitude, long: location.coords.longitude}, yelpKey).then(rec => setRestaurantRecs(rec))
-			});
+			})
+			.catch(error => console.log("Something wrong with restaurant recommendations"));
 		})
 		.catch(error => console.log("Error getting yelp key"));
 
