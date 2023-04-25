@@ -22,7 +22,7 @@ function auth(apiKey){
  * @param {*} filters filter for user to use
  * @returns an array of businesses (default 20 i think)
  */
-async function searchBusinesses(searchTerm, locationData, limit, apiKey, filters) {
+async function searchBusinesses(searchTerm, locationData, limit, apiKey, filters, categories=[]) {
     var apiString = 'https://api.yelp.com/v3/businesses/search?'+
         `term=${searchTerm}`+
         `&latitude=${locationData.lat}` +
@@ -31,8 +31,14 @@ async function searchBusinesses(searchTerm, locationData, limit, apiKey, filters
 	if (filters) {
 		apiString += filters 
 	}
+    if(categories.length > 0){
+        categories.forEach((category) => {
+            apiString += '&categories=' + category
+        });
+    }
 
 	apiString += `&limit=${limit}`
+    console.log(apiString)
     return axios.get(apiString, auth(apiKey)).then(response => response.data.businesses);
 }
 
@@ -49,6 +55,7 @@ async function autocomplete(searchTerm, locationData, apiKey) {
         `text=${searchTerm}`+
         `&latitude=${locationData.lat}` +
         `&longitude=${locationData.long}`
+    console.log(apiString)
     return axios.get(apiString, auth(apiKey)).then(response => response.data);
 }
 
@@ -60,6 +67,7 @@ async function autocomplete(searchTerm, locationData, apiKey) {
  */
 async function businessDetail(businessAlias, apiKey){
     var apiString = `https://api.yelp.com/v3/businesses/${businessAlias}`
+    console.log(apiString)
     return axios.get(apiString, auth(apiKey)).then(response => response.data);
 }
 

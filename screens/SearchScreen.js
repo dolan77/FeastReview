@@ -13,13 +13,19 @@ import { dbGet, dbSet } from '../utils/firebase.js';
 import { requestLocationPermission } from '../utils/locationPermission.js'
 import { SearchBar} from '../components/SearchBar.js';
 import colors from '../utils/colors'
+import {reviewHistory, randomRecommendation} from '../utils/recommendation.js'
+import auth from '@react-native-firebase/auth';
+import { FeastReview } from '../utils/components.js';
 
 export default function SearchScreen() {
 	const defaultLocation = {"coords": {"accuracy": 5, "altitude": 5, "altitudeAccuracy": 0.5, "heading": 0, "latitude": 33.78383050167186, "longitude": -118.11367992726652, "speed": 0}, "mocked": false, "provider": "fused", "timestamp": 1676767775647}
+	const user = auth().currentUser;
 
+	const [yelpKey, setYelpKey] = useState('')
 	const [searchText, setSearchText] = useState('')
 	const [location, setLocation] = useState(defaultLocation)
 	const [restaurants, setRestaurants] = useState([])
+	const [restaurantRecs, setRestaurantRecs] = useState([])
 	const [pressed, setPressed] = useState(1)
 	const [displayMap, setDisplayMap] = useState(false)
 	const [modalVisible, setModalVisible] = useState(false);
@@ -36,7 +42,16 @@ export default function SearchScreen() {
 	 * written by Matthew Hirai
 	 */
 	useEffect(() => {
-		getLocation()
+		getLocation();
+		dbGet('api_keys','key').then(key => {
+			setYelpKey(key.yelp);
+			reviewHistory(user.uid).then((reviewData) => {
+				console.log
+				randomRecommendation(reviewData, {lat: location.coords.latitude, long: location.coords.longitude}, yelpKey).then(rec => setRestaurantRecs(rec))
+			});
+		})
+		.catch(error => console.log("Error getting yelp key"));
+
 	}, [])
 
 	/**
@@ -89,21 +104,25 @@ export default function SearchScreen() {
 			limit = 10
 		}
 
-		dbGet('api_keys','key')
-			.then(keys => {
-				searchBusinesses(
-					searchText, 
-					{lat: location.coords.latitude, long: location.coords.longitude},
-					limit, 
-					keys.yelp,
-					filter
-				)
-				.then(result => {
-					setRestaurants([...result])
-				})
-				.catch(() => console.log("Error, searching YELP businesses"));
+		if(searchText.length == 0)
+			return;
+		searchBusinesses(
+			searchText, 
+			{lat: location.coords.latitude, long: location.coords.longitude},
+			limit, 
+			yelpKey,
+			filter
+		)
+		.then(result => {
+			if (result.length !== 0) {
+				setRestaurants([...result])
+			}
+			else {
+				setRestaurants(["No results"])
+			}
 		})
-		.catch(() => console.log("Error, getting YELP api key"));
+		.catch(() => console.log("Error, searching YELP businesses"));
+
 	}
 
 	/**
@@ -209,7 +228,7 @@ export default function SearchScreen() {
 					onChangeText={text => setSearchText(text)}
 					onSubmitEditing={handleSearch}
 				/>
-				{restaurants.length !== 0 && 
+				{(restaurants.length !== 0 || restaurants[0] === "No results") && 
 					<Ionicons 
 						style={styles.filter} 
 						name="filter" 
@@ -328,8 +347,8 @@ export default function SearchScreen() {
 				</Modal>
 			}
 
-			{(restaurants.length !== 0 && displayMap) ? map(restaurants, location) : <></>}
-			{restaurants.length !== 0 &&
+			{(restaurants[0] !== "No results" && restaurants.length !== 0 && displayMap) ? map(restaurants, location) : <></>}
+			{(restaurants[0] !== "No results" && restaurants.length !== 0) &&
 				<View style={{marginBottom: -27, marginLeft: 100, marginRight: 100, margin: 10}}>
 					<TouchableOpacity
 						onPress={() => setDisplayMap(!displayMap)}
@@ -339,54 +358,30 @@ export default function SearchScreen() {
 					</TouchableOpacity>
 				</View>
 			}
+			{restaurants[0] === "No results" && 
+				<>
+					<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+						<Text style={[styles.noResultsText,{fontSize: 30,paddingLeft: 100, paddingRight: 100, paddingTop: 200}]}>
+							No Results
+						</Text>
+						<Text style={styles.noResultsText}>Please search for another term or remove</Text>
+						<Text style={styles.noResultsText}>some filters</Text>
+					</View>
+					
+				</>
+			}
 
-			{restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20, padding: 10}}>Results</Text> : <></>}
+			{restaurants[0] !== "No results" && restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20, padding: 10}}>Results</Text> : <></>}
 			
 			<ScrollView style={styles.restaurantContainer} keyboardShouldPersistTaps={'handled'}>
-				{restaurants !== [] &&
+				{restaurants[0] !== "No results" &&
 					restaurants.map((restaurant, index) => {
 						return (
-							<Pressable 
-								key={restaurant.id} 
-								onPress={() => {
-									// Dylan Huynh: allows the user to be redirected to the restaurant profile of the restaurant they selected.
-									try {
-										dbGet('api_keys', 'key').then(keys => {
-											businessDetail(restaurant.alias, keys.yelp).then(result => {navigation.navigate('RestaurantProfile', {data: result})})
-										})
-									} catch (error) {
-										console.log(error)
-									}
-
-									
-								}}
-							>
-								<View style={styles.restaurant}>
-									<Image 
-										style={styles.logo}
-										source={{uri: restaurant.image_url}} 
-									/>
-									<View style={{flex: 1, marginLeft: 5}}>
-										<Text style={styles.restaurantText}>{index + 1}. {restaurant.name}</Text>
-										<Text style={styles.restaurantText}>
-											{starRating(restaurant.id, restaurant.rating)} {restaurant.rating}
-										</Text>
-										<Text style={{
-											fontSize: 17, 
-											flexShrink: 1, 
-											flexWrap: 'wrap', 
-											color: restaurant.is_closed ? colors.goodGreen: colors.badRed
-										}}>
-											{restaurant.is_closed.toString() ? `Open` : `Closed`}
-										</Text>
-										<Text style={styles.restaurantText}>{restaurant.location.address1}</Text>
-									</View>
-								</View>
-							</Pressable>
+							<FeastReview restaurant={restaurant} yelpKey={yelpKey} navigation={navigation} index={index}/>
 						)
 					})
 				}
-				{restaurants.length !== 0 && 
+				{restaurants[0] !== "No results" && restaurants.length !== 0 && 
 					<View style={styles.buttonContainer}>
 						<TouchableOpacity
 							onPress={() => setPressed(pressed + 1)}
@@ -396,6 +391,12 @@ export default function SearchScreen() {
 						</TouchableOpacity>
 					</View>
 				}
+				<Text style={styles.recommendationText}>Restaurant Recommendations</Text>
+				{restaurantRecs.map((restaurant, index) => {
+					return (
+						<FeastReview restaurant={restaurant} yelpKey={yelpKey} navigation={navigation} index={index}/>
+					)
+				})}
 			</ScrollView>
         </View>
     )
@@ -432,26 +433,19 @@ const styles = StyleSheet.create({
 		padding: 10,
 		marginBottom: 5
     },
-	restaurant: {
-		width: '100%',
-		backgroundColor: colors.backgroundDarker,
-		borderRadius: 25,
-		height: 150,
-		marginBottom: 20,
-		padding: 20,
-		flexDirection:'row',
-		flexWrap: 'wrap',
-	},
-	restaurantText: {
+	noResultsText: {
 		color: 'white',
-		fontSize: 17,
-		flexShrink: 1,
 		flexWrap: 'wrap',
+		paddingLeft: 50, 
+		paddingRight: 50, 
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
-	logo: {
-		width: 125,
-		height: 115,
-		borderRadius: 15,
+	recommendationText: {
+		color: 'white',
+		fontSize:20,
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 	buttonContainer: {
 		flex: 1,

@@ -11,6 +11,19 @@ import auth from '@react-native-firebase/auth';
 import { Timestamp } from 'react-native-reanimated/lib/types/lib/reanimated2/commonTypes';
 import {getMostUsedAdjectives} from '../utils/tasteometer'
 import colors from '../utils/colors'
+
+function fixHoursRepeated(data) {
+	let hours = []
+	let prev = -1
+	data.map(item => {
+		if (item.day === prev) {
+			item.day = item.day + 'repeat'
+		}
+		hours.push(item)
+		prev = item.day
+	})
+}
+
 import { FeastHeader } from '../utils/components';
 // function that returns the screen for a Restaurant's profile
 export default function RestaurantProfileScreen({route}){
@@ -53,6 +66,7 @@ export default function RestaurantProfileScreen({route}){
         GetReviews();
         PopulateReviews();
         loadMostUsedAdjectives();
+		fixHoursRepeated(restaurantData.data.hours[0].open)
     }, 
     [])
 
@@ -128,7 +142,9 @@ export default function RestaurantProfileScreen({route}){
       
         useEffect(() => {
           Animated.timing(height, {
-            toValue: !expanded ? 250 : 0,
+            toValue: !expanded ? (restaurantData.data.hours[0].open.length > 7 
+				? (25 * (restaurantData.data.hours[0].open.length - 7)) + 250 : 250) 
+				: 0,
             duration: 300,
             useNativeDriver: false
           }).start();
@@ -140,8 +156,8 @@ export default function RestaurantProfileScreen({route}){
           <Animated.View style={{height}}>
             <View style={style.scheduleContainer}>   
                 <View>
-                    {restaurantData.data.hours[0].open.map(hoursData => (
-                        <Text key={hoursData.day} style={hoursData.day == today ? style.todayLeftText : style.leftText}>{dayOfTheWeek[hoursData.day]}</Text>
+                    {restaurantData.data.hours[0].open.map((hoursData, index) => (
+                        <Text key={hoursData.day + index} style={hoursData.day == today ? style.todayLeftText : style.leftText}>{dayOfTheWeek[hoursData.day]}</Text>
                     ))}
 
                     <Text>
@@ -149,14 +165,13 @@ export default function RestaurantProfileScreen({route}){
                     </Text>
                 </View>
                 <View>
-                    {restaurantData.data.hours[0].open.map(hoursData => (
-                        <Text key={hoursData.day} style={hoursData.day == today ? style.todayRightText : style.rightText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
-                    ))}
+                    {restaurantData.data.hours[0].open.map((hoursData, index) => (
+                        <Text key={hoursData.day + index} style={hoursData.day == today ? style.todayRightText : style.rightText}>{timeConvert(hoursData.start)} - {timeConvert(hoursData.end)}</Text>
+					))}
                     <Text>
                         
                     </Text>
                 </View>
-
             </View>
           </Animated.View>
         );
