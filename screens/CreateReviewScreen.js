@@ -43,7 +43,7 @@ export default function ReviewPage({route}) {
 
             // updates the cache for the category of each restaurant for later finding expertise
             firebase.dbCreateBlank('restaurants', restaurantData.data.alias).then(() => {
-                adjectivesSentimentIncrement(review, restaurantData.data.alias); //tasteometer business
+                
 
                 // collect all reviews to update the total rating score
                 firebase.dbGetReviews(restaurantData.data.alias, 'restaurant_alias').then(reviews => {
@@ -57,6 +57,9 @@ export default function ReviewPage({route}) {
                     }
                     firebase.dbUpdate('restaurants', restaurantData.data.alias, restaurantData.data); //caches saved restaurant data
                 })
+                .then(() => {
+                    adjectivesSentimentIncrement(review, restaurantData.data.alias); //tasteometer business
+                });
                 
             });
             

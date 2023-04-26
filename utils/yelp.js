@@ -38,8 +38,13 @@ async function searchBusinesses(searchTerm, locationData, limit, apiKey, filters
     }
 
 	apiString += `&limit=${limit}`
-    console.log(apiString)
-    return axios.get(apiString, auth(apiKey)).then(response => response.data.businesses);
+    console.log
+    return axios.get(apiString, auth(apiKey))
+        .then(response => response.data.businesses)
+        .catch(error => {
+            console.log("Business search failed" + error);
+            return [];
+    });
 }
 
 
@@ -55,7 +60,6 @@ async function autocomplete(searchTerm, locationData, apiKey) {
         `text=${searchTerm}`+
         `&latitude=${locationData.lat}` +
         `&longitude=${locationData.long}`
-    console.log(apiString)
     return axios.get(apiString, auth(apiKey)).then(response => response.data);
 }
 
@@ -67,7 +71,6 @@ async function autocomplete(searchTerm, locationData, apiKey) {
  */
 async function businessDetail(businessAlias, apiKey){
     var apiString = `https://api.yelp.com/v3/businesses/${businessAlias}`
-    console.log(apiString)
     return axios.get(apiString, auth(apiKey)).then(response => response.data);
 }
 
