@@ -395,7 +395,7 @@ export default function SearchScreen() {
 				<Text style={styles.recommendationText}>Restaurant Recommendations</Text>
 				{restaurantRecs.map((restaurant, index) => {
 					return (
-						<FeastReview restaurant={restaurant} yelpKey={yelpKey} navigation={navigation} index={index}/>
+						<FeastReview key={"rec" + index} restaurant={restaurant} yelpKey={yelpKey} navigation={navigation} index={index}/>
 					)
 				})}
 			</ScrollView>
