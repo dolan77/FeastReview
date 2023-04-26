@@ -13,7 +13,6 @@ module.exports = {incrementAdjectives, getMostUsedAdjectives, adjectivesSentimen
  * @returns list of adjectives
  */
 function getAdjectives(review){
-    console.log("in getadjectives")
     let doc = nlp(review);
     let adjectivesData = doc.adjectives().json()
     let adjectives = []
@@ -23,7 +22,6 @@ function getAdjectives(review){
             adjectives.push(adjective.text.replace(/\W/g, '').toLowerCase());
         }
     });
-    console.log("out getadjectives")
     return adjectives;
 }
 
@@ -33,7 +31,6 @@ function getAdjectives(review){
  * @returns 
  */
 function getSentiment(sentence){
-    console.log("in getsentiment")
     let sentiment = 0;
     let words = sentence.split(" ");
     words.forEach(word => {
@@ -42,7 +39,6 @@ function getSentiment(sentence){
             sentiment += afinn165[adjustedWord.toLowerCase()]; // get sentiment score from afinn-165
         }
     });
-    console.log("out getsentiment")
     return sentiment;
 }
 
@@ -52,7 +48,6 @@ function getSentiment(sentence){
  * @param {*} restaurantAlias 
  */
 function adjectivesSentimentIncrement(review, restaurantAlias){
-    console.log("in adjectivessentimentincrement")
     let adjectives = getAdjectives(review);
     let adjectivesSentiment = {}
     adjectives.forEach((adjective) => {
@@ -60,7 +55,7 @@ function adjectivesSentimentIncrement(review, restaurantAlias){
     });
     let sentences = review.match( /[^\.!\?]+[\.!\?]+/g ); // split review into sentences
     let toUpdate = {};
-    if(sentences != null) {
+    if(sentences != null && sentences.length <= 1) {
         sentences = [review]
     }
     if(sentences != null){
@@ -82,12 +77,8 @@ function adjectivesSentimentIncrement(review, restaurantAlias){
                 }
             });
         });
-        console.log("out adjectivessentimentincrement")
-        return firebase.dbCreateBlank("restaurants", restaurantAlias).then(() => { // send to database
-            firebase.dbIncrement("restaurants", restaurantAlias, toUpdate);
-        });
+        return firebase.dbIncrement("restaurants", restaurantAlias, toUpdate);
     }
-    console.log("out adjectivessentimentincrement")
     return null;
 }
 

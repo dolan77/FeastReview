@@ -3,7 +3,7 @@ import storage from '@react-native-firebase/storage';
 import { CountQueuingStrategy } from 'node:stream/web';
 //import firebase from '@react-native-firebase/app';
 
-module.exports = {del, dbCreateBlank, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateCreate, dbDelete, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews, dbSetReviewComment, dbGetReviewComments, dbGetReviewPhotos };
+module.exports = {del, dbCreateBlank, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateCreate, dbDelete, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews, dbSetReviewComment, dbGetReviewComments, dbGetReviewPhotos, dbIncrement};
 
 
 /**
@@ -286,4 +286,18 @@ async function dbGetReviewPhotos(image_urls) {
                 })
         }
     return urls;
+}
+
+/**
+ * increments values by 1
+ * @param {*} collection 
+ * @param {*} doc 
+ * @param {*} fields 
+ * @returns 
+ */
+function dbIncrement(collection, doc, fields){
+    Object.keys(fields).forEach((key) => {
+        fields[key] = firestore.FieldValue.increment(1);
+    });
+    return dbUpdate(collection, doc, fields);
 }
