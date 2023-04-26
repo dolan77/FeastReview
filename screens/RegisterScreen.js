@@ -81,16 +81,16 @@ export default function RegisterScreen() {
 			console.log("Failed to add user to database")
 		})
 	}
-
+	// initialize the collection in the DB
 	const addUserToDb = async (user) => {
 		const res = await firebase.dbSet(
 			"users", 
 			user.uid, 
 			{
 				bio: "",
-				bookmarks: [],
+				saved_restaurants: [],
 				expertise: {},
-				followers: [],
+				// followers: [],
 				following: [],
 				name: user.displayName,
 				reviews: []
