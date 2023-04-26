@@ -21,7 +21,7 @@ export default function ReviewsScreen({route}){
 
     const [reviews, setReviews] = React.useState('')
     const [pfps, setpfps] = React.useState('')
-    const [limit, setLimit] = React.useState(5);
+    const [limit, setLimit] = React.useState(0);
     const [pressed, setPressed] = React.useState(1)
 
     const user = auth().currentUser;
@@ -72,6 +72,13 @@ export default function ReviewsScreen({route}){
         try {
             firebase.dbGetReviews(dbID, field="authorid").then(result => {
                 setReviews([...result])
+                if (result.length == 0){
+                    setLimit(0)
+                }
+                
+                else{
+                    setLimit(1)
+                }
             })
 
             console.log(reviews.length)
@@ -101,9 +108,13 @@ export default function ReviewsScreen({route}){
         let table = []
         if (reviews.length != 0){
             for(let i = 0;  i < limit; i++){
+                console.log('test')
+                console.log(typeof(reviews[i][1]))
+                console.log(reviews[i])
                 const reviewAverage = ((reviews[i][1].star_atmos + reviews[i][1].star_foods + reviews[i][1].star_service) /3)
                 // console.log(reviewAverage)
                 // console.log(reviews[i][1])
+                
                 table.push(
                 <TouchableOpacity key={i} style={[style.ReviewBox, {marginHorizontal: 10}]}
                     onPress={() => navDetailedReview(reviews[i])} >
