@@ -9,7 +9,7 @@ import * as React from 'react';
 
 import image from "../assets/feast_blue.png"
 import colors from '../utils/colors';
-
+import { FeastHeader } from '../utils/components';
 export default function FollowersScreen(props){
     const passedinUID = props.followersUID
     const passedinFollowersDoc = props.followersDoc
@@ -76,6 +76,7 @@ export default function FollowersScreen(props){
      * Method that will populate the screen of Feasters that follow the user
      * @returns TouchableOpacity of another user
      */
+    console.log(passedinUID)
     const PopulateFollowers = () => {
         let table = []
 
@@ -97,6 +98,7 @@ export default function FollowersScreen(props){
     if (passedinFollowersDoc.length > 0){
         return(
             <SafeAreaView style = {styles.container}>
+                <FeastHeader title={"Followers"} onPress={() => navigation.goBack()} />
                 <ScrollView contentContainerStyle = {styles.scrollOuter}>
                     <View>
                         <View>
@@ -113,7 +115,8 @@ export default function FollowersScreen(props){
     // the user has no followers
     else{
         return(
-            <View style = {{flex: 1, backgroundColor: '#3d4051'}}>
+            <View style = {{flex: 1, backgroundColor: colors.backgroundDark}}>
+                <FeastHeader title={"Followers"} onPress={() => navigation.goBack()} />
                 <View>
                     <Text style = {styles.globalText}>You are not followed by anyone</Text>
                 </View>

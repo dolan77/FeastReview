@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, RefreshControl } from 'react-native'
+import React, { useState, useEffect, useCallback } from 'react'
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import {Button} from 'react-native'
@@ -10,13 +10,17 @@ import ViewMoreText from 'react-native-view-more-text';
 
 import { requestLocationPermission } from '../utils/locationPermission.js'
 import image from "../assets/feast_blue.png"
+import Loader from '../methods/Loader';
 
 export default function HomeScreen() {
 	const user = auth().currentUser
+	const [isFollowing, setIsFollowing] = useState(true)
 	const [reviews, setReviews] = useState([])
 	const [following, setFollowing] = useState([])
 	const [followingPfp, setFollowingPfp] = useState([])
 	const [reviewPhotos, setReviewPhotos] = useState([])
+	const [refreshing, setRefreshing] = useState(false);
+	const [loading, setLoading] = useState(true)
 	const navigation = useNavigation()
 
 	/**
@@ -36,8 +40,23 @@ export default function HomeScreen() {
 		setFollowing([])
 		setFollowingPfp([])
 		setReviewPhotos([])
+		setLoading(false)
 		getFollowers(user.uid)
 	}, [])
+
+	const onRefresh = useCallback(() => {
+		setRefreshing(true);
+
+		setReviews([])
+		setFollowing([])
+		setFollowingPfp([])
+		setReviewPhotos([])
+		getFollowers(user.uid)
+
+		setTimeout(() => {
+		  setRefreshing(false)
+		}, 2000);
+	  }, []);
 
 	/**
 	 * Logs the user out of the app
@@ -57,33 +76,47 @@ export default function HomeScreen() {
 	 * @param {*} uid user's unique id
 	 */
 	getFollowers = (uid) => {
+		//get user data
 		firebase.dbGet('users', uid)
-		.then(result => {
-			firebase.dbGetFollowed(result.following)
-			.then(result => {
-				result.forEach( (doc, key) => {
+		.then(userData => {
 
-					// gets user's reviews
+			//get list of users being followed
+			firebase.dbGetFollowed(userData.following)
+			.then(followingList => {
+
+				//get individual users being followed
+				followingList.forEach( (doc, key) => {
+
+					// gets all user's reviews
 					firebase.dbGetReviews(key, "authorid")
 					.then(dbReviews => {
-						if (dbReviews.size !== 0) {
-							setReviews(prev => [...prev, ...dbReviews])
 
+						// if there are reviews
+						if (dbReviews.size !== 0) {
+							setReviews(prev => [...prev, ...dbReviews]) //add users reviews to overall reviews list
+
+							//individual reviews from user
 							dbReviews.forEach((review, restaurant_alias) => {
 								if (review.image_urls.length !== 0) {
-									firebase.dbGetReviewPhotos(review.image_urls)
+									firebase.dbGetReviewPhotos(review.image_urls) //get all photos for the review
 									.then(photos => {
-										setReviewPhotos(prev => [...prev, {[key + restaurant_alias] : photos}])
+										setReviewPhotos(prev => [...prev, {[key + restaurant_alias] : photos}]) // adds photo to list of all photos
+									})
+									.catch((error) => {
+										console.log("Error with getting review photos: ", error)
 									})
 								}
 							})
-							
 						}
+					})
+					.catch((error) => {
+						console.log("Error with getting reviews: ", error)
+						
 					})
 
 					firebase.dbFileGetUrl('ProfilePictures/' + key)
 					.then(url => {
-                        setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}])
+                        setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}]) // add pfp to all pfp list
                     })
 					.catch((error) => {
                         switch (error.code) {
@@ -106,9 +139,20 @@ export default function HomeScreen() {
                               break;
                         }
 					})
-					setFollowing(prev => [...prev, {"id": key, "name": doc.name}])
+					setFollowing(prev => [...prev, {"id": key, "name": doc.name}]) // add user to following list
+
+					setTimeout(() => {
+						setLoading(false);
+					}, 1000);
 				})
 			})
+			.catch((error) => {
+				console.log("Error with getting following: ", error)
+				setIsFollowing(false)
+			})
+		})
+		.catch((error) => {
+			console.log("Error with getting user info: ", error)
 		})
 	}
 
@@ -140,65 +184,69 @@ export default function HomeScreen() {
 	
 	return (
 		<View style = {styles.container}>
-
+			{!isFollowing && 
+				<Text style={{color: 'white', fontSize: 18}}>
+					Start following Feasters to get started!!!
+				</Text>
+			}
+			{(loading && isFollowing) && <Loader />}
 			{/* ScrollView allows you to scroll down the feed */}
-			<ScrollView style={{flex:1, backgroundColor: '#3d4051'}}>
-				{reviews.map(review => {
-					return (
-						<View style = {styles.reviewContainer} key={review[0]}>
-							
-							<View style = {{flexDirection: "row"}}>
-								<Image style = {styles.profileIcon} source={display(review[1].authorid) !== undefined ? {uri: display(review[1].authorid)} : image}/>
-								<Text style = {styles.emailWrap}> {getUserName(review[1].authorid)}</Text>
+			{isFollowing && 
+				<ScrollView 
+					style={{flex:1, backgroundColor: '#3d4051'}}
+					refreshControl={
+						<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+					}
+				>
+					{reviews.map(review => {
+						return (
+							<View style = {styles.reviewContainer} key={review[0]}>
+								
+								<View style = {{flexDirection: "row"}}>
+									<Image style = {styles.profileIcon} source={display(review[1].authorid) !== undefined ? {uri: display(review[1].authorid)} : image}/>
+									<Text style = {styles.emailWrap}> {getUserName(review[1].authorid)}</Text>
+								</View>
+
+								<ViewMoreText
+										numberOfLines={5}
+										renderViewMore={renderReadMore}
+										renderViewLess={renderReadLess}
+										textStyle={styles.reviewContent}
+									>
+									<Text>
+										{review[1].content}
+									</Text>
+								</ViewMoreText>
+
+								{review[1].image_urls.length !== 0 && 
+									<ScrollView horizontal={true} style={styles.photo_container} contentContainerStyle={styles.photo_content_container}>
+										{reviewPhotos.map(images => {
+											if (images[review[1].authorid + review[0]]) {
+												return images[review[1].authorid + review[0]].map((image, i) => {
+													return (
+														<Image 
+															key={image + i}
+															source={{uri: image}} 
+															style={{width: 100, height: 100, borderRadius: 10, margin: 2}}
+														/>
+													)
+												})
+											}
+										})}
+									</ScrollView>
+								}
+
+								<View style = {{flexDirection: "row"}}>
+									<Ionicons style={styles.locationIcon} name="location-outline">
+										<Text style={{color: 'white'}}> - </Text>
+									</Ionicons>
+									<Text style = {styles.restaurantName}>{review[1].restaurant_name}</Text>
+								</View>
 							</View>
-
-							<ViewMoreText
-									numberOfLines={5}
-									renderViewMore={renderReadMore}
-									renderViewLess={renderReadLess}
-									textStyle={styles.reviewContent}
-								>
-								<Text>
-									{review[1].content}
-								</Text>
-							</ViewMoreText>
-
-							{review[1].image_urls.length !== 0 && 
-								<ScrollView horizontal={true} style={styles.photo_container} contentContainerStyle={styles.photo_content_container}>
-									{reviewPhotos.map(images => {
-										if (images[review[1].authorid + review[0]]) {
-											return images[review[1].authorid + review[0]].map(image => {
-												return (
-													<Image 
-														key={image}
-														source={{uri: image}} 
-														style={{width: 120, height: 120, borderRadius: 10, margin: 2}}
-													/>
-												)
-											})
-										}
-									})}
-								</ScrollView>
-							}
-
-							<View style = {{flexDirection: "row"}}>
-								<Ionicons style={styles.locationIcon} name="location-outline">
-									<Text> - </Text>
-								</Ionicons>
-								<Text style = {styles.restaurantName}>{review[1].restaurant_name}</Text>
-							</View>
-						</View>
-					)
-				})}
-				<View style={styles.container}>
-					<TouchableOpacity 
-						style={styles.button}
-						onPress={logoff}
-					>
-						<Text style={{color: "white"}}>LOG OUT</Text>
-					</TouchableOpacity>
-				</View>
-			</ScrollView>
+						)
+					})}
+				</ScrollView>
+			}
 		</View>
 	)
 }
@@ -213,8 +261,7 @@ const styles = StyleSheet.create({
 	reviewContainer: {
 		backgroundColor: '#5b628a',
 		flex: 1,
-		width: 380,
-		length: 200,
+		width: 360,
 		justifyContent: 'center',
 		alignSelf: 'center',
 		margin: 5,
@@ -241,7 +288,7 @@ const styles = StyleSheet.create({
 		fontSize: 14
 	},
 	locationIcon: {
-		color: 'white', 
+		color: '#DF1616', 
 		fontSize: 30, 
 		marginLeft: 20, 
 		marginBottom: 10,
@@ -289,9 +336,9 @@ const styles = StyleSheet.create({
 
 	photo_container: {
         horizontal: 'true',
-        width: 360,
+        width: 340,
         height: 100,
-        margin:5,
+        margin: 5,
         alignSelf: 'center'
     },
 	photo_content_container: {

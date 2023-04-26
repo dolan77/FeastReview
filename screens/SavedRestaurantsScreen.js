@@ -11,7 +11,7 @@ import { timeConvert } from '../methods/time';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors from '../utils/colors';
-
+import { FeastHeader } from '../utils/components';
 // if a user clicks on their saved restaurants. navigate them to the restaurant screen
 export default function SavedRestaurantsScreen({route}){
     restaurant_data = route.params.restaurants
@@ -115,8 +115,11 @@ export default function SavedRestaurantsScreen({route}){
 
     if (restaurant_data.length == 0) {
         return(
+            
             <View style={styles.container}>
+                <FeastHeader title={"Saved Restaurants"} onPress={() => navigation.goBack()} />
                 <View style={styles.noRestaurant}>
+                
                     <Text style = {[styles.globalFont, {textAlign: 'center'}]}>You did not save a restaurant, please save one note at a later time</Text>
                 </View>
             </View>
@@ -124,12 +127,7 @@ export default function SavedRestaurantsScreen({route}){
     }
     return(
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <Text style={[styles.globalFontHeader]}>Saved Restaurants</Text>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons style={[styles.globalFontHeader, styles.backArrow]} name='arrow-back-outline'/>
-                </TouchableOpacity>
-            </View>
+            <FeastHeader title={"Saved Restaurants"} onPress={() => navigation.goBack()} />
 
             <ScrollView>
 
