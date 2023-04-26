@@ -70,9 +70,9 @@ export class FeastReview extends React.Component{
                             fontSize: 17, 
                             flexShrink: 1, 
                             flexWrap: 'wrap', 
-                            color: this.props.restaurant.is_closed ? colors.goodGreen: colors.badRed
+                            color: colors.goodGreen
                         }}>
-                            {this.props.restaurant.is_closed.toString() ? `Open` : `Closed`}
+                            {`Open`}
                         </Text>
                         <Text style={styles.restaurantText}>{this.props.restaurant.location.address1}</Text>
                     </View>
