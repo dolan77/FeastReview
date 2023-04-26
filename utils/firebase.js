@@ -3,7 +3,7 @@ import storage from '@react-native-firebase/storage';
 import { CountQueuingStrategy } from 'node:stream/web';
 //import firebase from '@react-native-firebase/app';
 
-module.exports = {del, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateCreate, dbDelete, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews, dbSetReviewComment, dbGetReviewComments, dbGetReviewPhotos };
+module.exports = {del, dbCreateBlank, dbGet, dbSet, dbFileGetUrl, dbFileAdd, dbGetReviews, dbUpdate, dbUpdateOnce, dbUpdateCreate, dbDelete, dbUpdateArrayAdd, dbUpdateArrayRemove, dbGetQuery, dbGetFollowers, dbGetFollowed, dbGetReviews, dbSetReviewComment, dbGetReviewComments, dbGetReviewPhotos, dbIncrement};
 
 
 /**
@@ -148,6 +148,21 @@ async function dbUpdateCreate(collection, doc, field, value){
     return docRef.set(updatedField, {merge:true});
 }
 
+/**
+ * Creates a document if it doesnt exist
+ * @param {*} collection 
+ * @param {*} doc 
+ * @returns 
+ */
+async function dbCreateBlank(collection, doc){
+    const docRef = db.collection(collection).doc(doc);
+    return docRef.get().then((snapshot) => {
+        if(!snapshot.exists){
+            return docRef.set({exists: true})
+        }
+    });
+
+}
 
 /**
  * makes deleting simple, use literally the same way as a normal update it overwrites the value to delete
@@ -271,4 +286,18 @@ async function dbGetReviewPhotos(image_urls) {
                 })
         }
     return urls;
+}
+
+/**
+ * increments values by 1
+ * @param {*} collection 
+ * @param {*} doc 
+ * @param {*} fields 
+ * @returns 
+ */
+function dbIncrement(collection, doc, fields){
+    Object.keys(fields).forEach((key) => {
+        fields[key] = firestore.FieldValue.increment(1);
+    });
+    return dbUpdate(collection, doc, fields);
 }

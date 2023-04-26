@@ -55,7 +55,7 @@ function adjectivesSentimentIncrement(review, restaurantAlias){
     });
     let sentences = review.match( /[^\.!\?]+[\.!\?]+/g ); // split review into sentences
     let toUpdate = {};
-    if(sentences != null) {
+    if(sentences != null && sentences.length <= 1) {
         sentences = [review]
     }
     if(sentences != null){
@@ -77,9 +77,7 @@ function adjectivesSentimentIncrement(review, restaurantAlias){
                 }
             });
         });
-        return firebase.dbCreateBlank("restaurants", restaurantAlias).then(() => { // send to database
-            firebase.dbIncrement("restaurants", restaurantAlias, toUpdate);
-        });
+        return firebase.dbIncrement("restaurants", restaurantAlias, toUpdate);
     }
     return null;
 }

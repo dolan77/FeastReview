@@ -38,6 +38,7 @@ export default function RestaurantProfileScreen({route}){
     const [pressed, setPressed] = useState(1)
     const [adjectives, setAdjectives] = React.useState('')
 
+    
     const today = new Date().getDay()
     const todayStart = timeConvert(restaurantData.data.hours[0].open[today].start)
     const todayEnd = timeConvert(restaurantData.data.hours[0].open[today].end)
@@ -56,18 +57,33 @@ export default function RestaurantProfileScreen({route}){
 			
 			
 		}
+        //AverageReview();
 	}, [pressed])
 
     React.useEffect( () => {
         console.log(restaurantData.data.categories)
         PopulateButton();
         GetReviews();
+        AverageReview();
         PopulateReviews();
         loadMostUsedAdjectives();
 		fixHoursRepeated(restaurantData.data.hours[0].open)
     }, 
     [])
 
+    // review = [review_id, {data}]
+    const AverageReview = () => {
+        let average = 0;
+        let table = [];
+        console.log(reviews)
+        for (let i = 0; i < reviews.length; i++){
+            average += (reviews[i][1].star_atmos + reviews[i][1].star_foods + reviews[i][1].star_service) /3
+        }
+        average = average / reviews.length
+        
+        table.push(<Text key = {0}>{starRating(0, average)}</Text>)
+        return table
+    }
     /**
      * method that handles the event where the user clicks the save restuarant button
      * Made by Dylan Huynh
@@ -222,8 +238,10 @@ export default function RestaurantProfileScreen({route}){
         //console.log('pressed: ' + pressed)
         let table = []
         if (reviews.length != 0){
+            
             for(let i = 0;  i < limit; i++){
                 const reviewAverage = ((reviews[i][1].star_atmos + reviews[i][1].star_foods + reviews[i][1].star_service) /3)
+                
                 table.push(
                 <TouchableOpacity key={i} style={[style.ReviewBox, {marginHorizontal: 10}]} onPress={() => {navigation.navigate('Detailed Review Screen', reviews[i])}}>
                     <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].username}</Text>
@@ -282,7 +300,9 @@ export default function RestaurantProfileScreen({route}){
                                 {restaurantData.data.name}
                             </Text>
                             <View>
-                                <Text>{starRating(restaurantData.data.id, restaurantData.data.rating)}</Text>
+                                {AverageReview()}
+                                {/* {averageReview} */}
+                                {/* <Text>{starRating(restaurantData.data.id, averageReview)}</Text> */}
                                 <Text style={[style.text]}>{reviews.length} reviews</Text>
                             </View>
                             {publicDemoGraphics()}

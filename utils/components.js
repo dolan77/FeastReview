@@ -1,7 +1,10 @@
 import * as React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Pressable, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors from '../utils/colors'
+import { useNavigation } from '@react-navigation/core';
+import { starRating } from '../methods/star.js';
+import {businessDetail} from '../utils/yelp'
 
 /**
  * Component used for headers
@@ -24,6 +27,61 @@ export class FeastHeader extends React.Component{
     }
 }
 
+/**
+ * Review
+ * @param restaurant, restaurant data object from searching function
+ * @param yelpKey, yelp key
+ * @param navigation, the navigation object
+ * @index index, 
+ * 
+ */
+export class FeastReview extends React.Component{
+    constructor(props){
+        super(props)
+    }
+
+    render(){
+        return (
+            <Pressable 
+                key={this.props.restaurant.id} 
+                onPress={() => {
+                    // Dylan Huynh: allows the user to be redirected to the restaurant profile of the restaurant they selected.
+                    try {
+                        businessDetail(this.props.restaurant.alias, this.props.yelpKey).then(result => {this.props.navigation.navigate('RestaurantProfile', {data: result})})
+
+                    } catch (error) {
+                        console.log(error)
+                    }
+
+                    
+                }}
+            >
+                <View style={styles.restaurant}>
+                    <Image 
+                        style={styles.logo}
+                        source={{uri: this.props.restaurant.image_url}} 
+                    />
+                    <View style={{flex: 1, marginLeft: 5}}>
+                        <Text style={styles.restaurantText}>{this.props.index + 1}. {this.props.restaurant.name}</Text>
+                        <Text style={styles.restaurantText}>
+                            {starRating(this.props.restaurant.id, this.props.restaurant.rating)} {this.props.restaurant.rating}
+                        </Text>
+                        <Text style={{
+                            fontSize: 17, 
+                            flexShrink: 1, 
+                            flexWrap: 'wrap', 
+                            color: this.props.restaurant.is_closed ? colors.goodGreen: colors.badRed
+                        }}>
+                            {this.props.restaurant.is_closed.toString() ? `Open` : `Closed`}
+                        </Text>
+                        <Text style={styles.restaurantText}>{this.props.restaurant.location.address1}</Text>
+                    </View>
+                </View>
+            </Pressable>
+        )
+    }
+}
+
 const styles = {
     globalFont:{
         color: colors.white,
@@ -43,4 +101,25 @@ const styles = {
     backArrow: {
         fontSize: 40
     },
+    restaurant: {
+		width: '100%',
+		backgroundColor: colors.backgroundDarker,
+		borderRadius: 25,
+		height: 150,
+		marginBottom: 20,
+		padding: 20,
+		flexDirection:'row',
+		flexWrap: 'wrap',
+	},
+	restaurantText: {
+		color: colors.white,
+		fontSize: 17,
+		flexShrink: 1,
+		flexWrap: 'wrap',
+	},
+    logo: {
+		width: 125,
+		height: 115,
+		borderRadius: 15,
+	},
 }
