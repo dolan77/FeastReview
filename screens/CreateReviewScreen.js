@@ -7,7 +7,7 @@ import * as firebase from '../utils/firebase'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MultipleImagePicker from 'react-native-image-crop-picker';
 import { FlatList } from 'react-native-gesture-handler';
-import {incrementAdjectives, adjectivesSentimentIncrement} from '../utils/tasteometer'
+import {adjectivesSentimentIncrement} from '../utils/tasteometer'
 import { FeastHeader } from '../utils/components';
 export default function ReviewPage({route}) {
     const navigation = useNavigation();
@@ -27,8 +27,7 @@ export default function ReviewPage({route}) {
         try{
             console.log('In the upload review function');
             var review_id = restaurantData.data.alias + '_' + user.uid + '_' + String(Date.now());
-            //adjectivesSentimentIncrement(review,restaurantData.data.alias);
-
+            
             await firebase.dbSet('reviews', review_id, {authorid: user.uid,
                                                         username: user.displayName,
                                                         content: review,
@@ -43,7 +42,11 @@ export default function ReviewPage({route}) {
             uploadPhotos();
 
             // updates the cache for the category of each restaurant for later finding expertise
-            firebase.dbUpdate('restaurants', restaurantData.data.alias, {categories: restaurantData.data.categories})
+            firebase.dbCreateBlank('restaurants', restaurantData.data.alias).then(() => {
+                adjectivesSentimentIncrement(review, restaurantData.data.alias);
+                firebase.dbUpdate('restaurants', restaurantData.data.alias, restaurantData.data); //caches saved restaurant data
+            });
+            
         }
         catch (error){
             console.log(error)
