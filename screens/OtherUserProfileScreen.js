@@ -8,7 +8,7 @@ import * as yelp from '../utils/yelp'
 
 import * as React from 'react';
 import colors from '../utils/colors';
-
+import { FeastHeader } from '../utils/components';
 
 
 // pass in the user ID you want to view
@@ -130,6 +130,7 @@ export default function OtherUserProfileScreen({route}){
     }
     return (
         <View style = {styles.container}>
+            <FeastHeader title={"Other User"} onPress={() => navigation.goBack()}/>
                 <View style = {styles.UserBackground}>
 
                     <View style = {[{alignItems: 'center', flex: 1.5, justifyContent: 'space-evenly'}]}>
