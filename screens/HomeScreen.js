@@ -39,7 +39,6 @@ export default function HomeScreen() {
 		setFollowing([])
 		setFollowingPfp([])
 		setReviewPhotos([])
-		setLoading(false)
 		getFollowers(user.uid)
 	}, [])
 
