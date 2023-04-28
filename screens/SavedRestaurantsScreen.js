@@ -17,7 +17,11 @@ export default function SavedRestaurantsScreen({route}){
     restaurant_data = route.params.restaurants
     const navigation = useNavigation();
     const user = auth().currentUser;
+    const [restaurants, setRestaurants] = React.useState([])
 
+    React.useEffect(() => {
+        PopulateRestaurants()
+    }, [])
     // method to view the restaurant the user clicks on
     const seeRestaurant = (restaurant_data) => {
         navigation.navigate('RestaurantProfile', {
@@ -26,33 +30,36 @@ export default function SavedRestaurantsScreen({route}){
     }
     /**
      * method that checks to see if the restaurant is open
-     * @param {*} current_restaurant current restaurant we want to check
+     * @param {*} current_restaurant current restaurant's hours we want to check
      * @param {*} date the date we want to check the restaurant 
      * @param {*} hours_and_min the hours and minutes 
      * @returns a boolean value that represents if the restaurant is opened or closed
      */
     const isOpen = (current_restaurant, date, hours_and_min) => {
-        if (current_restaurant.hours[0].open[date.getDay()].is_overnight){
-            return ((Number(current_restaurant.hours[0].open[date.getDay()].end) < Number(hours_and_min)) && 
-            (Number(hours_and_min) < Number(current_restaurant.hours[0].open[date.getDay()].start))) ? false : true
+        if (current_restaurant[date.getDay()].is_overnight){
+            return ((Number(current_restaurant[date.getDay()].end) < Number(hours_and_min)) && 
+            (Number(hours_and_min) < Number(current_restaurant[date.getDay()].start))) ? false : true
         }
-        return ((Number(current_restaurant.hours[0].open[date.getDay()].start) < Number(hours_and_min)) && 
-            (Number(hours_and_min) < Number(current_restaurant.hours[0].open[date.getDay()].end))) ? true : false
+        return ((Number(current_restaurant[date.getDay()].start) < Number(hours_and_min)) && 
+            (Number(hours_and_min) < Number(current_restaurant[date.getDay()].end))) ? true : false
     }
 
     /**
      * method that populates the screen
      * @returns a list of Touchable Opacities that contain the user's saved restaurants
      */
-    const PopulateRestaurants = () => {
+    const PopulateRestaurants = async () => {
+        console.log(restaurant_data)
         let table = [];
+        let global_avg = 0
         // for every restaurant in the saved_restaurant list
+        // restaurant_data = [alias_1, alias_2, alias_3, etc.]
         for (let i = 0; i < restaurant_data.length; i++){
-
+            
             var date = new Date(); //Current Date
             var hours = date.getHours(); //To get the Current Hours
             var min = date.getMinutes(); //Current Minutes
-            
+            global_avg = 0
             
             // help visualize time better
             var hours_and_min = `${hours}${min}`
@@ -62,36 +69,91 @@ export default function SavedRestaurantsScreen({route}){
             //console.log(restaurant_data[i].hours[0].open)
             //console.log(hours_and_min)
             //console.log(restaurant_data[i].image_url)
-            
-            // if (restaurant_data[i].hours[0].open[date.getDay()].is_overnight){
-                // if start > curr_hrs > end. we are within the range where the restaurant is closed
-                // example: end - 0100 start - 0900. if it is 0700. 0700 > 0100 and 0700 < 0900. so we are closed
+            await firebase.dbGet('restaurants', restaurant_data[i]).then(result =>{
+                // result = adjectives + the typical restaurant data
+                // result.total_rating
+                console.log(result)
+
+                
+
                 table.push(
-                    <TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.RestaurantBox, styles.RestaurantBoxItems]}>
-                    <Image style={styles.restaurantImage} source={{ uri: restaurant_data[i].image_url}}/>
+                    <TouchableOpacity onPress={() => seeRestaurant(result)} key = {i} style = {[styles.RestaurantBox, styles.RestaurantBoxItems]}>
+                    <Image style={styles.restaurantImage} source={{ uri: result.image_url}}/>
                     <View>
-                        <Text style={[styles.globalFontHeader, {width: '85%'}]}>{restaurant_data[i].name}</Text>
+                        <Text style={[styles.globalFontHeader, {width: '85%'}]}>{result.name}</Text>
                         <View style={{flexDirection: 'row', alignItems: 'center', alignContent: 'baseline'}}>
                             <Ionicons name="time" size={20} color="white"/>
-                            <Text style = {isOpen(restaurant_data[i], date, hours_and_min) ?  styles.openColor: styles.closedColor}>
-                            {isOpen(restaurant_data[i], date, hours_and_min) ? "Open": "Close"}
+                            <Text style = {isOpen(result.hours[0].open, date, hours_and_min) ?  styles.openColor: styles.closedColor}>
+                            {isOpen(result.hours[0].open, date, hours_and_min) ? "Open": "Close"}
                         </Text>
                         <Text style={[styles.globalFont]}> until </Text>
-                        <Text style={[styles.globalFont]}>{isOpen(restaurant_data[i], date, hours_and_min) ? timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end) : timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)}</Text>
+                        <Text style={[styles.globalFont]}>{isOpen(result.hours[0].open, date, hours_and_min) ? timeConvert(result.hours[0].open[date.getDay()].end) : timeConvert(result.hours[0].open[date.getDay()].start)}</Text>
                         
                         </View>
                         
-                        <Text>{starRating(restaurant_data[i].id, restaurant_data[i].rating)}</Text>
+                        {result.total_rating == undefined? <Text style={[styles.globalFont]}>No Ratings</Text>: <Text style={[styles.globalFont]}>{starRating(i, result.total_rating)}</Text>}
+
+                        {/* <Text>{starRating(restaurant_data[i].id, global_avg)}</Text> */}
                         {/* <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}</Text> */}
                         <View style={{}}>
                             
-                            <Text style={styles.globalFont}><Ionicons name="pin" size={20} color="white"/> {restaurant_data[i].location.address1}, </Text>
-                            <Text style={styles.globalFont}>{restaurant_data[i].location.city} {restaurant_data[i].location.state}, {restaurant_data[i].location.country}</Text>
+                            <Text style={styles.globalFont}><Ionicons name="pin" size={20} color="white"/> {result.location.address1}, </Text>
+                            <Text style={styles.globalFont}>{result.location.city} {result.location.state}, {result.location.country}</Text>
                         </View>
                         
                     </View>
                     
-                </TouchableOpacity>)
+                </TouchableOpacity>
+                )})
+            
+            // firebase.dbGetReviews(restaurant_data[i].alias).then(result => 
+            //     {
+            //     const review_data = [...result]
+            //     let avg = 0
+            //     for(let j = 0; j < review_data.length; j++){
+            //         avg += (review_data[j][1].star_atmos + review_data[j][1].star_service + review_data[j][1].star_foods) / 3
+            //         //console.log(review_data[j][1])
+            //     }
+            //     avg += avg / review_data.length
+            //     global_avg = avg
+            //     //console.log(avg)
+                
+            //     //console.log(result)
+            //     restaurants.push(
+            //         <TouchableOpacity onPress={() => seeRestaurant(restaurant_data[i])} key = {i} style = {[styles.RestaurantBox, styles.RestaurantBoxItems]}>
+            //         <Image style={styles.restaurantImage} source={{ uri: restaurant_data[i].image_url}}/>
+            //         <View>
+            //             <Text style={[styles.globalFontHeader, {width: '85%'}]}>{restaurant_data[i].name}</Text>
+            //             <View style={{flexDirection: 'row', alignItems: 'center', alignContent: 'baseline'}}>
+            //                 <Ionicons name="time" size={20} color="white"/>
+            //                 <Text style = {isOpen(restaurant_data[i], date, hours_and_min) ?  styles.openColor: styles.closedColor}>
+            //                 {isOpen(restaurant_data[i], date, hours_and_min) ? "Open": "Close"}
+            //             </Text>
+            //             <Text style={[styles.globalFont]}> until </Text>
+            //             <Text style={[styles.globalFont]}>{isOpen(restaurant_data[i], date, hours_and_min) ? timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end) : timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)}</Text>
+                        
+            //             </View>
+                        
+            //             <Text>{starRating(restaurant_data[i].id, restaurant_data[i].rating)}</Text>
+            //             {/* <Text>{starRating(restaurant_data[i].id, global_avg)}</Text> */}
+            //             {/* <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}</Text> */}
+            //             <View style={{}}>
+                            
+            //                 <Text style={styles.globalFont}><Ionicons name="pin" size={20} color="white"/> {restaurant_data[i].location.address1}, </Text>
+            //                 <Text style={styles.globalFont}>{restaurant_data[i].location.city} {restaurant_data[i].location.state}, {restaurant_data[i].location.country}</Text>
+            //             </View>
+                        
+            //         </View>
+                    
+            //     </TouchableOpacity>)
+                
+
+            // })
+            // console.log(global_avg)
+            // if (restaurant_data[i].hours[0].open[date.getDay()].is_overnight){
+                // if start > curr_hrs > end. we are within the range where the restaurant is closed
+                // example: end - 0100 start - 0900. if it is 0700. 0700 > 0100 and 0700 < 0900. so we are closed
+
                 
             // }
             // we are not working with an overnight restaurant. we can do start < curr time < end
@@ -109,8 +171,9 @@ export default function SavedRestaurantsScreen({route}){
             //         <Text style={styles.globalFont}>{timeConvert(restaurant_data[i].hours[0].open[date.getDay()].start)} - {timeConvert(restaurant_data[i].hours[0].open[date.getDay()].end)}</Text>
             //     </TouchableOpacity>)
             // }
+           
         }
-        return table
+        setRestaurants(table)
     };
 
     if (restaurant_data.length == 0) {
@@ -132,7 +195,7 @@ export default function SavedRestaurantsScreen({route}){
             <ScrollView>
 
                 <View style={styles.restaurantContainer}>
-                    {PopulateRestaurants()}
+                    {restaurants}
                 </View>
             </ScrollView>
         </SafeAreaView>

@@ -129,15 +129,15 @@ export default function UserProfileScreen(){
         try {
             firebase.dbGet('users', user.uid).then(result => {
                 //console.log(result)
-                let restaurant_data = []
-                Object.keys(result.saved_restaurants).forEach((key) => {
-                    // I can pass the saved restaurant data to the Screen to Populate later.
-                    restaurant_data.push(result.saved_restaurants[key])
-                    // console.log(result.saved_restaurants[key])
-                });
+                // let restaurant_data = []
+                // Object.keys(result.saved_restaurants).forEach((key) => {
+                //     // I can pass the saved restaurant data to the Screen to Populate later.
+                //     restaurant_data.push(result.saved_restaurants[key])
+                //     // console.log(result.saved_restaurants[key])
+                // });
                 // console.log(restaurant_data)
                 navigation.navigate('SavedRestaurants', {
-                    restaurants: restaurant_data
+                    restaurants: result.saved_restaurants
                 })
                 // console.log(result.saved_restaurants)
             })
