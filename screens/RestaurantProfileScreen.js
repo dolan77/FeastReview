@@ -77,7 +77,7 @@ export default function RestaurantProfileScreen({route}){
     const AverageReview = () => {
         let average = 0;
         let table = [];
-        console.log(reviews)
+        //console.log(reviews)
         for (let i = 0; i < reviews.length; i++){
             average += (reviews[i][1].star_atmos + reviews[i][1].star_foods + reviews[i][1].star_service) /3
         }
@@ -93,19 +93,37 @@ export default function RestaurantProfileScreen({route}){
     const clickSaved = async () => {
         console.log(user.uid);
         try{
-            const currentUser = await firebase.dbGet('users', user.uid);
-            console.log(currentUser.saved_restaurants)
+            firebase.dbCreateBlank(restaurantData.data.alias, 'restaurant_alias').then(
+                () =>{
+                    firebase.dbUpdate('restaurants', restaurantData.data.alias, restaurantData.data)
+                    firebase.dbGet('users', user.uid).then(result => {
+                        console.log(result)
+                        if(result.saved_restaurants.includes(restaurantData.data.alias)){
+                            // let toSave = {}
+                            // toSave[`saved_restaurants.${restaurantData.data.alias}`] = 1
+
+                            // "saved_restuarnatsts." + alias
+                            firebase.dbUpdateArrayRemove('users', user.uid, 'saved_restaurants', [restaurantData.data.alias]).then(result => PopulateButton())
+                        }
+                        else{
+                            firebase.dbUpdateArrayAdd('users', user.uid, 'saved_restaurants', [restaurantData.data.alias]).then(result => PopulateButton())
+                        }
+                    })
+
+                }
+            )
+            // console.log(currentUser.saved_restaurants)
             
-            if (Object.hasOwn(currentUser.saved_restaurants, restaurantData.data.alias)){
-                let toSave = {}
-                toSave[`saved_restaurants.${restaurantData.data.alias}`] = 1;
-                firebase.dbDelete('users', user.uid, toSave).then(result => PopulateButton())
-                // PopulateButton();
-            }
-            else{
-                await firebase.dbUpdateOnce('users', user.uid, `saved_restaurants.${restaurantData.data.alias}`, restaurantData.data)
-                PopulateButton();
-            }
+            // if (Object.hasOwn(currentUser.saved_restaurants, restaurantData.data.alias)){
+            //     let toSave = {}
+            //     toSave[`saved_restaurants.${restaurantData.data.alias}`] = 1;
+            //     firebase.dbDelete('users', user.uid, toSave).then(result => PopulateButton())
+            //     // PopulateButton();
+            // }
+            // else{
+            //     await firebase.dbUpdateOnce('users', user.uid, `saved_restaurants.${restaurantData.data.alias}`, restaurantData.data)
+            //     PopulateButton();
+            // }
         } catch (error) {
             console.log(error);
         }
@@ -116,10 +134,12 @@ export default function RestaurantProfileScreen({route}){
      */
     const PopulateButton = async () => {
         try {
+            
             const currentUser = await firebase.dbGet('users', user.uid);
             // if we are following the restaurant, prompt the unfollow button
-            if (Object.hasOwn(currentUser.saved_restaurants, restaurantData.data.alias)){
-                
+            console.log(currentUser)
+            if (currentUser.saved_restaurants.includes(restaurantData.data.alias)){
+                console.log('in if statement')
                 setSaved('Remove Restaurant');
                 setColor(colors.backgroundDarker);
                 
