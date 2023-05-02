@@ -16,7 +16,7 @@ import colors from '../utils/colors'
 import {reviewHistory, randomRecommendation} from '../utils/recommendation.js'
 import auth from '@react-native-firebase/auth';
 import { FeastReview } from '../utils/components.js';
-
+import * as firebase from '../utils/firebase.js'
 export default function SearchScreen() {
 	const defaultLocation = {"coords": {"accuracy": 5, "altitude": 5, "altitudeAccuracy": 0.5, "heading": 0, "latitude": 33.78383050167186, "longitude": -118.11367992726652, "speed": 0}, "mocked": false, "provider": "fused", "timestamp": 1676767775647}
 	const user = auth().currentUser;
@@ -218,6 +218,7 @@ export default function SearchScreen() {
 	 * written by Matthew Hirai
 	*/
     return (
+		
         <View style={styles.container}>
 			<View style={styles.searchContainer}>
 				<TextInput 
@@ -372,12 +373,13 @@ export default function SearchScreen() {
 			}
 
 			{restaurants[0] !== "No results" && restaurants.length !== 0 ? <Text style={{color: 'white', fontSize: 20, padding: 10}}>Results</Text> : <></>}
-			
+			{/* Restaurant View */}
 			<ScrollView style={styles.restaurantContainer} keyboardShouldPersistTaps={'handled'}>
 				{restaurants[0] !== "No results" &&
 					restaurants.map((restaurant, index) => {
+
 						return (
-							<FeastReview restaurant={restaurant} yelpKey={yelpKey} navigation={navigation} index={index}/>
+							<FeastReview restaurant={restaurant} yelpKey={yelpKey} navigation={navigation} index={index} key={restaurant.id}/>
 						)
 					})
 				}
