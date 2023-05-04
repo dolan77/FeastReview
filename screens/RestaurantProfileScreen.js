@@ -93,7 +93,7 @@ export default function RestaurantProfileScreen({route}){
     const clickSaved = async () => {
         console.log(user.uid);
         try{
-            firebase.dbCreateBlank(restaurantData.data.alias, 'restaurant_alias').then(
+            firebase.dbCreateBlank('restaurants', restaurantData.data.alias).then(
                 () =>{
                     firebase.dbUpdate('restaurants', restaurantData.data.alias, restaurantData.data)
                     firebase.dbGet('users', user.uid).then(result => {
@@ -103,10 +103,10 @@ export default function RestaurantProfileScreen({route}){
                             // toSave[`saved_restaurants.${restaurantData.data.alias}`] = 1
 
                             // "saved_restuarnatsts." + alias
-                            firebase.dbUpdateArrayRemove('users', user.uid, 'saved_restaurants', [restaurantData.data.alias]).then(result => PopulateButton())
+                            firebase.dbUpdateArrayRemove('users', user.uid, 'saved_restaurants', [restaurantData.data.alias]).then(() => PopulateButton())
                         }
                         else{
-                            firebase.dbUpdateArrayAdd('users', user.uid, 'saved_restaurants', [restaurantData.data.alias]).then(result => PopulateButton())
+                            firebase.dbUpdateArrayAdd('users', user.uid, 'saved_restaurants', [restaurantData.data.alias]).then(() => PopulateButton())
                         }
                     })
 
