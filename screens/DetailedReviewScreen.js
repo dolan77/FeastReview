@@ -72,7 +72,7 @@ export default function DetailedReviewScreen({route}){
         })
     }
 
-    console.log(dbComments)
+    // console.log(dbComments)
     const PopulateComments = () => {
         let table = [];
 
@@ -108,7 +108,11 @@ export default function DetailedReviewScreen({route}){
             <ScrollView style={[{marginTop:5,}]}>
 
                 {/* Container for the main review we are viewing comments of */}
-                <View style={[style.ReviewBox, {marginBottom: 15}]}>
+                <TouchableOpacity style={[style.ReviewBox, {marginBottom: 15}]}
+                 onPress={() => navigation.replace('OtherUserProfile', 
+                        {
+                            otherID: reviewData.authorid
+                        })}>
                     <Text style={[style.whiteText, style.ReviewHeader]}>{reviewData.username}</Text>
                     <Text style={[style.buttonText, style.ReviewHeader]}>{starRating(0, reviewAverage)}</Text>
                     <Text style={[style.whiteText, style.ReviewHeader, {color:'#63B8D6'}]}>{reviewData.restaurant_name}</Text>
@@ -175,7 +179,7 @@ export default function DetailedReviewScreen({route}){
                             </View>
                         </View>
                     </Modal>
-                </View>
+                </TouchableOpacity>
 
                 {/* Container for all comments made on review */}
                     
