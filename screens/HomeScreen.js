@@ -2,7 +2,6 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, RefreshCon
 import React, { useState, useEffect, useCallback } from 'react'
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
-import {Button} from 'react-native'
 import * as firebase from '../utils/firebase'
 import * as yelp from '../utils/yelp'
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -40,7 +39,6 @@ export default function HomeScreen() {
 		setFollowing([])
 		setFollowingPfp([])
 		setReviewPhotos([])
-		setLoading(false)
 		getFollowers(user.uid)
 	}, [])
 
@@ -57,18 +55,6 @@ export default function HomeScreen() {
 		  setRefreshing(false)
 		}, 2000);
 	  }, []);
-
-	/**
-	 * Logs the user out of the app
-	 */
-	logoff = () => {
-		auth()
-			.signOut()
-			.then(() => {
-				navigation.navigate("Login")
-			})
-			.catch(error => alert(error.message))
-	}
 	
 	/**
 	 * Gets the user's following and sets them to the reviews state
@@ -299,19 +285,6 @@ const styles = StyleSheet.create({
 		marginTop: 5,
 		fontSize: 18,
 	},
-	button: {
-		backgroundColor: '#0782F9',
-		width: '100%',
-		padding: 15,
-		borderRadius: 10,
-		alignItems: 'center'
-	},
-	buttonText: {
-		color: 'white',
-		fontWeight: '700',
-		fontSize: 16
-	},
-
 	profileIcon: {
 		width: 75,
 		height: 75,
