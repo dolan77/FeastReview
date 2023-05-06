@@ -42,6 +42,9 @@ export default function HomeScreen() {
 		getFollowers(user.uid)
 	}, [])
 
+	/**
+	 * Refreshes the page to check for new reviews from following
+	 */
 	const onRefresh = useCallback(() => {
 		setRefreshing(true);
 
@@ -142,6 +145,9 @@ export default function HomeScreen() {
 		})
 	}
 
+	/**
+	 * Displays following profile pictures
+	 */
 	display = (id) => {
 		try {
 			const profile = followingPfp.find(user => user.id === id)
@@ -152,21 +158,44 @@ export default function HomeScreen() {
 		}
 	}
 
+	/**
+	 * Get username of following user
+	 */
 	getUserName = (id) => {
 		const followingUser = following.find(user => user.id === id)
 		return followingUser.name
 	}
 
+	/**
+	 * Displays "Read More" when clicked
+	 */
 	renderReadMore = (onPress) => {
 		return(
 		  <Text onPress={onPress} style={[styles.reviewContent, {color: '#75d9fc', paddingTop: 0}]}>Read more</Text>
 		)
 	}
+
+	/**
+	 * Displays "Read Less" when clicked
+	 */
 	renderReadLess = (onPress) => {
 		return(
 		  <Text onPress={onPress} style={[styles.reviewContent, {color: '#75d9fc', paddingTop: 0}]}>Read less</Text>
 		)
 	}
+
+	/**
+     * Method that will navigate the user to see another user's profile
+     */
+    const SeeOtherProfile = (otherUID) => {
+        console.log("Moving to see the other profile: " + otherUID)
+        
+		navigation.navigate('OtherUserProfile', 
+        {
+            otherID: otherUID
+        })
+
+    }
 	
 	return (
 		<View style = {styles.container}>
@@ -175,8 +204,11 @@ export default function HomeScreen() {
 					Start following Feasters to get started!!!
 				</Text>
 			}
+
 			{(loading && isFollowing) && <Loader />}
+
 			{/* ScrollView allows you to scroll down the feed */}
+
 			{isFollowing && 
 				<ScrollView 
 					style={{flex:1, backgroundColor: '#3d4051'}}
@@ -186,8 +218,11 @@ export default function HomeScreen() {
 				>
 					{reviews.map(review => {
 						return (
-							<View style = {styles.reviewContainer} key={review[0]}>
-								
+							<TouchableOpacity 
+								style = {styles.reviewContainer} 
+								key={review[0]} 
+								onPress={() => SeeOtherProfile(review[1].authorid)}
+							>
 								<View style = {{flexDirection: "row"}}>
 									<Image style = {styles.profileIcon} source={display(review[1].authorid) !== undefined ? {uri: display(review[1].authorid)} : image}/>
 									<Text style = {styles.emailWrap}> {getUserName(review[1].authorid)}</Text>
@@ -228,7 +263,7 @@ export default function HomeScreen() {
 									</Ionicons>
 									<Text style = {styles.restaurantName}>{review[1].restaurant_name}</Text>
 								</View>
-							</View>
+							</TouchableOpacity>
 						)
 					})}
 				</ScrollView>
