@@ -166,7 +166,7 @@ export default function ReviewsScreen({route}){
     return(
 
         <SafeAreaView style={style.container}>
-            <FeastHeader title={"Your Reviews"} onPress={() => navigation.goBack()}/>
+            <FeastHeader title={"Reviews"} onPress={() => navigation.goBack()}/>
 
             <ScrollView>
 
