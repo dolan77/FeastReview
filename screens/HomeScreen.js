@@ -100,7 +100,7 @@ export default function HomeScreen() {
 					})
 					.catch((error) => {
 						console.log("Error with getting reviews: ", error)
-						
+						setLoading(false)
 					})
 
 					firebase.dbFileGetUrl('ProfilePictures/' + key)
@@ -108,6 +108,7 @@ export default function HomeScreen() {
                         setFollowingPfp(prev => [...prev, {"id": key, "pfp": url}]) // add pfp to all pfp list
                     })
 					.catch((error) => {
+						setLoading(false)
                         switch (error.code) {
                             case 'storage/object-not-found':
                               //console.log(passedinUID[i] + "File doesn't exist")
@@ -138,10 +139,12 @@ export default function HomeScreen() {
 			.catch((error) => {
 				console.log("Error with getting following: ", error)
 				setIsFollowing(false)
+				setLoading(false)
 			})
 		})
 		.catch((error) => {
 			console.log("Error with getting user info: ", error)
+			setLoading(false)
 		})
 	}
 
