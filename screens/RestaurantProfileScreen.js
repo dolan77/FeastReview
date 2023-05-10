@@ -290,7 +290,7 @@ export default function RestaurantProfileScreen({route}){
 
 			const capitalizedWord = firstLetterCap + remainingLetters
 
-			const iconText = capitalizedWord + ' lovers'
+			const iconText = capitalizedWord.replaceAll('_', ' ') + ' lovers'
 
 			return (
 				<View style={[style.icon, {width: iconText.length * 10}]}>
