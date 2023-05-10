@@ -29,6 +29,7 @@ export default function RegisterScreen() {
   	createUser = () => {
 		if (password !== passwordAgain) {
 			console.log('Passwords do not match')
+			alert("Passwords do not match!")
 		}
 
 		else if (password === '' || passwordAgain === '' || email === '' || userName === '') {

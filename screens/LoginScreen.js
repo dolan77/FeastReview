@@ -34,7 +34,8 @@ export default function LoginScreen() {
 					console.log('That email address is invalid!');
 				}
 
-				console.error(error);
+				// console.error(error);
+				alert("Invalid Email Address or Password!")
 			});
 		}
 		else {
@@ -50,9 +51,11 @@ export default function LoginScreen() {
 				.sendPasswordResetEmail(email)
 				.then((link) => {
 					console.log('Email sent! to', email)
+					alert('Email sent!')
 				})
 				.catch((error) => {
-					console.error('Please enter email first')
+					// console.error('Please enter email first')
+					alert('Please enter a valid email first.')
 				})
 		}
 		else {

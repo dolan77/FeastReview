@@ -255,7 +255,7 @@ const style = StyleSheet.create({
 		borderColor: 'gray',
         alignSelf: 'center',
         height: 110,
-        width: 110*.75,
+        width: 110,
     },
     photo_container: {
         horizontal: 'true',
