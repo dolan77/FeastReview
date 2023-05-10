@@ -226,7 +226,7 @@ export default function SearchScreen() {
 					placeholder='Search for foods...'
 					placeholderTextColor='white'
 					value = {searchText}
-					onChangeText={text => setSearchText(text)}
+					onChangeText={text => autoComplete(text)}
 					onSubmitEditing={handleSearch}
 				/>
 				{(restaurants.length !== 0 || restaurants[0] === "No results") && 
