@@ -32,7 +32,7 @@ export default function RestaurantProfileScreen({route}){
     const restaurantData = route.params;
     const [saved, setSaved] = React.useState('')
     const [color, setColor] = React.useState('')
-    const [hoursCollapsed, setHoursCollapsed] = React.useState('')
+    const [hoursCollapsed, setHoursCollapsed] = React.useState(true)
     const [reviews, setReviews] = React.useState('')
     const [limit, setLimit] = React.useState(1);
     const [pressed, setPressed] = useState(1)
