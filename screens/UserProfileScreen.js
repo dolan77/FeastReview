@@ -17,21 +17,22 @@ import { ScrollView } from 'react-native-gesture-handler';
 // function that returns the screen for the current user
 export default function UserProfileScreen(){
     const user = auth().currentUser;
-    const [bio, setBio] = React.useState('');
-    const [title, setTitle] = React.useState('');
+    const [bio, setBio] = React.useState('Loading...');
+    const [title, setTitle] = React.useState('Loading...');
+    const [username, setUsername] = React.useState('Loading...');
     const navigation = useNavigation();
     
     React.useEffect(() => {
-        getBio();
+        getUserInfo();
         getAvatarDB();
-        getTitle();
     }, [])
 
 
     /**
-     * @returns user title or message
+     * Gets the user's name, title and biography for profile from FireBase
+     * @returns promise
      */
-    function getTitle(){
+    function getUserInfo(){
         return firebase.dbGet('users', user.uid).then(userProfile => {
             if(!Object.hasOwn(userProfile, 'title') || !userProfile.title){
                 setTitle('No title selected!');
@@ -39,18 +40,16 @@ export default function UserProfileScreen(){
             else {
                 setTitle(userProfile.title);
             }
-        })
-    }
+            
+            if(Object.hasOwn(userProfile, 'name') && userProfile.name){
+                setUsername(userProfile.name);
+            }
 
-    // function that retrieves the bio from the firestore database
-    async function getBio() {
-        // push changes to database, backend can do that
-        try {
-            const userBio = await firebase.dbGet('users', user.uid);
-            setBio(userBio.bio)
-        } catch (error) {
-            console.log(error)
-        }
+            if(Object.hasOwn(userProfile, 'bio') && userProfile.bio){
+                setBio(userProfile.bio);
+            }
+        })
+        .catch(error => console.log(error));
     }
     
     /**
@@ -190,7 +189,7 @@ export default function UserProfileScreen(){
         <View style= {{flex: 3, backgroundColor: '#171414'}}>
             <View style = {[{justifyContent: 'center', alignItems: 'center', flex: 2.5}]}>
                 <Image style = {[styles.tinyLogo]} source ={{uri:avatarPath}}/>
-                <Text style = {[styles.globalFont, {fontSize: 25}]}>{user.displayName}</Text>
+                <Text style = {[styles.globalFont, {fontSize: 25}]}>{username}</Text>
                 <Text style = {[styles.globalFont, expertise.titleStyle(title)]}>{title}</Text>
             </View> 
 
