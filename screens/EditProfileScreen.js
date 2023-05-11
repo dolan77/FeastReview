@@ -21,7 +21,8 @@ export default function EditProfileScreen(){
     const navigation = useNavigation();
 
     const [modalVisible, setModalVisible] = React.useState(false);
-    const [bio, setBio] = React.useState('');
+    const [bio, setBio] = React.useState('Loading...');
+    const [currName, setCurrName] = React.useState('Loading...');
 
     const [title, setTitle] = React.useState('');
     const [possibleTitles, setPossibleTitles] = React.useState([]);
@@ -67,6 +68,7 @@ export default function EditProfileScreen(){
             const userProfile = await firebase.dbGet('users', user.uid);
             setBio(userProfile.bio ? userProfile.bio: "")
             setNewBio(userProfile.bio ? userProfile.bio: "")
+            setCurrName(userProfile.name ? userProfile.name: "")
             if(!Object.hasOwn(userProfile, 'title') || userProfile.title == null || userProfile.title.length <= 0){
                 setTitle('No title selected!');
             }
@@ -90,7 +92,7 @@ export default function EditProfileScreen(){
             )
         }
         catch (error){
-            console.log(user.displayName, 'does not have a profile picture on db')
+            console.log(currName, 'does not have a profile picture on db')
             await firebase.dbFileGetUrl('feast_blue.png').then(
                 url => {
                     setAvatarPath(url)
@@ -146,13 +148,12 @@ export default function EditProfileScreen(){
     const toggleEditName = () => {
         if(!editName){ //edit
             setEditName(true);
-            setNewName(user.displayName);
+            setNewName(currName);
         }
         else { //submit
             setEditName(false);
-            auth().currentUser.updateProfile({
-                displayName: newName
-            })
+            firebase.dbUpdateOnce("users", user.uid, "name", newName);
+            setCurrName(newName);
         }
     }
 
@@ -239,7 +240,7 @@ export default function EditProfileScreen(){
                 <View style = {styles.rowContainer}>
                     <View style = {styles.leftItem}>
                     <Text style={styles.profileLabel}>Username</Text>
-                        {!editName && <Text style={[styles.globalFont, styles.leftText]}>{user.displayName}</Text>}
+                        {!editName && <Text style={[styles.globalFont, styles.leftText]}>{currName}</Text>}
                         {editName && <View style = {[styles.bioBox, {borderColor: colors.white}]}>
                             <TextInput style={styles.globalFont} maxLength={20} numberOfLines={1} onChangeText={(value) => setNewName(value)}>
                                 {newName}
