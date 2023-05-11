@@ -306,7 +306,7 @@ export default function RestaurantProfileScreen({route}){
     // hours, name, rating, reviews, directions, phone number, and website to the restaurant
     return(
         <SafeAreaView style={style.container}>
-            <FeastHeader title={'Restaurant'} onPress={() => navigation.goBack()}/>
+            <FeastHeader title={restaurantData.data.name} onPress={() => navigation.goBack()}/>
             <ScrollView>
                 <View stlye={{flex: 3}}>
                 <View>
