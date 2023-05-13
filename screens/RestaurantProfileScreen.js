@@ -30,13 +30,13 @@ export default function RestaurantProfileScreen({route}){
     const navigation = useNavigation();
     const dayOfTheWeek = [ "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
     const restaurantData = route.params;
-    const [saved, setSaved] = React.useState('')
-    const [color, setColor] = React.useState('')
-    const [hoursCollapsed, setHoursCollapsed] = React.useState(true)
-    const [reviews, setReviews] = React.useState('')
-    const [limit, setLimit] = React.useState(1);
+    const [saved, setSaved] = useState('')
+    const [color, setColor] = RuseState('')
+    const [hoursCollapsed, setHoursCollapsed] = useState(true)
+    const [reviews, setReviews] = useState('')
+    const [limit, setLimit] = useState(1);
     const [pressed, setPressed] = useState(1)
-    const [adjectives, setAdjectives] = React.useState('')
+    const [adjectives, setAdjectives] = useState('')
 
     
     const today = new Date().getDay()
@@ -46,7 +46,7 @@ export default function RestaurantProfileScreen({route}){
     const user = auth().currentUser;
     // console.log(restaurantData.data.hours[0].open[0])
 
-    React.useEffect(() => {
+    useEffect(() => {
 		if (pressed !== 1) {
             if (10 * limit > reviews.length){
                 setLimit(reviews.length)
@@ -71,11 +71,15 @@ export default function RestaurantProfileScreen({route}){
     }, 
     [])
 
-    // review = [review_id, {data}]
+	/**
+	 * Averages out all of the review ratings
+	 * review = [review_id, {data}]
+	 * @returns a Text component of the star rating
+	 */
     const AverageReview = () => {
         let average = 0;
         let table = [];
-        //console.log(reviews)
+
         for (let i = 0; i < reviews.length; i++){
             average += (reviews[i][1].star_atmos + reviews[i][1].star_foods + reviews[i][1].star_service) /3
         }
@@ -84,6 +88,7 @@ export default function RestaurantProfileScreen({route}){
         table.push(<Text key = {0}>{starRating(0, average)}</Text>)
         return table
     }
+
     /**
      * method that handles the event where the user clicks the save restuarant button
      * Made by Dylan Huynh
@@ -110,22 +115,11 @@ export default function RestaurantProfileScreen({route}){
 
                 }
             )
-            // console.log(currentUser.saved_restaurants)
-            
-            // if (Object.hasOwn(currentUser.saved_restaurants, restaurantData.data.alias)){
-            //     let toSave = {}
-            //     toSave[`saved_restaurants.${restaurantData.data.alias}`] = 1;
-            //     firebase.dbDelete('users', user.uid, toSave).then(result => PopulateButton())
-            //     // PopulateButton();
-            // }
-            // else{
-            //     await firebase.dbUpdateOnce('users', user.uid, `saved_restaurants.${restaurantData.data.alias}`, restaurantData.data)
-            //     PopulateButton();
-            // }
         } catch (error) {
             console.log(error);
         }
     }
+
     /**
      * method that changes the text and color of the "save restaurant" button
      * Made by Dylan Huynh
@@ -151,6 +145,7 @@ export default function RestaurantProfileScreen({route}){
             console.log(error)
         }
     }
+
     /**
      * function to call a phone number
      */
@@ -236,11 +231,16 @@ export default function RestaurantProfileScreen({route}){
         navigation.navigate('Create Review', {restaurantData})
     }
 
+	/**
+	 * Adds 1 to the pressed state
+	 */
     const handlePress = () => {
         setPressed(pressed + 1)
     }
 
-
+	/**
+	 * Grabs reviews from firebase
+	 */
     const GetReviews = () => {
         try {
             firebase.dbGetReviews(restaurantData.data.alias).then(result => {
@@ -253,9 +253,11 @@ export default function RestaurantProfileScreen({route}){
         }
     }
 
+	/**
+	 * Grabs the reviews from firebase with a format
+	 * @returns list of reviews
+	 */
     const PopulateReviews = () => {
-        //console.log('in populatereviews: ' + limit)
-        //console.log('pressed: ' + pressed)
         let table = []
         if (reviews.length != 0){
             
@@ -269,8 +271,6 @@ export default function RestaurantProfileScreen({route}){
                     <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].datemade.toDate().toDateString()}</Text>
                     <Text style={[style.ReviewBoxItems, style.ReviewText]}>{reviews[i][1].content}</Text>
                 </TouchableOpacity>)
-
-                // console.log(reviews[i][1].authorid)
             }  
         }
 
@@ -280,6 +280,10 @@ export default function RestaurantProfileScreen({route}){
         return(table)
     }
 
+	/**
+	 * Creates the public demographics icon for the restaurant
+	 * @returns a View componenet displaying the public demographics
+	 */
 	const publicDemoGraphics = () => {
 		if (restaurantData.data.categories) {
 			const firstLetter = restaurantData.data.categories[0].alias.charAt(0)

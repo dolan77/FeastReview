@@ -1,10 +1,10 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image} from 'react-native'
 import auth from '@react-native-firebase/auth';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/core';
 
-import * as React from 'react';
 import * as firebase from '../utils/firebase'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -18,15 +18,14 @@ export default function FollowingScreen(props){
     const passedInFollowingDoc = props.followingDoc
     const navigation = useNavigation();
 
-    const [FollowingProfilePictures, setFollowingProfilePictures] = React.useState([])
+    const [FollowingProfilePictures, setFollowingProfilePictures] = useState([])
 
-    //.log('passedInUID: ' + passedInFollowingUID)
-    //console.log('passedInNames: ' + passedInFollowingNames)
-    React.useEffect(() =>{
+    useEffect(() =>{
         PopulateProfilePictures();
         PopulateFollowing();
         
     }, [])
+
     /**
      * Method that will navigate the user to see another user's profile
      */
@@ -39,8 +38,10 @@ export default function FollowingScreen(props){
         })
 
     }
-    // console.log(passedInFollowing)
 
+	/**
+	 * Gets the profile pictures of all following users
+	 */
     const PopulateProfilePictures = async () => {
         console.log('\n')
         let pictures = []
@@ -54,11 +55,7 @@ export default function FollowingScreen(props){
                         )
                       
                 }
-                    // )
-                    // console.log(pictures)
                 catch (error){
-                    // console.log(passedInFollowingUID[i], 'does not have a profile picture on db')
-                    // console.log(error)
                     await firebase.dbFileGetUrl('feast_blue.png').then(
                         url => {
                             pictures.push(url)
@@ -70,14 +67,10 @@ export default function FollowingScreen(props){
             await setFollowingProfilePictures(pictures)
 
             console.log(FollowingProfilePictures)
-            
-        }catch(error){
-            //console.log('outside')
+        }
+		catch(error){
             console.log(error)
         }
-        
-
-        
     }
 
     // method will populate the screen with touchable opactities that represent the Feasters the current user is following

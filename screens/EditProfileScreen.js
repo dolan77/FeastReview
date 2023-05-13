@@ -4,7 +4,7 @@ import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import image from "../assets/feast_blue.png"
 
-import * as React from 'react';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import * as firebase from '../utils/firebase'
 
 import ImagePicker from 'react-native-image-crop-picker';
@@ -20,24 +20,24 @@ export default function EditProfileScreen(){
 
     const navigation = useNavigation();
 
-    const [modalVisible, setModalVisible] = React.useState(false);
-    const [bio, setBio] = React.useState('Loading...');
-    const [currName, setCurrName] = React.useState('Loading...');
+    const [modalVisible, setModalVisible] = useState(false);
+    const [bio, setBio] = useState('Loading...');
+    const [currName, setCurrName] = useState('Loading...');
 
-    const [title, setTitle] = React.useState('');
-    const [possibleTitles, setPossibleTitles] = React.useState([]);
-    const [titleScroll, setTitleScroll] = React.useState(false);
+    const [title, setTitle] = useState('');
+    const [possibleTitles, setPossibleTitles] = useState([]);
+    const [titleScroll, setTitleScroll] = useState(false);
 
-    const [dropdownOpen, setDropdownOpen] = React.useState(false);
-    const [newBio, setNewBio] = React.useState('');
-    const [editName, setEditName] = React.useState('');
-    const [newName, setNewName] = React.useState('');
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [newBio, setNewBio] = useState('');
+    const [editName, setEditName] = useState('');
+    const [newName, setNewName] = useState('');
 
 
 
-    const [avatarPath, setAvatarPath] = React.useState();
+    const [avatarPath, setAvatarPath] = useState();
 
-    React.useEffect(() => {
+    useEffect(() => {
         getProfile();
         getAvatarDB();
         loadTitles();

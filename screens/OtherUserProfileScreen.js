@@ -1,5 +1,6 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, useState, Modal} from 'react-native'
+import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, Modal} from 'react-native'
 import auth from '@react-native-firebase/auth';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/core';
 import image from "../assets/feast_blue.png"
@@ -17,15 +18,18 @@ export default function OtherUserProfileScreen({route}){
     // pull user from DB or have the user be passed into the DB
     const otherID = route.params.otherID;
 
-    const [follow, setFollow] = React.useState('');
-    const [color, setColor] = React.useState('');
-    const [name, setName] = React.useState('');
-    const [bio, setBio] = React.useState('');
-    const [otherUser, setOtherUser] = React.useState(null);
+	// Saves properties of selected image
+    // Written by Kenny Du
+    const [avatarPath, setAvatarPath] = useState();
+
+    const [follow, setFollow] = useState('');
+    const [color, setColor] = useState('');
+    const [name, setName] = useState('');
+    const [bio, setBio] = useState('');
+    const [otherUser, setOtherUser] = useState(null);
     const navigation = useNavigation();
     
     const user = auth().currentUser;
-    // console.log(otherID.id);
     /**
      * method for when the user clicks on the follow button or not
      * https://firebase.google.com/docs/firestore/manage-data/add-data
@@ -92,6 +96,7 @@ export default function OtherUserProfileScreen({route}){
         }
  
     }
+
     // try to navigate to the reviews screen.
     const seeReview = async () => {
         
@@ -102,17 +107,11 @@ export default function OtherUserProfileScreen({route}){
     }
 
     // initiate the button and user name we create the view
-    React.useEffect(() => {
+    useEffect(() => {
         PopulateScreen();
         PopulateButton();
         getAvatarDB();
-    },
-    []
-    )
-    
-    // Saves properties of selected image
-    // Written by Kenny Du
-    const [avatarPath, setAvatarPath] = React.useState();
+    },[])
 
     // Get user's previously uploaded profile picture from the database
     // Written by Kenny Du
@@ -128,6 +127,7 @@ export default function OtherUserProfileScreen({route}){
             console.log(name, 'does not have a profile picture on db')
         }
     }
+
     return (
         <View style = {styles.container}>
             <FeastHeader title={"Other User"} onPress={() => navigation.goBack()}/>

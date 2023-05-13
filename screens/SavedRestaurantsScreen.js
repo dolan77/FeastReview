@@ -1,5 +1,6 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, useState, Modal, SafeAreaView, ScrollView} from 'react-native'
+import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, ImageBackground, TextInput, Modal, SafeAreaView, ScrollView} from 'react-native'
 import auth from '@react-native-firebase/auth';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/core';
 import image from "../assets/feast_blue.png"
@@ -12,22 +13,25 @@ import { timeConvert } from '../methods/time';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors from '../utils/colors';
 import { FeastHeader } from '../utils/components';
+
 // if a user clicks on their saved restaurants. navigate them to the restaurant screen
 export default function SavedRestaurantsScreen({route}){
     restaurant_data = route.params.restaurants
     const navigation = useNavigation();
     const user = auth().currentUser;
-    const [restaurants, setRestaurants] = React.useState([])
+    const [restaurants, setRestaurants] = useState([])
 
-    React.useEffect(() => {
+    useEffect(() => {
         PopulateRestaurants()
     }, [])
+
     // method to view the restaurant the user clicks on
     const seeRestaurant = (restaurant_data) => {
         navigation.navigate('RestaurantProfile', {
             data: restaurant_data
         })
     }
+	
     /**
      * method that checks to see if the restaurant is open
      * @param {*} current_restaurant current restaurant's hours we want to check

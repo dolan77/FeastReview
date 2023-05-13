@@ -1,4 +1,5 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, useState, SafeAreaView} from 'react-native'
+import { Alert, StyleSheet, Text, TouchableOpacity, View, Button, Image, SafeAreaView} from 'react-native'
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import auth from '@react-native-firebase/auth';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -19,14 +20,17 @@ export default function ReviewsScreen({route}){
     // const reviewType = route.params.type
     const navigation = useNavigation();
 
-    const [reviews, setReviews] = React.useState('')
-    const [pfps, setpfps] = React.useState('')
-    const [limit, setLimit] = React.useState(0);
-    const [pressed, setPressed] = React.useState(1)
+    const [reviews, setReviews] = useState('')
+    const [pfps, setpfps] = useState('')
+    const [limit, setLimit] = useState(0);
+    const [pressed, setPressed] = useState(1)
 
     const user = auth().currentUser;
 
-    React.useEffect(() => {
+	/**
+	 * Runs when pressed state is changed, in which the reviews limit is increased
+	 */
+    useEffect(() => {
 		if (pressed !== 1) {
             if (5 + limit > reviews.length){
                 setLimit(reviews.length)
@@ -37,37 +41,19 @@ export default function ReviewsScreen({route}){
 		}
 	}, [pressed])
 
-    React.useEffect( () => {
-        // getProfilePics();
+	/**
+	 * When screen is rendered, GetReviews and PopulateReviews are called
+	 */
+    useEffect( () => {
         GetReviews();
-        
         PopulateReviews();
         
     }, 
     [])
 
-    
-
-    // const getProfilePics = () => {
-    //     try{
-    //         firebase.firebase.dbFileGetUrl('ProfilePictures/' + dbID).then(
-                
-    //             url => {
-    //                 console.log(url)
-    //                 setpfps(url)
-    //             })
-            
-    //     }
-    //     catch(error){
-    //         firebase.dbFileGetUrl('feast_blue.png').then(
-    //         url => {
-    //             console.log(url)
-    //             setpfps(url)
-    //             }
-    //         )
-    //     }   
-
-    // }
+	/**
+	 * Grabs reviews from firebase and sets it to the reviews state
+	 */
     const GetReviews = () => {
         try {
             firebase.dbGetReviews(dbID, field="authorid").then(result => {
@@ -89,21 +75,37 @@ export default function ReviewsScreen({route}){
         }
     }
 
+	/**
+	 * Press handle for the amount of reviews that need to be displayed
+	 */
     const handlePress = () => {
         setPressed(pressed + 1)
     }
 
+	/**
+	 * Displays "Read More" when clicked
+	 * @param {*} onPress event
+	 */
     renderReadMore = (onPress) => {
 		return(
 		  <Text onPress={onPress} style={{color: '#75d9fc', padding: 5, marginLeft:10, borderWidth: 0}}>Read more</Text>
 		)
 	}
+
+	/**
+	 * Displays "Read Less" when clicked
+	 * @param {*} onPress event
+	 */
 	renderReadLess = (onPress) => {
 		return(
 		  <Text onPress={onPress} style={{color: '#75d9fc', padding: 5, marginLeft:10}}>Read less</Text>
 		)
 	}
 
+	/**
+	 * Grabs the reviews from firebase with a format
+	 * @returns list of reviews
+	 */
     const PopulateReviews = () => {
         let table = []
         if (reviews.length != 0){
@@ -112,13 +114,10 @@ export default function ReviewsScreen({route}){
                 console.log(typeof(reviews[i][1]))
                 console.log(reviews[i])
                 const reviewAverage = ((reviews[i][1].star_atmos + reviews[i][1].star_foods + reviews[i][1].star_service) /3)
-                // console.log(reviewAverage)
-                // console.log(reviews[i][1])
-                
+
                 table.push(
                 <TouchableOpacity key={i} style={[style.ReviewBox, {marginHorizontal: 10}]}
                     onPress={() => navDetailedReview(reviews[i])} >
-                    {/* <Image style = {[style.tinyLogo]} source ={{uri: pfps}}/> */}
                     <Text style={[style.buttonText, style.ReviewHeader]}>{reviews[i][1].username}</Text>
                     <Text style={[style.buttonText, style.ReviewHeader]}>{starRating(0, reviewAverage)}</Text>
                     <TouchableOpacity
@@ -147,8 +146,6 @@ export default function ReviewsScreen({route}){
 								</Text>
 							</ViewMoreText>
                 </TouchableOpacity>)
-
-                // console.log(reviews[i][1].authorid)
             }
             
         }
@@ -159,12 +156,15 @@ export default function ReviewsScreen({route}){
         return(table)
     }
 
+	/**
+	 * Redirects user to detailed review screen
+	 * @param {*} params review data
+	 */
     const navDetailedReview = (params) => {
         navigation.navigate('Detailed Review Screen', params)
     }
 
     return(
-
         <SafeAreaView style={style.container}>
             <FeastHeader title={"Reviews"} onPress={() => navigation.goBack()}/>
 

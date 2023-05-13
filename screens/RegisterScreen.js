@@ -15,6 +15,10 @@ export default function RegisterScreen() {
 
 	const navigation = useNavigation()
 
+	/**
+	 * Sets loading state false so the loading component is not displayed
+	 * unsubscribes from the user
+	 */
 	useEffect(() => {
 		setLoading(false)
 		const unsubscribe = auth().onAuthStateChanged((user) => {
@@ -24,8 +28,9 @@ export default function RegisterScreen() {
 		return unsubscribe;
 	}, []);
 
-	// calls the Firebase api with user input to create a user object and put it in the
-	// Firestore
+	/**
+	 * calls the firebase api with user input to create a user object and put it in the firestore
+	 */
   	createUser = () => {
 		if (password !== passwordAgain) {
 			console.log('Passwords do not match')
@@ -89,7 +94,11 @@ export default function RegisterScreen() {
 			console.log("Failed to add user to database")
 		})
 	}
-	// initialize the collection in the DB
+
+	/**
+	 * initialize the collection in the DB
+	 * @param {*} user User object
+	 */
 	const addUserToDb = async (user) => {
 		const res = await firebase.dbSet(
 			"users", 

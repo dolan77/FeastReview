@@ -24,7 +24,7 @@ export default function HomeScreen() {
 
 	/**
 	 * Requests the user for their permission to get there location
-	 * Calls teh getFollowers method
+	 * Calls the getFollowers method
 	 */
 	useEffect(() => {
 		const res = requestLocationPermission();
@@ -171,6 +171,7 @@ export default function HomeScreen() {
 
 	/**
 	 * Displays "Read More" when clicked
+	 * @param {*} onPress event
 	 */
 	renderReadMore = (onPress) => {
 		return(
@@ -180,6 +181,7 @@ export default function HomeScreen() {
 
 	/**
 	 * Displays "Read Less" when clicked
+	 * @param {*} onPress event
 	 */
 	renderReadLess = (onPress) => {
 		return(

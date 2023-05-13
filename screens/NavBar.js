@@ -7,7 +7,6 @@ import HomeScreen from './HomeScreen';
 import ProfileScreen from './UserProfileScreen';
 import SearchScreen from './SearchScreen';
 import ReviewsScreen from './ReviewsScreen';
-import MessagesScreen from './MessagesScreen';
 import FollowersScreen from './FollowersScreen';
 import FollowingScreen from './FollowingScreen';
 import RestaurantProfileScreen from './RestaurantProfileScreen';
@@ -76,7 +75,6 @@ function StackScreens(props) {
                 <Stack.Screen options={{ headerShown: false }} name='Search Screen' component={SearchScreen} />
 				<Stack.Screen options={{ headerShown: false }} name="Your Profile" component={ProfileScreen} />
 				<Stack.Screen options={{ headerShown: false }} name="Reviews" component={ReviewsScreen} />
-				<Stack.Screen options={{ headerShown: false }} name="Messages" component={MessagesScreen} />
 				<Stack.Screen options={{ headerShown: false }} name="Followers" component={FollowersScreen} />
 				<Stack.Screen options={{ headerShown: false }} name="Following" component={FollowingScreen} />
 				<Stack.Screen options={{ headerShown: false }} name="RestaurantProfile" component={RestaurantProfileScreen} />

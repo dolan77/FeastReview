@@ -19,7 +19,9 @@ export default function LoginScreen() {
 		return unsubscribe; // unsubscribe on unmount
 	}, []);
 
-	// calls the Firebase api to sign in the user
+	/**
+	 * calls the firebase api to sign in the user
+	 */
 	login = () => {
 		if(email && password){
 			auth()
@@ -43,8 +45,9 @@ export default function LoginScreen() {
 		}
 	}
 
-	// calls the Firebase api to send the email to the user for a 
-	// password reset
+	/**
+	 * calls the firebase api to send the email to the user for a password reset
+	 */
 	passwordReset = () => {
 		if(email){
 			auth()

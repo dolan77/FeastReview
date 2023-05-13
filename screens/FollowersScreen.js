@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/core';
 
 import * as firebase from '../utils/firebase'
-import * as React from 'react';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 
 import image from "../assets/feast_blue.png"
 import colors from '../utils/colors';
@@ -14,9 +14,9 @@ export default function FollowersScreen(props){
     const passedinUID = props.followersUID
     const passedinFollowersDoc = props.followersDoc
     const navigation = useNavigation();
-    const [profilePictures, setprofilePictures] = React.useState([])
+    const [profilePictures, setprofilePictures] = useState([])
 
-    React.useEffect(() =>{
+    useEffect(() =>{
         PopulateProfilePictures();
         PopulateFollowers();
         
@@ -32,17 +32,17 @@ export default function FollowersScreen(props){
         {
             otherID: otherUID
         })
-
     }
 
-    
+	/**
+	 * Gets the profile pictures of all following users
+	 */
     const PopulateProfilePictures = async () => {
         console.log('\n')
         let pictures = []
         try{
             for(let i = 0; i < passedinUID.length; i++){
                 try{
-                    //console.log('ProfilePictures/' + passedinUID[i])
                     await firebase.dbFileGetUrl('ProfilePictures/' + passedinUID[i]).then(
                         url => {
                             pictures.push(url)
@@ -50,8 +50,6 @@ export default function FollowersScreen(props){
                     )
                 }
                 catch (error){
-                    // console.log(passedinUID[i], 'does not have a profile picture on db')
-                    // console.log(error)
                     await firebase.dbFileGetUrl('feast_blue.png').then(
                         url => {
                             pictures.push(url)
@@ -59,17 +57,11 @@ export default function FollowersScreen(props){
                         )
                 }
             }
-            //console.log(pictures)
             setprofilePictures(pictures)
-            //console.log(profilePictures)
-            
-        }catch(error){
-            //console.log('outside')
+        }
+		catch(error){
             console.log(error)
         }
-        
-
-        
     }
 
     /**

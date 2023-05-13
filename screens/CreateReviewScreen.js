@@ -14,6 +14,7 @@ export default function ReviewPage({route}) {
     const user = auth().currentUser;
     const restaurantData = route.params.restaurantData;
     var userReview = '';
+	var image_urls = []
 
     const [modalVisible, setModalVisible] = React.useState(false);
     const [review, setReview] = React.useState(userReview);
@@ -68,9 +69,6 @@ export default function ReviewPage({route}) {
             console.log(error)
         }
     }
-
-    // firebase.dbFileAdd(images[0].fileName, images[0].realPath)
-    var image_urls = []
     
     // Uploads user's review photos to the database storage.
     async function uploadPhotos(){

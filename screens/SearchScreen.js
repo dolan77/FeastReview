@@ -91,6 +91,8 @@ export default function SearchScreen() {
 	/**
 	 * Calls the yelp api function then sets the results to restaurant state
 	 * @param {*} limit amount of results that will be displayed (default value of 10)
+	 * @param {*} filter a query string that has the filters
+	 * @param {*} newSearch boolean value that determines if the filters should be cleared
 	 * written by Nathan Lai
 	 */
 	handleSearch = ({limit = 10}, filter = "", newSearch = true) => {
@@ -162,6 +164,7 @@ export default function SearchScreen() {
 	/**
 	 * Adds price filter if selected; if it's already in the array, it'll remove it
 	 * Multiple price points can be selected.
+	 * @param {*} p_num number of the price value (1-4)
 	 * written by Kenny Du
 	 */
 	handlePriceSel = (p_num) => {
@@ -171,6 +174,7 @@ export default function SearchScreen() {
 	}
 	/**
 	 * Checks if price number is inside of the priceSel array. If so, return true.
+	 * @param {*} p_num number of the price value (1-4)
 	 * written by Kenny Du
 	 */
 	function checkPriceSelect(p_num) {
@@ -180,6 +184,7 @@ export default function SearchScreen() {
 	/**
 	 * Stores the string of the attribute that is selected for the 'Sort By' filter option.
 	 * Only 1 option can be selected
+	 * @param {*} sort_sel string value of the sort value
 	 * written by Kenny Du
 	 */
 	
@@ -188,6 +193,7 @@ export default function SearchScreen() {
 	}
 	/**
 	 * Checks if sort by filter is inside of the sortBySel state. If so, return true.
+	 * @param {*} sort_sel string value of the sort value
 	 * written by Kenny Du
 	 */
 	function checkSortBySel(sort_sel) {
@@ -197,6 +203,7 @@ export default function SearchScreen() {
 	/**
 	 * Adds attribute filter if selected; if it's already in the array, it'll remove it
 	 * Multiple attributes can be selected
+	 * @param {*} attr string value of the attribute value
 	 * written by Kenny Du
 	 */
 	const handleAttrSel = (attr) => {
@@ -206,6 +213,7 @@ export default function SearchScreen() {
 	}
 	/**
 	 * function returns true if the attribute parameter exists inside attrSel
+	 * @param {*} attr string value of the attribute value
 	 * written by Kenny Du
 	 */
 	function checkAttrSel(attr) {

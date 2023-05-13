@@ -4,8 +4,7 @@ import auth from '@react-native-firebase/auth';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/core';
 
-
-import * as React from 'react';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import * as firebase from '../utils/firebase'
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { starRating } from '../methods/star';
@@ -18,20 +17,18 @@ export default function DetailedReviewScreen({route}){
     const reviewID = route.params[0];
     const reviewData = route.params[1];
     const navigation = useNavigation();
+	const [reviewPhotos, setReviewPhotos] = useState([])
+	var newComment = '';
+    const [comment, setComment] = useState(newComment);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [dbComments, setdbComments] = useState('')
 
 
-    React.useEffect(() => {
+    useEffect(() => {
         retrieveComments();
         retrievePhotos();
         console.log('Running useEffect')
     }, []);
-
-    var newComment = '';
-    const [comment, setComment] = React.useState(newComment);
-    const [modalVisible, setModalVisible] = React.useState(false);
-    
-
-    const [dbComments, setdbComments] = React.useState('')
 
     // Uploads the comment into the related review's "comments" collection.
     async function uploadComment(){
@@ -53,17 +50,24 @@ export default function DetailedReviewScreen({route}){
         }
     }
 
-
+	/**
+	 * Gets comments of reviews from firebase
+	 */
     const retrieveComments = async () => {
         await firebase.dbGetReviewComments(reviewID).then(result => {setdbComments([...result])});
     }
 
-    const [reviewPhotos, setReviewPhotos] = React.useState([])
+    /**
+	 * Gets review photos from firebase
+	 */
     const retrievePhotos = async () => {
         await firebase.dbGetReviewPhotos(reviewData.image_urls).then((result) => {setReviewPhotos(result)});
     }
     
-
+	/**
+	 * Redirects user to author of comment
+	 * @param {*} commentUID id of comment
+	 */
     const navCommentAuthor = (commentUID) => {
         console.log("Going to comment author's profile: ", commentUID)
         navigation.replace('OtherUserProfile', 
@@ -72,7 +76,10 @@ export default function DetailedReviewScreen({route}){
         })
     }
 
-    // console.log(dbComments)
+    /**
+	 * Displays comments on a review
+	 * @returns list of components of comments
+	 */
     const PopulateComments = () => {
         let table = [];
 
@@ -89,6 +96,10 @@ export default function DetailedReviewScreen({route}){
         return table;        
     }
 
+	/**
+	 * Displays review photos
+	 * @returns Image component from the review
+	 */
     const PopulateReviewPhotos = () => {
         return reviewPhotos.map((photo, i) => {
             return <Image style={[style.photo]} source={{uri:photo}} key={i} />
